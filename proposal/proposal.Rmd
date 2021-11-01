@@ -5,12 +5,23 @@ output: github_document
 editor_options: 
   chunk_output_type: console
 ---
+```{r echo = FALSE}
+library(tidyverse)
+# setwd('~/STA313/project-2-out_of_the_boxplots/proposal/')
+print(getwd())
+semester <- read_csv("../data/semester.csv")
+usage_chart <- read_csv("../data/usage_chart.csv")
+```
 
 ## Summary
 
 Build a Shiny dashboard app that takes Duke students’ food plan data and generates a report on their usage.
 
-## Goals
+## Project Goals
+
+Every semester Duke offers the same various food plans to meet the diverse needs of their undergraduate students. These customized plans are tailored specifically for upper-class, first-year and off-campus students, yet most students regardless of their food plan face the same issue — they always run out of food points by the end of the semester. The dreaded feeling of bargaining for your friend’s spare food points is something all Duke students have felt at one point in time, and this is the motivation for a pertinent issue we would like to explore. With all the options Duke offers, why is it so hard to budget our food points, and what can help us budget better? In order to alleviate the mental hurdles that come with deciding how much money we can spend on food, we have decided to create a R Shiny dashboard app that uses a Duke student’s food plan and data from their DukeCard Account Transaction Report to generate a report on their spending. To do this we will utilize Duke’s Fall 2021 and Spring 2022 Food Points Usage Chart. This chart breaks down all 8 of Duke’s food plans and the suggested usage rate based on daily and weekly averages. We plan to use this in combination with a student’s personal usage data, which includes the location food points were spent at — accessed through their [DukeCard eAccounts login](https://dukecard.duke.edu/manage-your-dukecard) — to provide a comprehensive report on their food spending. Students will copy and paste this personal information into an Excel template we provide, to be uploaded to the R Shiny app. We hope that this tool can provide students with the necessary insight on how much they can spend on food and where they should or shouldn’t spend their food, while staying within the limits of their food plan.
+
+The first dataset we are using offers a brief summary of each plan, which will allow us to quickly outline each plan’s offerings. Each observation is an offered Duke undergraduate food plan. The accompanying variables are information about the total number of points offered on the plan, the expected number of points to be spent per week, and the expected number of points to be spent per day. There are `r nrow(semester)` observations and `r ncol(semester)` variables in the data set. The data was collected from [Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points). The second dataset we are using offers in depth recommended spending information for each plan, which will allow us to offer recommendations to Duke students. Each observation is a week during a Duke undergraduate semester. The accompanying variables are information about the start date for the week in the Fall or Spring semester, and the expected number of food points to start that week with, depending on which plan a student has. There are `r nrow(usage_chart)` observations and `r ncol(usage_chart)` variables in the data set. The data was collected from the Fall 2021 and Spring 2022 Food Points Calculators found on [Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points). A comprehensive codebook for each data set can be found in the README file inside the data folder in this project’s GitHub repository. 
 
 ## Plan of Attack
 Week 3 (starting Nov 1): Complete Project Proposal
