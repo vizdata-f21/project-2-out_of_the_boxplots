@@ -21,7 +21,7 @@ accompanying variables are information about the start date for the week in
 the Fall or Spring semester, and the expected number of food points to start 
 that week with, depending on which plan a student has. There are 18 observations 
 and 10 variables in the data set. The data was collected from the Fall 2021 and 
-Spring 2022 Food Points Calculators found on the 
+Spring 2022 Food Points Calculators found on  
 [Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points).
 
 |variable         |description                           |type |
