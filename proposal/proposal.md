@@ -36,27 +36,52 @@ provide students with the necessary insight on how much they can spend
 on food and where they should or shouldn’t spend their food, while
 staying within the limits of their food plan.
 
-The first dataset we are using offers a brief summary of each plan,
-which will allow us to quickly outline each plan’s offerings. Each
-observation is an offered Duke undergraduate food plan. The accompanying
-variables are information about the total number of points offered on
-the plan, the expected number of points to be spent per week, and the
-expected number of points to be spent per day. There are 8 observations
-and 4 variables in the data set. The data was collected from [Duke’s
-Food Plan and Points
+The first dataset we are using, `semester`, offers a brief summary of
+each plan, which will allow us to quickly outline each plan’s offerings.
+Each observation is an offered Duke undergraduate food plan. The
+accompanying variables are information about the total number of points
+offered on the plan, the expected number of points to be spent per week,
+and the expected number of points to be spent per day. There are 8
+observations and 4 variables in the data set. The data was collected
+from [Duke’s Food Plan and Points
 Website](https://studentaffairs.duke.edu/dining/plans-points). The
-second dataset we are using offers in depth recommended spending
-information for each plan, which will allow us to offer recommendations
-to Duke students. Each observation is a week during a Duke undergraduate
-semester. The accompanying variables are information about the start
-date for the week in the Fall or Spring semester, and the expected
-number of food points to start that week with, depending on which plan a
-student has. There are 18 observations and 10 variables in the data set.
-The data was collected from the Fall 2021 and Spring 2022 Food Points
-Calculators found on [Duke’s Food Plan and Points
+second dataset we are using, `usage_chart`, offers in depth recommended
+spending information for each plan, which will allow us to offer
+recommendations to Duke students. Each observation is a week during a
+Duke undergraduate semester. The accompanying variables are information
+about the start date for the week in the Fall or Spring semester, and
+the expected number of food points to start that week with, depending on
+which plan a student has. There are 18 observations and 10 variables in
+the data set. The data was collected from the Fall 2021 and Spring 2022
+Food Points Calculators found on [Duke’s Food Plan and Points
 Website](https://studentaffairs.duke.edu/dining/plans-points). A
 comprehensive code book for each data set can be found in the README
-file inside the data folder in this project’s GitHub repository.
+file inside the data folder in this project’s GitHub repository. A
+glimpse of each data set is also provided below:
+
+`semester`:
+
+    ## Rows: 8
+    ## Columns: 4
+    ## $ plan            <chr> "A", "B", "C", "D", "E", "F", "I", "J"
+    ## $ total_value     <dbl> 2570.33, 3080.95, 3412.05, 3661.45, 3992.55, 841.73, 8…
+    ## $ weekly_avereage <dbl> 165.07, 197.86, 219.12, 235.14, 256.40, 54.06, 56.89, …
+    ## $ daily_average   <dbl> 23.58, 28.27, 31.30, 33.59, 36.63, 7.72, 8.13, 16.68
+
+`usage_chart`:
+
+    ## Rows: 18
+    ## Columns: 10
+    ## $ fall   <chr> "8/16/21", "8/23/21", "8/30/21", "9/6/21", "9/13/21", "9/20/21"…
+    ## $ spring <chr> "1/3/21", "1/10/21", "1/17/21", "1/24/21", "1/31/21", "2/7/21",…
+    ## $ plan_a <dbl> 2570.33, 2452.42, 2287.36, 2122.29, 1957.22, 1792.16, 1627.09, …
+    ## $ plan_b <dbl> 3080.95, 2939.62, 2741.76, 2543.90, 2346.04, 2148.19, 1950.33, …
+    ## $ plan_c <dbl> 3412.05, 3255.53, 3036.41, 2817.29, 2598.17, 2379.04, 2159.92, …
+    ## $ plan_d <dbl> 3661.45, 3493.49, 3258.35, 3023.22, 2788.08, 2552.94, 2317.80, …
+    ## $ plan_e <dbl> 3992.55, 3809.41, 3553.00, 3296.60, 3040.20, 2783.80, 2527.39, …
+    ## $ plan_f <dbl> 841.73, 803.12, 749.06, 695.01, 640.95, 586.89, 532.84, 494.23,…
+    ## $ plan_i <dbl> 885.80, 845.17, 788.28, 731.39, 674.51, 617.62, 560.74, 520.10,…
+    ## $ plan_j <dbl> 1817.83, 1734.44, 1617.70, 1500.96, 1384.22, 1267.48, 1150.74, …
 
 ## Weekly Plan of Attack
 

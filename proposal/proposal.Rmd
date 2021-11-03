@@ -5,7 +5,7 @@ output: github_document
 editor_options: 
   chunk_output_type: console
 ---
-```{r echo = FALSE, message = FALSE, warning = FALSE}
+```{r load-data, echo = FALSE, message = FALSE, warning = FALSE}
 library(tidyverse)
 semester <- read_csv("../data/semester.csv")
 usage_chart <- read_csv("../data/usage_chart.csv")
@@ -41,24 +41,35 @@ Shiny app. We hope that this tool can provide students with the necessary
 insight on how much they can spend on food and where they should or shouldn’t 
 spend their food, while staying within the limits of their food plan.
 
-The first dataset we are using offers a brief summary of each plan, which will 
-allow us to quickly outline each plan’s offerings. Each observation is an 
-offered Duke undergraduate food plan. The accompanying variables are information 
-about the total number of points offered on the plan, the expected number of 
-points to be spent per week, and the expected number of points to be spent per 
-day. There are `r nrow(semester)` observations and `r ncol(semester)` variables 
-in the data set. The data was collected from [Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points). The second 
-dataset we are using offers in depth recommended spending information for each 
-plan, which will allow us to offer recommendations to Duke students. Each 
-observation is a week during a Duke undergraduate semester. The accompanying 
-variables are information about the start date for the week in the Fall or 
-Spring semester, and the expected number of food points to start that week with, 
-depending on which plan a student has. There are `r nrow(usage_chart)` 
-observations and `r ncol(usage_chart)` variables in the data set. The data was 
-collected from the Fall 2021 and Spring 2022 Food Points Calculators found on 
-[Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points). 
+The first dataset we are using, `semester`, offers a brief summary of each plan, 
+which will allow us to quickly outline each plan’s offerings. Each observation 
+is an offered Duke undergraduate food plan. The accompanying variables are 
+information about the total number of points offered on the plan, the expected 
+number of points to be spent per week, and the expected number of points to be 
+spent per day. There are `r nrow(semester)` observations and `r ncol(semester)` 
+variables in the data set. The data was collected from [Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points). The second 
+dataset we are using, `usage_chart`, offers in depth recommended spending 
+information for each plan, which will allow us to offer recommendations to Duke 
+students. Each observation is a week during a Duke undergraduate semester. The 
+accompanying variables are information about the start date for the week in the 
+Fall or Spring semester, and the expected number of food points to start that 
+week with, depending on which plan a student has. There are 
+`r nrow(usage_chart)` observations and `r ncol(usage_chart)` variables in the 
+data set. The data was collected from the Fall 2021 and Spring 2022 Food Points 
+Calculators found on [Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points). 
 A comprehensive code book for each data set can be found in the README file 
-inside the data folder in this project’s GitHub repository. 
+inside the data folder in this project’s GitHub repository. A glimpse of each 
+data set is also provided below:
+
+`semester`:
+```{r glimpse-semester, echo = FALSE}
+glimpse(semester)
+```
+
+`usage_chart`:
+```{r glimpse-usage-chart, echo = FALSE}
+glimpse(usage_chart)
+```
 
 ## Weekly Plan of Attack
 
