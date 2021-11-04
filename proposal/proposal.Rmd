@@ -5,49 +5,114 @@ output: github_document
 editor_options: 
   chunk_output_type: console
 ---
-```{r echo = FALSE}
+```{r load-data, echo = FALSE, message = FALSE, warning = FALSE}
 library(tidyverse)
-# setwd('~/STA313/project-2-out_of_the_boxplots/proposal/')
-print(getwd())
 semester <- read_csv("../data/semester.csv")
 usage_chart <- read_csv("../data/usage_chart.csv")
 ```
 
-## Summary
+## High-Level Goal
 
-Build a Shiny dashboard app that takes Duke students’ food plan data and generates a report on their usage.
+The goal of this project is to build an R Shiny dashboard app that takes Duke 
+students’ food plan data and generates a report on their usage.
 
 ## Project Goals
 
-Every semester Duke offers the same various food plans to meet the diverse needs of their undergraduate students. These customized plans are tailored specifically for upper-class, first-year and off-campus students, yet most students regardless of their food plan face the same issue — they always run out of food points by the end of the semester. The dreaded feeling of bargaining for your friend’s spare food points is something all Duke students have felt at one point in time, and this is the motivation for a pertinent issue we would like to explore. With all the options Duke offers, why is it so hard to budget our food points, and what can help us budget better? In order to alleviate the mental hurdles that come with deciding how much money we can spend on food, we have decided to create a R Shiny dashboard app that uses a Duke student’s food plan and data from their DukeCard Account Transaction Report to generate a report on their spending. To do this we will utilize Duke’s Fall 2021 and Spring 2022 Food Points Usage Chart. This chart breaks down all 8 of Duke’s food plans and the suggested usage rate based on daily and weekly averages. We plan to use this in combination with a student’s personal usage data, which includes the location food points were spent at — accessed through their [DukeCard eAccounts login](https://dukecard.duke.edu/manage-your-dukecard) — to provide a comprehensive report on their food spending. Students will copy and paste this personal information into an Excel template we provide, to be uploaded to the R Shiny app. We hope that this tool can provide students with the necessary insight on how much they can spend on food and where they should or shouldn’t spend their food, while staying within the limits of their food plan.
+Every semester Duke offers the same various food plans to meet the diverse needs 
+of their undergraduate students. These customized plans are tailored 
+specifically for upper-class, first-year and off-campus students, yet most 
+students regardless of their food plan face the same issue — they always run out 
+of food points by the end of the semester. The dreaded feeling of bargaining for 
+your friend’s spare food points is something all Duke students have felt at one 
+point in time, and this is the motivation for a pertinent issue we would like to 
+explore. With all the options Duke offers, why is it so hard to budget our food 
+points, and what can help us budget better? In order to alleviate the mental 
+hurdles that come with deciding how much money we can spend on food, we have 
+decided to create a R Shiny dashboard app that uses a Duke student’s food plan 
+and data from their DukeCard Account Transaction Report to generate a report on 
+their spending. To do this we will utilize Duke’s Fall 2021 and Spring 2022 Food 
+Points Usage Chart. This chart breaks down all 8 of Duke’s food plans and the 
+suggested usage rate based on daily and weekly averages. We plan to use this in 
+combination with a student’s personal usage data, which includes the location 
+food points were spent at — accessed through their [DukeCard eAccounts login](https://dukecard.duke.edu/manage-your-dukecard) — to provide a 
+comprehensive report on their food spending. Students will copy and paste this 
+personal information into an Excel template we provide, to be uploaded to the R 
+Shiny app. We hope that this tool can provide students with the necessary 
+insight on how much they can spend on food and where they should or shouldn’t 
+spend their food, while staying within the limits of their food plan.
 
-The first dataset we are using offers a brief summary of each plan, which will allow us to quickly outline each plan’s offerings. Each observation is an offered Duke undergraduate food plan. The accompanying variables are information about the total number of points offered on the plan, the expected number of points to be spent per week, and the expected number of points to be spent per day. There are `r nrow(semester)` observations and `r ncol(semester)` variables in the data set. The data was collected from [Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points). The second dataset we are using offers in depth recommended spending information for each plan, which will allow us to offer recommendations to Duke students. Each observation is a week during a Duke undergraduate semester. The accompanying variables are information about the start date for the week in the Fall or Spring semester, and the expected number of food points to start that week with, depending on which plan a student has. There are `r nrow(usage_chart)` observations and `r ncol(usage_chart)` variables in the data set. The data was collected from the Fall 2021 and Spring 2022 Food Points Calculators found on [Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points). A comprehensive codebook for each data set can be found in the README file inside the data folder in this project’s GitHub repository. 
+The first dataset we are using, `semester`, offers a brief summary of each plan, 
+which will allow us to quickly outline each plan’s offerings. Each observation 
+is an offered Duke undergraduate food plan. The accompanying variables are 
+information about the total number of points offered on the plan, the expected 
+number of points to be spent per week, and the expected number of points to be 
+spent per day. There are `r nrow(semester)` observations and `r ncol(semester)` 
+variables in the data set. The data was collected from [Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points). The second 
+dataset we are using, `usage_chart`, offers in depth recommended spending 
+information for each plan, which will allow us to offer recommendations to Duke 
+students. Each observation is a week during a Duke undergraduate semester. The 
+accompanying variables are information about the start date for the week in the 
+Fall or Spring semester, and the expected number of food points to start that 
+week with, depending on which plan a student has. There are 
+`r nrow(usage_chart)` observations and `r ncol(usage_chart)` variables in the 
+data set. The data was collected from the Fall 2021 and Spring 2022 Food Points 
+Calculators found on [Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points). 
+A comprehensive code book for each data set can be found in the README file 
+inside the data folder in this project’s GitHub repository. A glimpse of each 
+data set is also provided below:
 
-## Plan of Attack
+`semester`:
+```{r glimpse-semester, echo = FALSE}
+glimpse(semester)
+```
+
+`usage_chart`:
+```{r glimpse-usage-chart, echo = FALSE}
+glimpse(usage_chart)
+```
+
+## Weekly Plan of Attack
+
 Week 3 (starting Nov 1): Complete Project Proposal
-- Finalize Project Repo, include code book and all necessary data to configure R Shiny app (Anna)
+
+- Finalize Project Repo, include code book and all necessary data to configure R 
+Shiny app (Anna)
 - Create plan of attack for the project and figure out roles (Blossom)
 - Write up 1-2 paragraph description of our goals for project proposal (Hebron)
-- Start testing R Shiny app dashboard and assist Anna with finalizing repo (Matthew)
+- Start testing R Shiny app dashboard and assist Anna with finalizing repo 
+(Matthew)
 
 Week 4 (starting Nov 8): Update + Finalize Project Proposal
-- Create List of visualizations we want to see within app (EVERYONE)
-- Consider food points data over time, location, factor in student breaks/holidays, potential finals season
+
+- Create List of visualizations we want to see within app (Everyone)
+- Consider food points data over time, location, factor in student 
+breaks/holidays, potential finals season
 - Add Sample Dataset (Matthew)
 - Create Food Points Excel Template (Anna)
 - Update Project proposal based on peer feedback (Hebron)
-- Start implementing visualization ideas (EVERYONE)
+- Start implementing visualization ideas (Everyone)
 
 Week 5-6 (starting Nov 15, starting Nov 22): Work on Data Visualizations
-- Create visualizations for data with focus over time (consider semester, student breaks, holidays, finals season) - (Anna, Matthew)
-- Create visualizations for data with focus by location (i.e. explore custom geospatial possibilities, bar charts) - (Blossom, Hebron)
+
+- Create visualizations for data with focus over time (consider semester, 
+student breaks, holidays, finals season) (Anna, Matthew)
+- Create visualizations for data with focus by location (i.e. explore custom 
+geospatial possibilities, bar charts) (Blossom, Hebron)
 
 Week 7 (starting Nov 29): Project Finishing Touches
-- Write Introduction (EVERYONE)
-- Write Conclusion (EVERYONE)
-- Contribute to Project write-up (EVERYONE)
-- Practice Presentation (EVERYONE)
-- Finalize Website and Presentation (EVERYONE)
 
+- Write Introduction (Everyone)
+- Write Conclusion (Everyone)
+- Contribute to Project write-up (Everyone)
+- Practice Presentation (Everyone)
+- Finalize Website and Presentation (Everyone)
 
-## Repository Organization
+## Organization of Project Repository
+
+For our project repository organization we will have folders for: the proposal, 
+the data, the dashboard, and images. The dashboard folder will contain the 
+script to create our final deliverable: the dashboard. The proposal folder will
+contain the rmd and pdf files for our proposal write up. Accompanying images 
+that will be included in the dashboard will be placed in the images folder. Each 
+folder contains a README file explaining in further detail the folder’s contents 
+as well as a README file in the main folder, describing the overall project.
