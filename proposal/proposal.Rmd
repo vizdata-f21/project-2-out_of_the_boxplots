@@ -51,7 +51,8 @@ variables are information about the total number of points offered on the plan,
 the expected number of points to be spent per week, and the expected number of 
 points to be spent per day. There are `r nrow(semester)` observations and 
 `r ncol(semester)` variables in the data set. The data was collected from 
-[Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points). The second dataset we are using, `usage_chart.csv`, offers in depth recommended 
+[Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points). 
+The second dataset we are using, `usage_chart.csv`, offers in depth recommended 
 spending information for each plan, which will allow us to offer recommendations 
 to Duke students. Each observation is a week during a Duke undergraduate 
 semester. The accompanying variables are information about the start date for 
