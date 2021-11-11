@@ -7,8 +7,8 @@ editor_options:
 ---
 ```{r load-data, echo = FALSE, message = FALSE, warning = FALSE}
 library(tidyverse)
-semester <- read_csv("../data/semester.csv")
-usage_chart <- read_csv("../data/usage_chart.csv")
+semester <- read_csv(here::here("data", "semester.csv"))
+usage_chart <- read_csv(here::here("data", "usage_chart.csv"))
 ```
 
 ## High-Level Goal
