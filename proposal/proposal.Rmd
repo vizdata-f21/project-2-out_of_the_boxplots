@@ -77,7 +77,7 @@ data set. The data was collected from the Fall 2021 and Spring 2022 Food Points
 Calculators found on [Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points). 
 A comprehensive code book for each data set can be found in the README file 
 inside the data folder in this project’s GitHub repository. A glimpse of each 
-data set is also provided below:
+data set can be seen below:
 
 `semester.csv`:
 ```{r glimpse-semester, echo = FALSE}
