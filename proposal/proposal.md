@@ -34,9 +34,20 @@ comprehensive report on their food spending. Students will generate a
 usage report from their online DukeCard statements. Students will then
 copy and paste this personal information into an Excel template we
 provide, to be uploaded to the R Shiny app. This Excel template can be
-found in our data folder which looks like the following:
+found in our data folder and it looks like the following:
+‘input\_food\_points\_data.csv’. Explicit instructions will be added to
+the beginning of the app that will instruct the user about how to upload
+their data.
 
-‘input\_food\_points\_data.csv’:
+Using the user input template, we will create time series plot that
+depict user food point data as lines over time by specific eatery or by
+all eateries. We will also include a map plot of campus with points
+placed over the image of Duke’s campus, enlarged by the measure of
+frequency. 2 options for bar charts include a racing bar chart of a
+user’s top 5 eateries over time or a bar chart with a slider over time.
+We will also include the option for a user to chose the measure of
+comparison for eateries by frequency or spending. We will consider other
+visualizations as needed.
 
     ## Rows: 0
     ## Columns: 6
@@ -48,7 +59,8 @@ found in our data folder which looks like the following:
     ## $ Amount             <chr>
 
 We consulted Duke Dining on the best way to extract food point data and
-they believe our method is most efficient.
+they believe our method is most efficient, rather than using an
+inaccessible api.
 
 Students will then be provided information about how their spending
 compares to Duke’s recommended spending by utilizing a trendline that
@@ -81,7 +93,7 @@ and Points
 Website](https://studentaffairs.duke.edu/dining/plans-points). A
 comprehensive code book for each data set can be found in the README
 file inside the data folder in this project’s GitHub repository. A
-glimpse of each data set is also provided below:
+glimpse of each data set can be seen below:
 
 `semester.csv`:
 
@@ -155,12 +167,12 @@ md files for our proposal write up. Accompanying images that will be
 included in the dashboard will be placed in the images folder. The
 presentation folder will contain the code for a xaringan slideshow (if
 we choose to present using this format). The data folder will contain
-the csv files with information about Duke’s food plans, as well as
-possibly the Excel template that users of the dashboard can download (we
-will decide on the best location for this template later on, so it’s
-exact location in the project repository is yet to be determined). Each
-folder contains a README file explaining in further detail the folder’s
-contents, as well as a README file in the main folder, describing the
-overall project. This overall README file will likely contain the
-finalized write-up, too, and the accompanying rmd file will be placed in
-the main folder.
+the csv files with information about Duke’s food plans, as well as the
+Excel template that users of the dashboard can download along with
+example datasets (we will decide on the best location for this template
+later on, so it’s exact location in the project repository is yet to be
+determined). Each folder contains a README file explaining in further
+detail the folder’s contents, as well as a README file in the main
+folder, describing the overall project. This overall README file will
+likely contain the finalized write-up, too, and the accompanying rmd
+file will be placed in the main folder.
