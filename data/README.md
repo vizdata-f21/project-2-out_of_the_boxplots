@@ -37,3 +37,6 @@ Spring 2022 Food Points Calculators found on [Duke's Food Plan and Points Websit
 
 For reference, PDF versions of the original Food Points Calculators found on 
 Duke's website are also located in this data folder. 
+
+This folder also contains the user input template for the eAccounts food points 
+data, as well as a sample template filled out with a team member's data. 
