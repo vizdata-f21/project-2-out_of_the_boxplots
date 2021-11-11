@@ -30,15 +30,34 @@ this in combination with a student’s personal usage data, which includes
 the location food points were spent at — accessed through their
 [DukeCard eAccounts
 login](https://dukecard.duke.edu/manage-your-dukecard) — to provide a
-comprehensive report on their food spending. Students will copy and
-paste this personal information into an Excel template we provide, to be
-uploaded to the R Shiny app. They will then be provided information
-about how their spending compares to Duke’s recommended spending, as
-well as other visualizations which communicate metrics about the times
-and eatery locations in which they spend the most food points. We hope
-that this tool can provide students with the necessary insight on how
-much they can spend on food and where they should or shouldn’t spend
-their food, while staying within the limits of their food plan.
+comprehensive report on their food spending. Students will generate a
+usage report from their online DukeCard statements. Students will then
+copy and paste this personal information into an Excel template we
+provide, to be uploaded to the R Shiny app. This Excel template can be
+found in our data folder which looks like the following:
+
+‘input\_food\_points\_data.csv’:
+
+    ## Rows: 0
+    ## Columns: 6
+    ## $ `Date/Time`        <chr> 
+    ## $ `Account Name`     <chr> 
+    ## $ `Card Number`      <chr> 
+    ## $ Location           <chr> 
+    ## $ `Transaction Type` <chr> 
+    ## $ Amount             <chr>
+
+We consulted Duke Dining on the best way to extract food point data and
+they believe our method is most efficient.
+
+Students will then be provided information about how their spending
+compares to Duke’s recommended spending by utilizing a trendline that
+shows their spending rate for each week as the semester goes on, as well
+as other visualizations which communicate metrics about the times and
+eatery locations in which they spend the most food points. We hope that
+this tool can provide students with the necessary insight on how much
+they can spend on food and where they should or shouldn’t spend their
+food, while staying within the limits of their food plan.
 
 The first dataset we are using, `semester.csv`, offers a brief summary
 of each plan, which will allow us to quickly outline each plan’s

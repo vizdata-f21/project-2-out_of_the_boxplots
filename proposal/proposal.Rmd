@@ -7,13 +7,9 @@ editor_options:
 ---
 ```{r load-data, echo = FALSE, message = FALSE, warning = FALSE}
 library(tidyverse)
-
-semester <- read_csv("../data/semester.csv")
-usage_chart <- read_csv("../data/usage_chart.csv")
-
 semester <- read_csv(here::here("data", "semester.csv"))
 usage_chart <- read_csv(here::here("data", "usage_chart.csv"))
-
+food_points <- read_csv(here::here("data", "input_food_points_data.csv"))
 ```
 
 ## High-Level Goal
@@ -40,12 +36,25 @@ Spring 2022 Food Points Usage Chart. This chart breaks down all 8 of Duke’s fo
 plans and the suggested usage rate based on daily and weekly averages. We plan 
 to use this in combination with a student’s personal usage data, which includes 
 the location food points were spent at — accessed through their [DukeCard eAccounts login](https://dukecard.duke.edu/manage-your-dukecard) — to provide a 
-comprehensive report on their food spending. Students will copy and paste this 
+comprehensive report on their food spending. Students will generate a usage 
+report from their online DukeCard statements. Students will then copy and paste this 
 personal information into an Excel template we provide, to be uploaded to the R 
-Shiny app. They will then be provided information about how their spending 
-compares to Duke's recommended spending, as well as other visualizations which 
+Shiny app. This Excel template can be found in our data folder which looks like 
+the following:
+
+'input_food_points_data.csv':
+```{r glimpse-food-points, echo =FALSE}
+glimpse(food_points)
+```
+
+We consulted Duke Dining on the best way to extract food point data and they 
+believe our method is most efficient.
+
+Students will then be provided information about how their spending compares to 
+Duke's recommended spending by utilizing a trendline that shows their spending rate
+for each week as the semester goes on, as well as other visualizations which 
 communicate metrics about the times and eatery locations in which they spend the 
-most food points. We hope that this tool can provide students with the necessary 
+most food points. We hope that this tool can provide students with the necessary
 insight on how much they can spend on food and where they should or shouldn’t 
 spend their food, while staying within the limits of their food plan.
 
