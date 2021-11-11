@@ -4,8 +4,7 @@ Each observation is an offered Duke undergraduate food plan. The accompanying
 variables are information about the total number of points offered on the plan, 
 the expected number of points to be spent per week, and the expected number of 
 points to be spent per day. There are 8 observations and 4 variables in the data 
-set. The data was collected from 
-[Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points).
+set. The data was collected from [Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points).
 
 |variable         |description                           |type |
 |:----------------|:-------------------------------------|-----|
@@ -21,8 +20,7 @@ accompanying variables are information about the start date for the week in
 the Fall or Spring semester, and the expected number of food points to start 
 that week with, depending on which plan a student has. There are 18 observations 
 and 10 variables in the data set. The data was collected from the Fall 2021 and 
-Spring 2022 Food Points Calculators found on  
-[Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points).
+Spring 2022 Food Points Calculators found on [Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points).
 
 |variable         |description                           |type |
 |:----------------|:-------------------------------------|-----|
@@ -36,3 +34,6 @@ Spring 2022 Food Points Calculators found on
 |plan_f           |Expected number of food points to start a week with, under Plan F |dbl  |
 |plan_i           |Expected number of food points to start a week with, under Plan I |dbl  |
 |plan_j           |Expected number of food points to start a week with, under Plan J |dbl  |
+
+For reference, PDF versions of the original Food Points Calculators found on 
+Duke's website are also located in this data folder. 
