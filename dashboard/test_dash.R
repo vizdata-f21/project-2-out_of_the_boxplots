@@ -39,7 +39,6 @@ food_points <- food_points %>%
     str_detect(location, "Gyotaku") ~ "Gyotaku",
     str_detect(location, "Il Forno") ~ "Il Forno",
     str_detect(location, "JBS") ~ "JBs Roast and Chops",
-    str_detect(location, "Marketplace") ~ "Marketplace",
     str_detect(location, "Nasher Cafe") ~ "Nasher Cafe",
     str_detect(location, "Panda Express") ~ "Panda Express",
     str_detect(location, "Panera") ~ "Panera",
@@ -61,14 +60,18 @@ food_points <- food_points %>%
     # mutate cost variable to make it numeric
     cost = as.numeric(str_extract_all(amount, "[0-9]*\\.[0-9]*")))
 
-food_points <- food_points %>%
-  # make any old restaurants such as ABP or or non major eateries NA
-  mutate(restaurant = ifelse(restaurant == "Other", NA, restaurant))
-
 # calculate total points spent at each dining location
-food_points_location <- food_points %>%
+food_points_location_cost <- food_points %>%
   group_by(restaurant) %>%
-  summarise(total_spent = sum(cost))
+  summarise(total_spent = sum(cost)) %>%
+  head(5)
+
+food_points_location_freq <- food_points %>%
+  group_by(restaurant) %>%
+  count() %>%
+  arrange(desc(n)) %>%
+  head(5) %>%
+  rename(freq = n)
 
 ## SAMPLE PLOTS ##
 
@@ -84,21 +87,6 @@ ggplot(data = food_points, aes(x = date, y = cost)) +
     x = "Date",
     y = "Cost of Meal",
     title = "Money Spent on Meals Over Time"
-  ) +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    text = element_text(family = "Times New Roman")
-  )
-
-ggplot(data = food_points_location,
-       aes(y = fct_reorder(restaurant, total_spent), x = total_spent)) +
-  geom_col() +
-  scale_x_continuous(labels = dollar_format()) +
-  theme_minimal() +
-  labs(
-    y = "Dining Location",
-    x = "Total Amount Spent",
-    title = "Money Spent per Dining Location"
   ) +
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold"),
@@ -132,6 +120,11 @@ ui <- dashboardPage(
           box(
             downloadButton("food_template", "Download Food Point Template"),
             fileInput("student_data", "Upload Your Food Point Usage"))
+        ),
+        fluidRow(
+          selectInput("top_5_input", "Select Which Measure You Want", c("Number of Swipes per Restaurant",
+                                                                        "Total Food Points Spent per Restaurant")),
+          plotOutput("plot_top_5")
         )
       )
     )
@@ -156,6 +149,53 @@ server <- function(input, output) {
       write.csv(template, file, row.names = FALSE)
     }
   )
+
+  plot_top_costs <- reactive({
+    ggplot(data = food_points_location_cost,
+           aes(y = fct_reorder(restaurant, total_spent),
+               x = total_spent)) +
+      geom_col() +
+      theme_minimal() +
+      scale_x_continuous(labels = dollar_format()) +
+      labs(
+        y = NULL,
+        x = "Total Amount Spent",
+        title = "Money Spent per Dining Location"
+      ) +
+      theme(
+        plot.title = element_text(hjust = 0.5, face = "bold"),
+        text = element_text(family = "Times New Roman")
+      )
+  })
+
+  plot_top_freq <- reactive({
+    ggplot(data = food_points_location_freq,
+           aes(y = fct_reorder(restaurant, freq),
+               x = freq)) +
+      geom_col() +
+      theme_minimal() +
+      labs(
+        y = NULL,
+        x = "Total Number of Swipes",
+        title = "Number of Card Swipes per Dining Location"
+      ) +
+      theme(
+        plot.title = element_text(hjust = 0.5, face = "bold"),
+        text = element_text(family = "Times New Roman")
+      )
+  })
+
+  plot_top_5 <- reactive({
+    switch(input$top_5_input,
+           "Number of Swipes per Restaurant" = plot_top_freq(),
+           "Total Food Points Spent per Restaurant" = plot_top_costs()
+    )
+  })
+
+  output$plot_top_5 <- renderPlot(
+    plot_top_5()
+  )
+
 }
 
 ## RUN APP ##
