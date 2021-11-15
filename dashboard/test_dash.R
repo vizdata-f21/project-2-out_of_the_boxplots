@@ -17,6 +17,7 @@ semester <- read_csv(here::here("data", "semester.csv"))
 usage_chart <- read_csv(here::here("data", "usage_chart.csv"))
 food_points <- read_csv(here::here("data", "matt_food_point.csv")) %>%
   clean_names()
+template <- read_csv(here::here("data", "input_food_points_data.csv"))
 
 ## DATA WRANGLING ##
 food_points <- food_points %>%
@@ -126,6 +127,11 @@ ui <- dashboardPage(
         fluidRow(
           box(selectInput("plan_select", "Select a Food Plan:", choices = c("Plan A", "Plan B", "Plan C", "Plan D", "Plan F", "Plan I", "Plan J"))),
           box(tableOutput("table_plans"))
+        ),
+        fluidRow(
+          box(
+            downloadButton("food_template", "Download Food Point Template"),
+            fileInput("student_data", "Upload Your Food Point Usage"))
         )
       )
     )
@@ -141,6 +147,15 @@ server <- function(input, output) {
       filter(plan == str_extract(input$plan_select, "[:alpha:]$"))
     table1
   })
+
+  output$food_template <- downloadHandler(
+    filename = function() {
+      "food_points_template.csv"
+    },
+    content = function(file) {
+      write.csv(template, file, row.names = FALSE)
+    }
+  )
 }
 
 ## RUN APP ##
