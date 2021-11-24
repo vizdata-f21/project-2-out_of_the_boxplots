@@ -15,63 +15,7 @@ library(scales)
 ## DATA ##
 semester <- read_csv(here::here("data", "semester.csv"))
 usage_chart <- read_csv(here::here("data", "usage_chart.csv"))
-food_points <- read_csv(here::here("data", "matt_food_point.csv")) %>%
-  clean_names()
 template <- read_csv(here::here("data", "input_food_points_data.csv"))
-
-## DATA WRANGLING ##
-food_points <- food_points %>%
-  # separate date time information into two diff recoded variables
-  separate(date_time, c("date", "time"), " ") %>%
-  # still nee to convert the time variable in lubridate
-  mutate(date = mdy(date)) %>%
-  # filter out deposit of food points
-  filter(!str_detect(location, "DukeCard Offices")) %>%
-  # create variable restaurant based on where food points were spent
-  # (need mcdonalds, freeman center still)
-  mutate(restaurant = case_when(
-    str_detect(location, "Bella Union") ~ "Bella Union",
-    str_detect(location, "Beyu Blue") ~ "Beyu Blue",
-    str_detect(location, "The Cafe") ~ "Cafe",
-    str_detect(location, "Farmstead") ~ "Farmstead",
-    str_detect(location, "Gussys|Poblanos") ~ "Food Truck at 300 Swift",
-    str_detect(location, "Ginger and Soy") ~ "Ginger and Soy",
-    str_detect(location, "Gyotaku") ~ "Gyotaku",
-    str_detect(location, "Il Forno") ~ "Il Forno",
-    str_detect(location, "JBS") ~ "JBs Roast and Chops",
-    str_detect(location, "Nasher Cafe") ~ "Nasher Cafe",
-    str_detect(location, "Panda Express") ~ "Panda Express",
-    str_detect(location, "Panera") ~ "Panera",
-    str_detect(location, "Pitchfork") ~ "Pitchfork's",
-    str_detect(location, "Red Mango") ~ "Red Mango",
-    str_detect(location, "Sazon") ~ "Sazon",
-    str_detect(location, "Sprout") ~ "Sprout",
-    str_detect(location, "Tandor") ~ "Tandoor",
-    str_detect(location, "Devils Krafthouse") ~ "The Devil's Krafthouse",
-    str_detect(location, "Lobby Shop") ~ "The Lobby Shop",
-    str_detect(location, "Loop") ~ "The Loop",
-    str_detect(location, "Skillet") ~ "The Skillet",
-    str_detect(location, "300 Swift") ~ "Thrive Kitchen",
-    str_detect(location, "Trinity Cafe") ~ "Trinity Cafe",
-    str_detect(location, "Twinnies") ~ "Twinnies",
-    str_detect(location, "Vending") ~ "Vending Machine",
-    str_detect(location, "Perk") ~ "Vondy",
-    TRUE ~ "Other"),
-    # mutate cost variable to make it numeric
-    cost = as.numeric(str_extract_all(amount, "[0-9]*\\.[0-9]*")))
-
-# calculate total points spent at each dining location
-food_points_location_cost <- food_points %>%
-  group_by(restaurant) %>%
-  summarise(total_spent = sum(cost)) %>%
-  head(5)
-
-food_points_location_freq <- food_points %>%
-  group_by(restaurant) %>%
-  count() %>%
-  arrange(desc(n)) %>%
-  head(5) %>%
-  rename(freq = n)
 
 ## SAMPLE PLOTS ##
 
@@ -104,6 +48,9 @@ ui <- dashboardPage(
     sidebarMenu(
       menuItem(
         "Overview", tabName = "overview", icon = icon("utensils")
+      ),
+      menuItem(
+        "Spending Over Time", tabName = "future", icon = icon("chart-line")
       )
     )
   ),
@@ -113,18 +60,26 @@ ui <- dashboardPage(
         tabName = "overview",
         h2("Overview"),
         fluidRow(
-          box(selectInput("plan_select", "Select a Food Plan:", choices = c("Plan A", "Plan B", "Plan C", "Plan D", "Plan F", "Plan I", "Plan J"))),
-          box(tableOutput("table_plans"))
+          box(selectInput("select_plan", "Select Your Food Plan:", choices = c("Plan A", "Plan B", "Plan C", "Plan D", "Plan F", "Plan I", "Plan J")),
+              downloadButton("food_template", "Download Food Point Template"),
+              fileInput("student_data", "Upload Your Food Point Usage")),
+          box(align = "center", tableOutput("summary_table"))
         ),
+        fluidRow(
+          column(12, align = "center", offset = 1,
+                 box(align = "center", width = 10,
+                     selectInput("top_5_input", "Select Which Measure You Want", c("Number of Swipes per Restaurant",
+                                                                                   "Total Food Points Spent per Restaurant")),
+                     plotOutput("plot_top_5")))
+        )
+      ),
+      tabItem(
+        tabName = "future",
+        h2("Spending Over Time"),
         fluidRow(
           box(
-            downloadButton("food_template", "Download Food Point Template"),
-            fileInput("student_data", "Upload Your Food Point Usage"))
-        ),
-        fluidRow(
-          selectInput("top_5_input", "Select Which Measure You Want", c("Number of Swipes per Restaurant",
-                                                                        "Total Food Points Spent per Restaurant")),
-          plotOutput("plot_top_5")
+
+          )
         )
       )
     )
@@ -135,12 +90,8 @@ ui <- dashboardPage(
 ## SERVER ##
 
 server <- function(input, output) {
-  output$table_plans <- renderTable({
-    table1 <- semester %>%
-      filter(plan == str_extract(input$plan_select, "[:alpha:]$"))
-    table1
-  })
 
+#output food points template
   output$food_template <- downloadHandler(
     filename = function() {
       "food_points_template.csv"
@@ -150,8 +101,89 @@ server <- function(input, output) {
     }
   )
 
+#load in student's data upload
+  raw <- reactive({
+    req(input$student_data, file.exists(input$student_data$datapath))
+    read.csv(input$student_data$datapath)
+  })
+
+#wrangling of student's data upload
+  food_points <- reactive({raw() %>%
+      # clean names from template
+      clean_names() %>%
+      # separate date time information into two diff recoded variables
+      separate(date_time, c("date", "time"), " ") %>%
+      # still nee to convert the time variable in lubridate
+      mutate(date = mdy(date)) %>%
+      # filter out deposit of food points
+      filter(!str_detect(location, "DukeCard Offices")) %>%
+      # create variable restaurant based on where food points were spent
+      # (need mcdonalds, freeman center still)
+      mutate(restaurant = case_when(
+        str_detect(location, "Bella Union") ~ "Bella Union",
+        str_detect(location, "Beyu Blue") ~ "Beyu Blue",
+        str_detect(location, "The Cafe") ~ "Cafe",
+        str_detect(location, "Farmstead") ~ "Farmstead",
+        str_detect(location, "Gussys|Poblanos") ~ "Food Truck at 300 Swift",
+        str_detect(location, "Ginger and Soy") ~ "Ginger and Soy",
+        str_detect(location, "Gyotaku") ~ "Gyotaku",
+        str_detect(location, "Il Forno") ~ "Il Forno",
+        str_detect(location, "JBS") ~ "JBs Roast and Chops",
+        str_detect(location, "Nasher Cafe") ~ "Nasher Cafe",
+        str_detect(location, "Panda Express") ~ "Panda Express",
+        str_detect(location, "Panera") ~ "Panera",
+        str_detect(location, "Pitchfork") ~ "Pitchfork's",
+        str_detect(location, "Red Mango") ~ "Red Mango",
+        str_detect(location, "Sazon") ~ "Sazon",
+        str_detect(location, "Sprout") ~ "Sprout",
+        str_detect(location, "Tandor") ~ "Tandoor",
+        str_detect(location, "Devils Krafthouse") ~ "The Devil's Krafthouse",
+        str_detect(location, "Lobby Shop") ~ "The Lobby Shop",
+        str_detect(location, "Loop") ~ "The Loop",
+        str_detect(location, "Skillet") ~ "The Skillet",
+        str_detect(location, "300 Swift") ~ "Thrive Kitchen",
+        str_detect(location, "Trinity Cafe") ~ "Trinity Cafe",
+        str_detect(location, "Twinnies") ~ "Twinnies",
+        str_detect(location, "Vending") ~ "Vending Machine",
+        str_detect(location, "Perk") ~ "Vondy",
+        TRUE ~ "Other"),
+        # mutate cost variable to make it numeric
+        cost = as.numeric(str_extract_all(amount, "[0-9]*\\.[0-9]*")))
+  })
+
+#code for summary table
+  summary_table_code <- reactive({
+    tibble("Plan Total" = semester %>%
+             filter(plan == str_extract(input$select_plan, "[:alpha:]$")) %>%
+             pull(total_value),
+           "Points Spent" = sum(food_points()$cost)) %>%
+           mutate("Points Remaining" = `Plan Total` - `Points Spent`)
+  })
+
+#display summary table
+  output$summary_table <- renderTable(
+    summary_table_code(),
+    align = 'c',
+    bordered = TRUE
+  )
+
+#calculate total points spent at each dining location
+  food_points_location_cost <- reactive({food_points() %>%
+    group_by(restaurant) %>%
+    summarise(total_spent = sum(cost)) %>%
+    head(5)
+  })
+
+  food_points_location_freq <- reactive({food_points() %>%
+    group_by(restaurant) %>%
+    count() %>%
+    arrange(desc(n)) %>%
+    head(5) %>%
+    rename(freq = n)
+  })
+
   plot_top_costs <- reactive({
-    ggplot(data = food_points_location_cost,
+    ggplot(data = food_points_location_cost(),
            aes(y = fct_reorder(restaurant, total_spent),
                x = total_spent)) +
       geom_col() +
@@ -169,7 +201,7 @@ server <- function(input, output) {
   })
 
   plot_top_freq <- reactive({
-    ggplot(data = food_points_location_freq,
+    ggplot(data = food_points_location_freq(),
            aes(y = fct_reorder(restaurant, freq),
                x = freq)) +
       geom_col() +
