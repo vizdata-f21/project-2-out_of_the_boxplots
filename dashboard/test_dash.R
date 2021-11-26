@@ -60,10 +60,13 @@ ui <- dashboardPage(
         tabName = "overview",
         h2("Overview"),
         fluidRow(
-          box(selectInput("select_plan", "Select Your Food Plan:", choices = c("Plan A", "Plan B", "Plan C", "Plan D", "Plan F", "Plan I", "Plan J")),
-              downloadButton("food_template", "Download Food Point Template"),
-              fileInput("student_data", "Upload Your Food Point Usage")),
-          box(align = "center", tableOutput("summary_table"))
+          box(downloadButton("food_template", "Download Food Point Template"),
+              h4(""),
+              fileInput("student_data", "Upload Your Food Point Usage"),
+              height = 200),
+          box(align = "center",
+              infoBoxOutput(width = 12, "plan_detected"),
+              tableOutput("summary_table"), height = 200)
         ),
         fluidRow(
           column(12, align = "center", offset = 1,
@@ -78,7 +81,9 @@ ui <- dashboardPage(
         h2("Spending Over Time"),
         fluidRow(
           box(
-
+            selectInput("select_sem", "Select Semester:", choices = c("Fall", "Spring")),
+            selectInput("select_plan", "Select a Food Plan:", choices = c("Plan A", "Plan B", "Plan C", "Plan D", "Plan F", "Plan I", "Plan J")),
+            tableOutput("overtime")
           )
         )
       )
@@ -106,6 +111,32 @@ server <- function(input, output) {
     req(input$student_data, file.exists(input$student_data$datapath))
     read.csv(input$student_data$datapath)
   })
+
+#plan detect
+  plan_detect <- reactive({raw() %>%
+    clean_names() %>%
+    filter(transaction_type == "Credit") %>%
+    mutate(points = as.numeric(str_replace(str_extract(amount, "^\\d?,?\\d+.\\d+"), ",", ""))) %>%
+    summarise(plan_total = sum(points)) %>%
+    pull(plan_total)
+  })
+
+  user_plan_value <- reactive({
+    user_plan <- ""
+    for(i in 1:nrow(semester)){
+      if(semester$total_value[i] == plan_detect()){
+        user_plan = semester$plan[i]
+      }
+    }
+    user_plan
+  })
+
+  output$plan_detected <- renderInfoBox(
+    infoBox(
+    "You Have Plan",
+    value = user_plan_value(),
+    icon = icon("utensils"))
+  )
 
 #wrangling of student's data upload
   food_points <- reactive({raw() %>%
@@ -153,8 +184,9 @@ server <- function(input, output) {
 
 #code for summary table
   summary_table_code <- reactive({
+    req(input$student_data)
     tibble("Plan Total" = semester %>%
-             filter(plan == str_extract(input$select_plan, "[:alpha:]$")) %>%
+             filter(plan == user_plan_value()) %>%
              pull(total_value),
            "Points Spent" = sum(food_points()$cost)) %>%
            mutate("Points Remaining" = `Plan Total` - `Points Spent`)
@@ -227,6 +259,21 @@ server <- function(input, output) {
   output$plot_top_5 <- renderPlot(
     plot_top_5()
   )
+
+  #basic time series plot
+  output$overtime <- renderTable({
+    sem_choice <- str_to_lower(input$select_sem)
+    assign("x", sem_choice)
+
+    plan_choice_tmp <- str_to_lower(input$select_plan)
+    plan_choice <- paste0("plan_", str_extract(plan_choice_tmp, "[:alpha:]$"))
+    timedf <- usage_chart %>%
+      select(x, plan_choice) %>%
+      rename("date" = x, "plan_points" = plan_choice) %>%
+      mutate(date = as.character(mdy(date)))
+
+    timedf
+  })
 
 }
 
