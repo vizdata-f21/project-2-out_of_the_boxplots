@@ -19,23 +19,23 @@ template <- read_csv(here::here("data", "input_food_points_data.csv"))
 
 ## SAMPLE PLOTS ##
 
-ggplot(data = food_points, aes(x = date, y = cost)) +
-  geom_line() +
-  geom_smooth(se = FALSE,
-              linetype = "dashed",
-              color = "red",
-              span = .25) +
-  scale_y_continuous(labels = dollar_format()) +
-  theme_minimal() +
-  labs(
-    x = "Date",
-    y = "Cost of Meal",
-    title = "Money Spent on Meals Over Time"
-  ) +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    text = element_text(family = "Times New Roman")
-  )
+# ggplot(data = food_points, aes(x = date, y = cost)) +
+#   geom_line() +
+#   geom_smooth(se = FALSE,
+#               linetype = "dashed",
+#               color = "red",
+#               span = .25) +
+#   scale_y_continuous(labels = dollar_format()) +
+#   theme_minimal() +
+#   labs(
+#     x = "Date",
+#     y = "Cost of Meal",
+#     title = "Money Spent on Meals Over Time"
+#   ) +
+#   theme(
+#     plot.title = element_text(hjust = 0.5, face = "bold"),
+#     text = element_text(family = "Times New Roman")
+#   )
 
 ## UI ##
 
