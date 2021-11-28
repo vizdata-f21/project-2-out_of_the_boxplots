@@ -71,8 +71,9 @@ ui <- dashboardPage(
         fluidRow(
           column(12, align = "center", offset = 1,
                  box(align = "center", width = 10,
-                     selectInput("top_5_input", "Select Which Measure You Want", c("Number of Swipes per Restaurant",
-                                                                                   "Total Food Points Spent per Restaurant")),
+                     selectInput("top_5_input", "Select Which Measure You Want",
+                                 c("Number of Swipes per Restaurant",
+                                   "Total Food Points Spent per Restaurant")),
                      plotOutput("plot_top_5")))
         )
       ),
@@ -81,8 +82,11 @@ ui <- dashboardPage(
         h2("Spending Over Time"),
         fluidRow(
           box(
-            selectInput("select_sem", "Select Semester:", choices = c("Fall", "Spring")),
-            selectInput("select_plan", "Select a Food Plan:", choices = c("Plan A", "Plan B", "Plan C", "Plan D", "Plan F", "Plan I", "Plan J"))
+            selectInput("select_sem", "Select Semester:",
+                        choices = c("Fall", "Spring")),
+            selectInput("select_plan", "Select a Food Plan:",
+                        choices = c("Plan A", "Plan B", "Plan C", "Plan D",
+                                    "Plan F", "Plan I", "Plan J"))
           ),
           box(
             plotOutput("overtime1"),
@@ -119,7 +123,8 @@ server <- function(input, output) {
   plan_detect <- reactive({raw() %>%
     clean_names() %>%
     filter(transaction_type == "Credit") %>%
-    mutate(points = as.numeric(str_replace(str_extract(amount, "^\\d?,?\\d+.\\d+"), ",", ""))) %>%
+    mutate(points = as.numeric(str_replace(
+      str_extract(amount, "^\\d?,?\\d+.\\d+"), ",", ""))) %>%
     summarise(plan_total = sum(points)) %>%
     pull(plan_total)
   })
@@ -282,7 +287,8 @@ server <- function(input, output) {
     for (i in 1:(nrow(timedf)-1)){
       week_sum = 0
       for(x in 1:nrow(food_points())){
-        if((food_points()$date[x] >= timedf$date[i]) & (food_points()$date[x] < timedf$date[i+1])){
+        if((food_points()$date[x] >= timedf$date[i]) &
+           (food_points()$date[x] < timedf$date[i+1])){
           week_sum = week_sum + food_points()$cost[x]
           total_sum = total_sum + food_points()$cost[x]
         }
@@ -295,14 +301,17 @@ server <- function(input, output) {
 
   output$overtime1 <- renderPlot({
     time_df() %>%
-      mutate(user_points_total = ifelse((user_points_week == 0) & (user_points_total != 0), NA, user_points_total),
+      mutate(user_points_total = ifelse((user_points_week == 0) &
+                                          (user_points_total != 0),
+                                        NA, user_points_total),
              points_remaining = plan_points[1] - user_points_total) %>%
       ggplot(aes(x = date, y = points_remaining)) +
       geom_line(aes(x = date, y = plan_points), color = "blue") +
       geom_point(color = "red") +
       geom_line(color = "red") +
       labs(title = "Plan Progression", x = "Weeks", y = "Points Remaining ($)") +
-      stat_smooth(method = "lm", fullrange=TRUE, se = FALSE, color = "lightcoral", linetype="dashed") +
+      stat_smooth(method = "lm", fullrange=TRUE, se = FALSE,
+                  color = "lightcoral", linetype="dashed") +
       scale_x_date(breaks = time_df()$date, date_labels = "%b-%d") +
       theme_minimal() +
       theme(plot.title = element_text(hjust = 0.5,size=16))
@@ -312,10 +321,18 @@ server <- function(input, output) {
     time_df() %>%
       ggplot(aes(x = date, y = user_points_week)) +
       geom_col() +
-      geom_hline(aes(yintercept = semester %>% filter(plan == str_extract(input$select_plan, "[:alpha:]$")) %>% pull(weekly_avereage)), linetype = "dashed") +
+      geom_hline(aes(yintercept = semester %>%
+                       filter(plan == str_extract(input$select_plan,
+                                                  "[:alpha:]$")) %>%
+                       pull(weekly_avereage)), linetype = "dashed") +
       geom_label(aes(x = date[2],
-                     y = semester %>% filter(plan == str_extract(input$select_plan, "[:alpha:]$")) %>% pull(weekly_avereage),
-                     label = paste("Plan", str_extract(input$select_plan, "[:alpha:]$"), "Weekly Average"))) +
+                     y = semester %>%
+                       filter(plan == str_extract(input$select_plan,
+                                                  "[:alpha:]$")) %>%
+                       pull(weekly_avereage),
+                     label = paste("Plan",
+                                   str_extract(input$select_plan, "[:alpha:]$"),
+                                   "Weekly Average"))) +
       labs(title = "Spending Per Week", x = "Weeks", y = "Points ($)") +
       scale_x_date(breaks = time_df()$date, date_labels = "%b-%d") +
       theme_minimal() +
