@@ -53,7 +53,7 @@ ui <- dashboardPage(
         "Spending Over Time", tabName = "future", icon = icon("chart-line")
       ),
       menuItem(
-        "Upload Instructions", tabName = "upload"
+        "Upload Instructions", tabName = "upload", icon = icon("copy")
       )
     )
   ),
