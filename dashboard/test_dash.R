@@ -66,7 +66,7 @@ ui <- dashboardPage(
         tabName = "upload",
         h2("How to Access and Upload Your Food Points:"),
         fluidRow(
-          img(src = "food-points-instructions.png", height = 800, width = 800,
+          img(src = "food-points-instructions.png", height = 800, width = 700,
               style="display: block; margin-left: auto; margin-right: auto;")
         )
       ),
@@ -119,12 +119,22 @@ ui <- dashboardPage(
         tabName = "restaurants",
         h2("Restaurants"),
         fluidRow(
+          column(12, align = "center",
+          dateRangeInput(
+            "daterange", "Date Range:",
+            start = "2021-08-16",
+            end = "2022-05-21",
+            min = "2021-08-16",
+            max = "2022-05-21")
+        )),
+        fluidRow(
           column(12, align = "center", offset = 1,
                  box(align = "center", width = 10,
                      selectInput("top_5_input", "Select Which Measure You Want",
                                  c("Number of Swipes per Restaurant",
                                    "Total Food Points Spent per Restaurant")),
-                     plotOutput("plot_top_5")))
+                     plotOutput("plot_top_5"))
+        )
         )
       )
     )
@@ -223,6 +233,17 @@ server <- function(input, output) {
         cost = as.numeric(str_extract_all(amount, "[0-9]*\\.[0-9]*")))
   })
 
+  # code for using logo images (NEED TO FIX)
+ files <- list.files("images/")
+ files <- files[!str_detect(files, ".md")]
+ files <- gsub("[.].*","",files)
+
+  logos <- c()
+  for (i in seq_along(files)) {
+   logos[i] <- paste0("<img src='www/", files[i], "'width = '25' /><br>*", files[i], "*")
+  }
+
+
 #code for summary table
   summary_table_code <- reactive({
     req(input$student_data)
@@ -267,12 +288,14 @@ server <- function(input, output) {
 
 #calculate total points spent at each dining location
   food_points_location_cost <- reactive({food_points() %>%
+    filter(date >= input$daterange[1] & date <= input$daterange[2]) %>%
     group_by(restaurant) %>%
     summarise(total_spent = sum(cost)) %>%
     head(5)
   })
 
   food_points_location_freq <- reactive({food_points() %>%
+    filter(date >= input$daterange[1] & date <= input$daterange[2]) %>%
     group_by(restaurant) %>%
     count() %>%
     arrange(desc(n)) %>%
@@ -287,6 +310,7 @@ server <- function(input, output) {
       geom_col() +
       theme_minimal() +
       scale_x_continuous(labels = dollar_format()) +
+      scale_y_discrete(name = NULL, labels = logos) +
       labs(
         y = NULL,
         x = "Total Amount Spent",
