@@ -47,10 +47,13 @@ ui <- dashboardPage(
   dashboardSidebar(
     sidebarMenu(
       menuItem(
-        "Overview", tabName = "overview", icon = icon("utensils")
+        "Overview", tabName = "overview", icon = icon("dashboard")
       ),
       menuItem(
         "Spending Over Time", tabName = "future", icon = icon("chart-line")
+      ),
+      menuItem(
+        "Restaurants", tabName = "restaurants", icon = icon("utensils")
       ),
       menuItem(
         "Upload Instructions", tabName = "upload", icon = icon("copy")
@@ -82,11 +85,8 @@ ui <- dashboardPage(
         fluidRow(
           column(12, align = "center", offset = 1,
                  box(align = "center", width = 10,
-                     selectInput("top_5_input", "Select Which Measure You Want",
-                                 c("Number of Swipes per Restaurant",
-                                   "Total Food Points Spent per Restaurant")),
-                     plotOutput("plot_top_5")))
-        )
+                     DT::dataTableOutput("user_points_table")))
+        ),
       ),
       tabItem(
         tabName = "future",
@@ -98,12 +98,33 @@ ui <- dashboardPage(
             selectInput("select_plan", "Select a Food Plan:",
                         choices = c("Plan A", "Plan B", "Plan C", "Plan D",
                                     "Plan F", "Plan I", "Plan J")),
-            checkboxInput("negative_values", "Allow progression to display negative food points remaining?", value = FALSE)
+            checkboxInput("negative_values", "Allow progression to display negative food points remaining?", value = FALSE),
+            height = 220
           ),
           box(
-            plotOutput("overtime1"),
+            plotOutput("overtime_key"),
+            height = 220
+          )
+        ),
+        fluidRow(
+          box(
+            plotOutput("overtime1")
+            ),
+          box(
             plotOutput("overtime2")
           )
+        ),
+      ),
+      tabItem(
+        tabName = "restaurants",
+        h2("Restaurants"),
+        fluidRow(
+          column(12, align = "center", offset = 1,
+                 box(align = "center", width = 10,
+                     selectInput("top_5_input", "Select Which Measure You Want",
+                                 c("Number of Swipes per Restaurant",
+                                   "Total Food Points Spent per Restaurant")),
+                     plotOutput("plot_top_5")))
         )
       )
     )
@@ -218,6 +239,31 @@ server <- function(input, output) {
     align = 'c',
     bordered = TRUE
   )
+
+#display user's data upload
+  output$user_points_table <- DT::renderDataTable({
+    tmp <- food_points() %>%
+      arrange(date) %>%
+      mutate(points_remaining = plan_detect())
+
+    for(i in 1:nrow(tmp)){
+      if(i == 1){
+        tmp$points_remaining[1] = tmp$points_remaining[1] - tmp$cost[1]
+      }
+      else{
+        tmp$points_remaining[i] = tmp$points_remaining[i-1] - tmp$cost[i]
+      }
+    }
+    tmp %>%
+      select(date, restaurant, cost, points_remaining) %>%
+      arrange(points_remaining) %>%
+      mutate(cost = paste0("$", format(cost, digits = 3)),
+             points_remaining = paste0("$", format(points_remaining, digits = 3))) %>%
+      rename("Date" = "date",
+             "Restaurant" = "restaurant",
+             "Cost" = "cost",
+             "Points Remaining" = "points_remaining")
+  })
 
 #calculate total points spent at each dining location
   food_points_location_cost <- reactive({food_points() %>%
