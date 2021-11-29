@@ -61,7 +61,7 @@ ui <- dashboardPage(
     tabItems(
       tabItem(
         tabName = "upload",
-        h2("Instructions"),
+        h2("How to Access and Upload Your Food Points:"),
         fluidRow(
           img(src = "food-points-instructions.png", height = 800, width = 800,
               style="display: block; margin-left: auto; margin-right: auto;")
@@ -69,7 +69,7 @@ ui <- dashboardPage(
       ),
       tabItem(
         tabName = "overview",
-        h2("How to Access and Upload Your Food Points:"),
+        h2("Overview"),
         fluidRow(
           box(downloadButton("food_template", "Download Food Point Template"),
               h4(""),
