@@ -51,14 +51,25 @@ ui <- dashboardPage(
       ),
       menuItem(
         "Spending Over Time", tabName = "future", icon = icon("chart-line")
+      ),
+      menuItem(
+        "Upload Instructions", tabName = "upload"
       )
     )
   ),
   dashboardBody(
     tabItems(
       tabItem(
+        tabName = "upload",
+        h2("Instructions"),
+        fluidRow(
+          img(src = "food-points-instructions.png", height = 800, width = 800,
+              style="display: block; margin-left: auto; margin-right: auto;")
+        )
+      ),
+      tabItem(
         tabName = "overview",
-        h2("Overview"),
+        h2("How to Access and Upload Your Food Points:"),
         fluidRow(
           box(downloadButton("food_template", "Download Food Point Template"),
               h4(""),
@@ -76,9 +87,6 @@ ui <- dashboardPage(
                                    "Total Food Points Spent per Restaurant")),
                      plotOutput("plot_top_5")))
         )
-        # fluidRow(
-        #   img(src = "food-points-instructions.png", height = 72, width = 72)
-        # )
       ),
       tabItem(
         tabName = "future",
