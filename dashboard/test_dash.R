@@ -83,8 +83,8 @@ ui <- dashboardPage(
               tableOutput("summary_table"), height = 200)
         ),
         fluidRow(
-          column(12, align = "center", offset = 1,
-                 box(align = "center", width = 10,
+          column(12, align = "center", offset = 2,
+                 box(align = "center", width = 8,
                      DT::dataTableOutput("user_points_table")))
         ),
       ),
@@ -108,10 +108,10 @@ ui <- dashboardPage(
         ),
         fluidRow(
           box(
-            plotOutput("overtime1")
+            plotOutput("overtime2")
             ),
           box(
-            plotOutput("overtime2")
+            plotOutput("overtime1")
           )
         ),
       ),
@@ -258,7 +258,7 @@ server <- function(input, output) {
       select(date, restaurant, cost, points_remaining) %>%
       arrange(points_remaining) %>%
       mutate(cost = paste0("$", format(cost, digits = 3)),
-             points_remaining = paste0("$", format(points_remaining, digits = 3))) %>%
+             points_remaining = paste0("$", format(points_remaining, digits = 5))) %>%
       rename("Date" = "date",
              "Restaurant" = "restaurant",
              "Cost" = "cost",
@@ -368,10 +368,11 @@ server <- function(input, output) {
         geom_line(aes(x = date, y = plan_points), color = "blue") +
         geom_point(color = "red") +
         geom_line(color = "red") +
-        labs(title = "Plan Progression", x = "Weeks", y = "Points Remaining ($)") +
+        labs(title = "Plan Progression", x = "Weeks", y = "Points Remaining") +
         stat_smooth(method = "lm", fullrange=TRUE, se = FALSE,
                     color = "lightcoral", linetype="dashed") +
         scale_x_date(breaks = time_df()$date, date_labels = "%b-%d") +
+        scale_y_continuous(labels = scales::dollar_format()) +
         theme_minimal() +
         theme(plot.title = element_text(hjust = 0.5,size=16))
     }
@@ -385,11 +386,11 @@ server <- function(input, output) {
       geom_line(aes(x = date, y = plan_points), color = "blue") +
       geom_point(color = "red") +
       geom_line(color = "red") +
-      labs(title = "Plan Progression", x = "Weeks", y = "Points Remaining ($)") +
+      labs(title = "Plan Progression", x = "Weeks", y = "Points Remaining") +
       stat_smooth(method = "lm", fullrange=TRUE, se = FALSE,
                   color = "lightcoral", linetype="dashed") +
       scale_x_date(breaks = time_df()$date, date_labels = "%b-%d") +
-      scale_y_continuous(limits = c(0, NA)) +
+      scale_y_continuous(limits = c(0, NA), labels = dollar_format()) +
       theme_minimal() +
       theme(plot.title = element_text(hjust = 0.5,size=16))
   }
@@ -412,10 +413,28 @@ server <- function(input, output) {
                      label = paste("Plan",
                                    str_extract(input$select_plan, "[:alpha:]$"),
                                    "Weekly Average"))) +
-      labs(title = "Spending Per Week", x = "Weeks", y = "Points ($)") +
+      labs(title = "Spending Per Week", x = "Weeks", y = "Points Spent") +
       scale_x_date(breaks = time_df()$date, date_labels = "%b-%d") +
+      scale_y_continuous(labels = scales::dollar_format()) +
       theme_minimal() +
       theme(plot.title = element_text(hjust = 0.5,size=16))
+  })
+
+  output$overtime_key <- renderPlot({
+    key <- tibble("plan_prog_x" = c(1,2,3,4,5,6,7,8),
+                  "plan_prog_y" = c(1,1,1,1,1,1,1,1),
+                  "user_x" = c(1,2,3,4,5,6,7,8),
+                  "user_y" = c(.5,.5,.5,.5,.5,.5,.5,.5),
+                  "reg_x" = c(1,2,3,4,5,6,7,8),
+                  "reg_y" = c(0,0,0,0,0,0,0,0))
+    ggplot(key) +
+      geom_line(aes(x = plan_prog_x, y = plan_prog_y), color = "blue") +
+      geom_line(aes(x = user_x, y = user_y), color = "red") +
+      geom_point(aes(x = user_x, y = user_y), color = "red") +
+      geom_line(aes(x = reg_x, y = reg_y), color = "red", linetype = "dashed") +
+      geom_text(aes(x = 2, y = 1.1), label = "Plan Progression", color = "blue", hjust = 0.5) +
+      ylim(-0.5,1.5) +
+      theme_void()
   })
 
 }
