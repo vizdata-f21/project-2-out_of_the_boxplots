@@ -76,6 +76,9 @@ ui <- dashboardPage(
                                    "Total Food Points Spent per Restaurant")),
                      plotOutput("plot_top_5")))
         )
+        # fluidRow(
+        #   img(src = "food-points-instructions.png", height = 72, width = 72)
+        # )
       ),
       tabItem(
         tabName = "future",
