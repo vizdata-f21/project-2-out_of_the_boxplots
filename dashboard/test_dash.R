@@ -97,7 +97,8 @@ ui <- dashboardPage(
                         choices = c("Fall", "Spring")),
             selectInput("select_plan", "Select a Food Plan:",
                         choices = c("Plan A", "Plan B", "Plan C", "Plan D",
-                                    "Plan F", "Plan I", "Plan J"))
+                                    "Plan F", "Plan I", "Plan J")),
+            checkboxInput("negative_values", "Allow progression to display negative food points remaining?", value = FALSE)
           ),
           box(
             plotOutput("overtime1"),
@@ -311,6 +312,24 @@ server <- function(input, output) {
   })
 
   output$overtime1 <- renderPlot({
+    if(input$negative_values == TRUE){
+      time_df() %>%
+        mutate(user_points_total = ifelse((user_points_week == 0) &
+                                            (user_points_total != 0),
+                                          NA, user_points_total),
+               points_remaining = plan_points[1] - user_points_total) %>%
+        ggplot(aes(x = date, y = points_remaining)) +
+        geom_line(aes(x = date, y = plan_points), color = "blue") +
+        geom_point(color = "red") +
+        geom_line(color = "red") +
+        labs(title = "Plan Progression", x = "Weeks", y = "Points Remaining ($)") +
+        stat_smooth(method = "lm", fullrange=TRUE, se = FALSE,
+                    color = "lightcoral", linetype="dashed") +
+        scale_x_date(breaks = time_df()$date, date_labels = "%b-%d") +
+        theme_minimal() +
+        theme(plot.title = element_text(hjust = 0.5,size=16))
+    }
+  else{
     time_df() %>%
       mutate(user_points_total = ifelse((user_points_week == 0) &
                                           (user_points_total != 0),
@@ -324,8 +343,11 @@ server <- function(input, output) {
       stat_smooth(method = "lm", fullrange=TRUE, se = FALSE,
                   color = "lightcoral", linetype="dashed") +
       scale_x_date(breaks = time_df()$date, date_labels = "%b-%d") +
+      scale_y_continuous(limits = c(0, NA)) +
       theme_minimal() +
       theme(plot.title = element_text(hjust = 0.5,size=16))
+  }
+
   })
 
   output$overtime2 <- renderPlot({
