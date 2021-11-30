@@ -129,11 +129,15 @@ ui <- dashboardPage(
               "Allow progression to display negative food points remaining?",
               value = FALSE
             ),
-            height = 220
+            height = 220, width = 4
+          ),
+          box(align = "center", h4("Selected Plan Characteristics\n \n "),
+              tableOutput("plan_select_table"),
+              height = 220, width = 4
           ),
           box(
             plotOutput("overtime_key"),
-            height = 220
+            height = 220, width = 4
           )
         ),
         fluidRow(
@@ -326,12 +330,16 @@ server <- function(input, output) {
   summary_table_code <- reactive({
     req(input$student_data)
     tibble(
-      "Plan Total" = semester %>%
+      "plan_total" = semester %>%
         filter(plan == user_plan_value()) %>%
         pull(total_value),
-      "Points Spent" = sum(food_points()$cost)
+      "points_spent" = sum(food_points()$cost)
     ) %>%
-      mutate("Points Remaining" = `Plan Total` - `Points Spent`)
+      mutate(points_remain = plan_total - points_spent,
+             "Points Remaining" = paste0("$", points_remain),
+             "Plan Total" = paste0("$", plan_total),
+             "Points Spent" = paste0("$", points_spent)) %>%
+      select(`Plan Total`, `Points Spent`, `Points Remaining`)
   })
 
   # display summary table
@@ -498,46 +506,50 @@ server <- function(input, output) {
 
   output$overtime1 <- renderPlot({
     if (input$negative_values == TRUE) {
-      time_df() %>%
+      time1 <- time_df() %>%
         mutate(
           user_points_total = ifelse((user_points_week == 0) &
                                        (user_points_total != 0),
                                      NA, user_points_total
           ),
           points_remaining = plan_points[1] - user_points_total
-        ) %>%
-        ggplot(aes(x = date, y = points_remaining)) +
+        )
+
+      ggplot(time1, aes(x = date, y = points_remaining)) +
         geom_line(aes(x = date, y = plan_points), color = "blue") +
         geom_point(color = "red") +
         geom_line(color = "red") +
         labs(title = "Plan Progression", x = "Weeks", y = "Points Remaining") +
-        stat_smooth(
+        geom_smooth(
           method = "lm", fullrange = TRUE, se = FALSE,
           color = "lightcoral", linetype = "dashed"
         ) +
-        scale_x_date(breaks = time_df()$date, date_labels = "%b-%d") +
+        scale_x_date(breaks = time_df()$date, date_labels = "%b-%d",
+                     minor_breaks = NULL) +
         scale_y_continuous(labels = scales::dollar_format()) +
         theme_minimal() +
         theme(plot.title = element_text(hjust = 0.5, size = 16))
     } else {
-      time_df() %>%
+      time2 <- time_df() %>%
         mutate(
           user_points_total = ifelse((user_points_week == 0) &
                                        (user_points_total != 0),
                                      NA, user_points_total
           ),
           points_remaining = plan_points[1] - user_points_total
-        ) %>%
-        ggplot(aes(x = date, y = points_remaining)) +
+        )
+
+      ggplot(time2, aes(x = date, y = points_remaining)) +
         geom_line(aes(x = date, y = plan_points), color = "blue") +
         geom_point(color = "red") +
         geom_line(color = "red") +
         labs(title = "Plan Progression", x = "Weeks", y = "Points Remaining") +
-        stat_smooth(
+        geom_smooth(
           method = "lm", fullrange = TRUE, se = FALSE,
           color = "lightcoral", linetype = "dashed"
         ) +
-        scale_x_date(breaks = time_df()$date, date_labels = "%b-%d") +
+        scale_x_date(breaks = time_df()$date, date_labels = "%b-%d",
+                     minor_breaks = NULL) +
         scale_y_continuous(limits = c(0, NA), labels = dollar_format()) +
         theme_minimal() +
         theme(plot.title = element_text(hjust = 0.5, size = 16))
@@ -555,7 +567,7 @@ server <- function(input, output) {
                        )) %>%
                        pull(weekly_avereage)), linetype = "dashed") +
       geom_label(aes(
-        x = date[2],
+        x = date[3],
         y = semester %>%
           filter(plan == str_extract(
             input$select_plan,
@@ -565,37 +577,73 @@ server <- function(input, output) {
         label = paste(
           "Plan",
           str_extract(input$select_plan, "[:alpha:]$"),
-          "Weekly Average"
+          "Weekly Average:",
+          paste0("$",
+                 semester %>%
+                   filter(plan == str_extract(
+                     input$select_plan,
+                     "[:alpha:]$"
+                   )) %>%
+                   pull(weekly_avereage))
         )
       )) +
       labs(title = "Spending Per Week", x = "Weeks", y = "Points Spent") +
-      scale_x_date(breaks = time_df()$date, date_labels = "%b-%d") +
+      scale_x_date(breaks = time_df()$date, date_labels = "%b-%d",
+                   minor_breaks = NULL) +
       scale_y_continuous(labels = scales::dollar_format()) +
       theme_minimal() +
       theme(plot.title = element_text(hjust = 0.5, size = 16))
   })
 
-  output$overtime_key <- renderPlot({
-    key <- tibble(
-      "plan_prog_x" = c(1, 2, 3, 4, 5, 6, 7, 8),
-      "plan_prog_y" = c(1, 1, 1, 1, 1, 1, 1, 1),
-      "user_x" = c(1, 2, 3, 4, 5, 6, 7, 8),
-      "user_y" = c(.5, .5, .5, .5, .5, .5, .5, .5),
-      "reg_x" = c(1, 2, 3, 4, 5, 6, 7, 8),
-      "reg_y" = c(0, 0, 0, 0, 0, 0, 0, 0)
-    )
-    ggplot(key) +
-      geom_line(aes(x = plan_prog_x, y = plan_prog_y), color = "blue") +
-      geom_line(aes(x = user_x, y = user_y), color = "red") +
-      geom_point(aes(x = user_x, y = user_y), color = "red") +
-      geom_line(aes(x = reg_x, y = reg_y), color = "red", linetype = "dashed") +
-      geom_text(aes(x = 2, y = 1.1),
-                label = "Plan Progression", color = "blue",
-                hjust = 0.5
-      ) +
-      ylim(-0.5, 1.5) +
-      theme_void()
+  key <- tibble("plan_prog_x" = c(1,2,3,4,5,6,7,8),
+                "plan_prog_y" = c(1,1,1,1,1,1,1,1),
+                "user_x" = c(1,2,3,4,5,6,7,8),
+                "user_y" = c(.5,.5,.5,.5,.5,.5,.5,.5),
+                "reg_x" = c(1,2,3,4,5,6,7,8),
+                "reg_y" = c(0,0,0,0,0,0,0,0))
+
+  plot_key <- ggplot(key) +
+    geom_line(aes(x = plan_prog_x, y = plan_prog_y), color = "blue") +
+    geom_line(aes(x = user_x, y = user_y), color = "red") +
+    geom_point(aes(x = user_x, y = user_y), color = "red") +
+    geom_line(aes(x = reg_x, y = reg_y), color = "red", linetype = "dashed") +
+    geom_text(aes(x = 4.5, y = 1.15),
+              label = "Plan Progression (spending from chosen food point plan)",
+              color = "blue") +
+    geom_text(aes(x = 4.54, y = .65),
+              label = "Actual Progression (spending from to uploaded data)",
+              color = "red") +
+    geom_text(aes(x = 4.55, y = .15),
+              label = "Expected Progression (spending from a linear regression of uploaded data)",
+              color = "red") +
+    ylim(-0.5,1.5) +
+    labs(title = "Plan Progression Key") +
+    theme_void() +
+    theme(plot.title = element_text(hjust = 0.5, size = 16))
+
+  output$overtime_key <- renderPlot(plot_key, height = 200)
+
+  plan_select_table_code <- reactive({
+    timedf2 <- time_df() %>%
+      mutate(
+        user_points_total = ifelse((user_points_week == 0) &
+                                     (user_points_total != 0),
+                                   NA, user_points_total
+        ),
+        points_remaining = plan_points[1] - user_points_total
+      )
+
+    tibble("Plan Total" = c(paste0("$", max(timedf2$plan_points))),
+           "Points Spent" = c(paste0("$", round(max(timedf2$user_points_total, na.rm = TRUE), 2))),
+           "Points Remaining" = c(paste0("$", round(min(timedf2$points_remaining, na.rm = TRUE), 2))))
   })
+
+  output$plan_select_table <- renderTable(
+    plan_select_table_code(),
+    align = "c",
+    bordered = TRUE
+  )
+
 }
 
 ## RUN APP ##
