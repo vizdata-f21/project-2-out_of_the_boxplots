@@ -11,7 +11,7 @@ library(janitor)
 library(tidyverse)
 library(lubridate)
 library(scales)
-library(colorspace)
+library(khroma)
 
 ## DATA ##
 semester <- read_csv(here::here("data", "semester.csv"))
@@ -82,7 +82,7 @@ ui <- dashboardPage(
           img(
             src = "food-points-instructions.png", height = 800, width = 700,
             style = "display: block; margin-left: auto; margin-right: auto;"
-          )
+          ),
         )
       ),
       tabItem(
@@ -301,7 +301,7 @@ server <- function(input, output) {
 
   logos <- c()
   for (i in seq_along(files)) {
-    logos[i] <- paste0("<img src='www/", files[i], "' width='25' /> <br>", files_name[i])
+    logos[i] <- paste0("<img src='", files[i], "' width='25' /> <br>", files_name[i])
   }
 
   #code for date ranges
@@ -414,11 +414,11 @@ server <- function(input, output) {
       scale_x_continuous(labels = dollar_format(),
                          limits = c(-100, 300)) +
       scale_y_discrete(name = NULL, labels = logos) +
-      scale_fill_discrete_qualitative(palette = "Harmonic") +
+      scale_fill_okabeito(reverse = TRUE) +
       labs(
         y = NULL,
-        x = "Total Amount Spent",
-        title = "Money Spent per Dining Location"
+        x = "Total Food Points Spent",
+        title = "Total Food Points Spent per Dining Location"
       ) +
       theme(
         plot.title = element_text(hjust = 0.5, face = "bold"),
@@ -431,16 +431,18 @@ server <- function(input, output) {
       data = food_points_location_freq(),
       aes(
         y = fct_reorder(restaurant, freq),
-        x = freq
+        x = freq,
+        fill = restaurant
       )
     ) +
-      geom_col() +
+      geom_col(show.legend = FALSE) +
       theme_minimal() +
       labs(
         y = NULL,
         x = "Total Number of Swipes",
-        title = "Number of Card Swipes per Dining Location"
+        title = "Total Number of Card Swipes per Dining Location"
       ) +
+      scale_fill_okabeito(reverse = TRUE) +
       theme(
         plot.title = element_text(hjust = 0.5, face = "bold"),
         text = element_text(family = "Times New Roman")
@@ -459,12 +461,12 @@ server <- function(input, output) {
       geom_col(show.legend = FALSE) +
       theme_minimal() +
       scale_x_continuous(labels = dollar_format(),
-                         limits = c(-100, 50)) +
+                         limits = c(-10, 40)) +
       scale_y_discrete(name = NULL, labels = logos) +
-      scale_fill_discrete_qualitative(palette = "Harmonic") +
+      scale_fill_okabeito(reverse = TRUE) +
       labs(
         y = NULL,
-        x = "Average Amount Spent",
+        x = "Average Food Points Spent per Transaction",
         title = "Average Amount Spent per Dining Location Transaction"
       ) +
       theme(
