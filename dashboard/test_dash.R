@@ -219,9 +219,10 @@ server <- function(input, output) {
   # load in student's data upload
   raw <- reactive({
     req(input$student_data, file.exists(input$student_data$datapath))
+    validate(
+      need(str_detect(file_ext(input$student_data$name), "csv"),
+           "Wrong File Format! Upload the Food Point Usage Template and Try Again."))
     read.csv(input$student_data$datapath)
-    # validate(
-    #   need(!str_detect(input$student_data, ".csv"), "Wrong File Format try again!"))
   })
 
   # plan detect
