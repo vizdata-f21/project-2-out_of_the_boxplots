@@ -14,6 +14,7 @@ library(scales)
 library(khroma)
 library(patchwork)
 library(tools)
+library(ggtext)
 
 # options(shiny.sanitize.errors = TRUE)
 
@@ -29,7 +30,7 @@ template <- read_csv(here::here("data", "input_food_points_data.csv"))
 #   geom_smooth(se = FALSE,
 #               linetype = "dashed",
 #               color = "red",
-#               span = .25) +
+#               span = .100) +
 #   scale_y_continuous(labels = dollar_format()) +
 #   theme_minimal() +
 #   labs(
@@ -315,33 +316,63 @@ server <- function(input, output) {
   }
 
   label_logos <- c(
-    bella = "Bella Union",
-    beyu = "<img src='www/beyu_blue.jpeg' width='25' /> <br>beyu_blue",
-    cafe = "<img src='www/cafe.png' width='25' /> <br>cafe",
-    farmstead = "<img src='www/farmstead.jpeg' width='25' /> <br>farmstead",
-    food_truck = "Food Truck at 300 Swift",
-    ginger_and_soy = "<img src='www/ginger-and-soy.jpeg' width='25' /> <br>ginger-and-soy",
-    gyotaku = "<img src='www/gyotaku.jpeg' width='25' /> <br>gyotaku",
-    il_forno = "<img src='www/il_forno.png' width='25' /> <br>il_forno",
-    jsb = "<img src='www/jbs.jpeg' width='25' /> <br>jbs",
-    krafthouse = "<img src='www/krafthouse.jpeg' width='25' /> <br>krafthouse",
-    lobby_shop = "The Lobby Shop",
-    macdonalds = "<img src='www/mcdonalds.png' width='25' /> <br>mcdonalds",
-    nasher_cafe = "<img src='www/nasher-cafe.jpeg' width='25' /> <br>nasher-cafe",
-    panda_express = "<img src='www/panda_express.png' width='25' /> <br>panda_express",
-    panera = "<img src='www/panera.png' width='25' /> <br>panera",
-    pitchforks = "<img src='www/pitchforks.jpeg' width='25' /> <br>pitchforks",
-    red_mango = "<img src='www/red_mango.png' width='25' /> <br>red_mango",
-    sazon = "<img src='www/sazon.png' width='25' /> <br>sazon",
-    skillet = "<img src='www/skillet.jpeg' width='25' /> <br>skillet",
-    sprout = "<img src='www/sprout.jpeg' width='25' /> <br>sprout",
-    tandoor = "<img src='www/tandoor.jpeg' width='25' /> <br>tandoor",
-    the_loop = "<img src='www/the_loop.jpeg' width='25' /> <br>the_loop",
-    thrive = "<img src='www/thrive.png' width='25' /> <br>thrive",
-    trinity_cafe = "<img src='www/trinity-cafe.jpeg' width='25' /> <br>trinity-cafe",
-    twinnies = "<img src='www/twinnies.jpeg' width='25' /> <br>twinnies",
-    vending_machine = "Vending Machine",
-    vondy = "<img src='www/vondy.jpeg' width='25' /> <br>vondy"
+    "Bella Union" = "Bella Union",
+    "Beyu Blue" = "<img src='www/beyu_blue.jpeg' width='100' />",
+    "Cafe" = "<img src='www/cafe.png' width='80' />",
+    "Farmstead" = "<img src='www/farmstead.jpeg' width='100' />",
+    "Food Truck at 300 Swift" = "Food Truck at 300 Swift",
+    "Ginger and Soy" = "<img src='www/ginger-and-soy.jpeg' width='100' />",
+    "Gyotaku" = "<img src='www/gyotaku.jpeg' width='100' />",
+    "Il Forno" = "<img src='www/il_forno.png' width='100' />",
+    "JBs Roast and Chops" = "<img src='www/jbs.jpeg' width='100' />",
+    "The Devil's Krafthouse" = "<img src='www/krafthouse.jpeg' width='100' />",
+    "The Lobby Shop" = "The Lobby Shop",
+    "McDonalds" = "<img src='www/mcdonalds.png' width='100' />",
+    "Nasher Cafe" = "<img src='www/nasher-cafe.jpeg' width='100' />",
+    "Panda Express" = "<img src='www/panda_express.png' width='100' />",
+    "Panera" = "<img src='www/panera.png' width='100' />",
+    "Pitchfork's" = "<img src='www/pitchforks.jpeg' width='90' />",
+    "Red Mango" = "<img src='www/red_mango.png' width='100' />",
+    "Sazon" = "<img src='www/sazon.png' width='100' />",
+    "The Skillet" = "<img src='www/skillet.jpeg' width='100' />t",
+    "Sprout" = "<img src='www/sprout.jpeg' width='100' />",
+    "Tandoor" = "<img src='www/tandoor.jpeg' width='100' />",
+    "The Loop" = "<img src='www/the_loop.jpeg' width='100' />",
+    "Thrive Kitchen" = "<img src='www/thrive.png' width='100' />",
+    "Trinity Cafe" = "<img src='www/trinity-cafe.jpeg' width='100' />",
+    "Twinnies" = "<img src='www/twinnies.jpeg' width='100' />",
+    "Vending Machine" = "Vending Machine",
+    "Vondy" = "Vondy"
+  )
+
+  label_logos_small <- c(
+    "Bella Union" = "Bella Union",
+    "Beyu Blue" = "<img src='www/beyu_blue.jpeg' width='40' />",
+    "Cafe" = "<img src='www/cafe.png' width='30' />",
+    "Farmstead" = "<img src='www/farmstead.jpeg' width='40' />",
+    "Food Truck at 300 Swift" = "Food Truck at 300 Swift",
+    "Ginger and Soy" = "<img src='www/ginger-and-soy.jpeg' width='40' />",
+    "Gyotaku" = "<img src='www/gyotaku.jpeg' width='40' />",
+    "Il Forno" = "<img src='www/il_forno.png' width='40' />",
+    "JBs Roast and Chops" = "<img src='www/jbs.jpeg' width='40' />",
+    "The Devil's Krafthouse" = "<img src='www/krafthouse.jpeg' width='40' />",
+    "The Lobby Shop" = "The Lobby Shop",
+    "McDonalds" = "<img src='www/mcdonalds.png' width='40' />",
+    "Nasher Cafe" = "<img src='www/nasher-cafe.jpeg' width='40' />",
+    "Panda Express" = "<img src='www/panda_express.png' width='40' />",
+    "Panera" = "<img src='www/panera.png' width='30' />",
+    "Pitchfork's" = "<img src='www/pitchforks.jpeg' width='30' />",
+    "Red Mango" = "<img src='www/red_mango.png' width='40' />",
+    "Sazon" = "<img src='www/sazon.png' width='40' />",
+    "The Skillet" = "<img src='www/skillet.jpeg' width='40' />t",
+    "Sprout" = "<img src='www/sprout.jpeg' width='40' />",
+    "Tandoor" = "<img src='www/tandoor.jpeg' width='40' />",
+    "The Loop" = "<img src='www/the_loop.jpeg' width='40' />",
+    "Thrive Kitchen" = "<img src='www/thrive.png' width='40' />",
+    "Trinity Cafe" = "<img src='www/trinity-cafe.jpeg' width='40' />",
+    "Twinnies" = "<img src='www/twinnies.jpeg' width='40' />",
+    "Vending Machine" = "Vending Machine",
+    "Vondy" = "Vondy"
   )
 
   #code for date ranges
@@ -465,6 +496,7 @@ server <- function(input, output) {
         plot.title = element_text(hjust = 0.5, face = "bold"),
         panel.grid.major.y = element_blank(),
         panel.grid.minor.y = element_blank(),
+        axis.text.y = element_markdown(),
         text = element_text(family = "Times New Roman")
       )
   })
@@ -492,6 +524,7 @@ server <- function(input, output) {
         plot.title = element_text(hjust = 0.5, face = "bold"),
         panel.grid.major.y = element_blank(),
         panel.grid.minor.y = element_blank(),
+        axis.text.y = element_markdown(),
         text = element_text(family = "Times New Roman")
       )
   })
@@ -521,6 +554,7 @@ server <- function(input, output) {
         plot.title = element_text(hjust = 0.5, face = "bold"),
         panel.grid.major.y = element_blank(),
         panel.grid.minor.y = element_blank(),
+        axis.text.y = element_markdown(),
         text = element_text(family = "Times New Roman")
       )
   })
@@ -542,12 +576,13 @@ server <- function(input, output) {
             x = "\nTotal Number of Swipes",
             title = "Total Number of Card Swipes\nper Dining Location"
           ) +
-          scale_y_discrete(name = NULL, labels = label_logos) +
+          scale_y_discrete(name = NULL, labels = label_logos_small) +
           scale_fill_okabeito(reverse = TRUE) +
           theme(
             plot.title = element_text(hjust = 0.5, face = "bold"),
             panel.grid.major.y = element_blank(),
             panel.grid.minor.y = element_blank(),
+            axis.text.y = element_markdown(),
             text = element_text(family = "Times New Roman")
           )
       }
@@ -564,7 +599,7 @@ server <- function(input, output) {
           geom_col(show.legend = FALSE) +
           theme_minimal() +
           scale_x_continuous(labels = dollar_format()) +
-          scale_y_discrete(name = NULL, labels = label_logos) +
+          scale_y_discrete(name = NULL, labels = label_logos_small) +
           scale_fill_okabeito(reverse = TRUE) +
           labs(
             y = NULL,
@@ -575,6 +610,7 @@ server <- function(input, output) {
             plot.title = element_text(hjust = 0.5, face = "bold"),
             panel.grid.major.y = element_blank(),
             panel.grid.minor.y = element_blank(),
+            axis.text.y = element_markdown(),
             text = element_text(family = "Times New Roman")
           )
       }
@@ -591,7 +627,7 @@ server <- function(input, output) {
           geom_col(show.legend = FALSE) +
           theme_minimal() +
           scale_x_continuous(labels = dollar_format()) +
-          scale_y_discrete(name = NULL, labels = label_logos) +
+          scale_y_discrete(name = NULL, labels = label_logos_small) +
           scale_fill_okabeito(reverse = TRUE) +
           labs(
             y = NULL,
@@ -602,6 +638,7 @@ server <- function(input, output) {
             plot.title = element_text(hjust = 0.5, face = "bold"),
             panel.grid.major.y = element_blank(),
             panel.grid.minor.y = element_blank(),
+            axis.text.y = element_markdown(),
             text = element_text(family = "Times New Roman")
           )
       }
