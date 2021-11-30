@@ -11,6 +11,7 @@ library(janitor)
 library(tidyverse)
 library(lubridate)
 library(scales)
+library(colorspace)
 
 ## DATA ##
 semester <- read_csv(here::here("data", "semester.csv"))
@@ -292,12 +293,23 @@ server <- function(input, output) {
   # code for using logo images (NEED TO FIX)
   files <- list.files("images/")
   files <- files[!str_detect(files, ".md")]
-  files <- gsub("[.].*", "", files)
+  files_name <- gsub("[.].*", "", files)
 
   logos <- c()
   for (i in seq_along(files)) {
-    logos[i] <- paste0("<img src='www/", files[i], "'width = '25' /><br>*", files[i], "*")
+    logos[i] <- paste0("<img src='www/", files[i], "' width='25' /> <br>", files_name[i])
   }
+
+  labels <- c(
+    Beyu = "<img src='www/beyu_blue.jpeg' width ='25' /> <br>Beyu",
+    Cafe = "<img src='www/cafe.png' width='25' /> <br>Cafe",
+    IlForno = "<img src='www/il_forno.png' width='25' /> <br>IlForno",
+    McDonalds = "<img src='www/mcdonalds.png' width='25' /> <br>McDonalds",
+    Panda = "<img src='www/panda_express.png' width='25' /> <br>Panda",
+    Panera = "<img src='www/panera.png' width='25' /> <br>Panera",
+    RedMango = "<img src='www/red_mango.png' width='25' /> <br>RedMango",
+    Loop = "<img src='www/the_loop.jpeg' width='25' /> <br>Loop"
+  )
 
   #code for date ranges
   output$daterange2 <- renderUI({
@@ -387,13 +399,16 @@ server <- function(input, output) {
       data = food_points_location_cost(),
       aes(
         y = fct_reorder(restaurant, total_spent),
-        x = total_spent
+        x = total_spent,
+        fill = restaurant
       )
     ) +
-      geom_col() +
+      geom_col(show.legend = FALSE) +
       theme_minimal() +
-      scale_x_continuous(labels = dollar_format()) +
-      scale_y_discrete(name = NULL, labels = logos) +
+      scale_x_continuous(labels = dollar_format(),
+                         limits = c(-100, 300)) +
+      scale_y_discrete(name = NULL, labels = labels) +
+      scale_fill_discrete_qualitative(palette = "Harmonic") +
       labs(
         y = NULL,
         x = "Total Amount Spent",
