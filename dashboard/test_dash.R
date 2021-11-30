@@ -338,7 +338,7 @@ server <- function(input, output) {
     "Trinity Cafe" = "<img src='www/trinity-cafe.jpeg' width='100' />",
     "Twinnies" = "<img src='www/twinnies.jpeg' width='100' />",
     "Vending Machine" = "Vending Machine",
-    "Vondy" = "Vondy"
+    "Vondy" = "<img src='www/vondy.png' width='100' />"
   )
 
   label_logos_small <- c(
@@ -368,7 +368,7 @@ server <- function(input, output) {
     "Trinity Cafe" = "<img src='www/trinity-cafe.jpeg' width='40' />",
     "Twinnies" = "<img src='www/twinnies.jpeg' width='40' />",
     "Vending Machine" = "Vending Machine",
-    "Vondy" = "Vondy"
+    "Vondy" = "<img src='www/vondy.png' width='40' />"
   )
 
   # set colors for each dining location
