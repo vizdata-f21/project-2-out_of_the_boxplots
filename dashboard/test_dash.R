@@ -65,6 +65,10 @@ ui <- dashboardPage(
       menuItem(
         "Upload Instructions",
         tabName = "upload", icon = icon("copy")
+      ),
+      menuItem(
+        "Write Up",
+        tabName = "writeup", icon = icon("pencil-alt")
       )
     )
   ),
@@ -149,6 +153,12 @@ ui <- dashboardPage(
           )
         )
       ),
+
+      tabItem(
+        tabName = "writeup",
+        h2("Project Write Up:")
+      ),
+
       tabItem(
         tabName = "restaurants",
         h2("Restaurants"),
