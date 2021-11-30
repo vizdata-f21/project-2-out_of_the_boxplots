@@ -15,6 +15,8 @@ library(khroma)
 library(patchwork)
 library(tools)
 
+# options(shiny.sanitize.errors = TRUE)
+
 ## DATA ##
 semester <- read_csv(here::here("data", "semester.csv"))
 usage_chart <- read_csv(here::here("data", "usage_chart.csv"))
