@@ -70,7 +70,7 @@ ui <- dashboardPage(
         tabName = "locations", icon = icon("map-marked")
       ),
       menuItem(
-        "Restaurants",
+        "Top 5 Restaurants",
         tabName = "restaurants", icon = icon("utensils")
       ),
       menuItem(
@@ -187,9 +187,9 @@ ui <- dashboardPage(
                    align = "center", width = 10,
                    selectInput(
                      "top_5_input",
-                     "Which Measure Would You Like Visualized?",
+                     "Which Measure(s) Would You Like Visualized?",
                      c(
-                       "All Three",
+                       "All Three: Total Swipes, Total Spent, & Avg. Spent",
                        "Total Number of Swipes per Restaurant",
                        "Total Food Points Spent per Restaurant",
                        "Average Food Points Spent per Restaurant"
@@ -399,7 +399,7 @@ server <- function(input, output) {
     "Trinity Cafe" = "#0F635F",
     "Twinnies" = "#4c2c3c",
     "Vending Machine" = "#3f4a34",
-    "Vondy" = "#371527"
+    "Vondy" = "darkslategray1"
   )
 
   #code for date ranges
@@ -688,7 +688,7 @@ server <- function(input, output) {
            "Total Number of Swipes per Restaurant" = plot_top_freq(),
            "Total Food Points Spent per Restaurant" = plot_top_costs(),
            "Average Food Points Spent per Restaurant" = plot_top_avg(),
-           "All Three" = all_three()
+           "All Three: Total Swipes, Total Spent, & Avg. Spent" = all_three()
     )
   })
 
