@@ -101,14 +101,37 @@ ui <- dashboardPage(
         tabName = "locations",
         h2("Where Food Points Are Spent"),
         fluidPage(
-          box(
-            plotOutput("top_5_locations")
+          box(plotOutput("top_5_locations"))
+        )
+      ),
+        tabName = "restaurants",
+        h2("Restaurants"),
+        fluidRow(
+          column(12,
+            align = "center",
+            uiOutput("daterange2")
+          )
+        ),
+        fluidRow(
+          column(12,
+            align = "center", offset = 1,
+            box(
+              align = "center", width = 10,
+              selectInput(
+                "top_5_input",
+                "Which Measure Would You Like Visualized?",
+                c(
+                  "Number of Swipes per Restaurant",
+                  "Total Food Points Spent per Restaurant"
+                )
+              ),
+              plotOutput("plot_top_5")
+            )
           )
         )
       )
     )
   )
-)
 
 
 ## SERVER ##
@@ -203,6 +226,28 @@ server <- function(input, output) {
   })
 
 #code for summary table
+  # code for using logo images (NEED TO FIX)
+  files <- list.files("images/")
+  files <- files[!str_detect(files, ".md")]
+  files <- gsub("[.].*", "", files)
+
+  logos <- c()
+  for (i in seq_along(files)) {
+    logos[i] <- paste0("<img src='www/", files[i], "'width = '25' /><br>*", files[i], "*")
+  }
+
+#code for date ranges
+  output$daterange2 <- renderUI({
+    dateRangeInput(
+      "daterange", "Please Select Your Desired Date Range:",
+      start = as.character(min(food_points()$date)),
+      end = as.character(max(food_points()$date)),
+      min = as.character(min(food_points()$date)),
+      max = as.character(max(food_points()$date))
+    )
+    })
+
+  # code for summary table
   summary_table_code <- reactive({
     req(input$student_data)
     tibble("Plan Total" = semester %>%
