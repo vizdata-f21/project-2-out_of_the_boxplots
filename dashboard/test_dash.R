@@ -13,6 +13,7 @@ library(lubridate)
 library(scales)
 library(khroma)
 library(patchwork)
+library(tools)
 
 ## DATA ##
 semester <- read_csv(here::here("data", "semester.csv"))
@@ -93,7 +94,8 @@ ui <- dashboardPage(
           box(downloadButton("food_template", "Download Food Point Template"),
               h4(""),
               fileInput("student_data", "Upload Your Food Point Usage\n(see upload instructions tab)"),
-              height = 200
+              height = 200,
+              accept = ".csv"
           ),
           box(
             align = "center",
@@ -218,6 +220,8 @@ server <- function(input, output) {
   raw <- reactive({
     req(input$student_data, file.exists(input$student_data$datapath))
     read.csv(input$student_data$datapath)
+    # validate(
+    #   need(!str_detect(input$student_data, ".csv"), "Wrong File Format try again!"))
   })
 
   # plan detect
@@ -508,7 +512,7 @@ server <- function(input, output) {
       labs(
         y = NULL,
         x = "\nAverage Food Points Spent per Transaction",
-        title = "Average Food Points Spent\nper Transaction at Dining Locations"
+        title = "Average Food Points Spent\nper Transaction at Dining Location"
       ) +
       theme(
         plot.title = element_text(hjust = 0.5, face = "bold"),
@@ -589,7 +593,7 @@ server <- function(input, output) {
           labs(
             y = NULL,
             x = "\nAverage Food Points Spent per Transaction",
-            title = "Average Food Points Spent\nper Transaction at Dining Locations"
+            title = "Average Food Points Spent\nper Transaction at Dining Location"
           ) +
           theme(
             plot.title = element_text(hjust = 0.5, face = "bold"),
