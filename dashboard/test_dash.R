@@ -142,13 +142,7 @@ ui <- dashboardPage(
         fluidRow(
           column(12,
             align = "center",
-            dateRangeInput(
-              "daterange", "Please Select Your Desired Date Range:",
-              start = "2021-08-16",
-              end = "2022-05-21",
-              min = as.character(min(food_points$date)),
-              max = as.character(max(food_points$date))
-            )
+            uiOutput("daterange2"),
           )
         ),
         fluidRow(
@@ -282,6 +276,16 @@ server <- function(input, output) {
     logos[i] <- paste0("<img src='www/", files[i], "'width = '25' /><br>*", files[i], "*")
   }
 
+#code for date ranges
+  output$daterange2 <- renderUI({
+    dateRangeInput(
+      "daterange", "Please Select Your Desired Date Range:",
+      start = "2021-08-16",
+      end = "2022-05-21",
+      min = as.character(min(food_points()$date)),
+      max = as.character(max(food_points()$date))
+    )
+    })
 
   # code for summary table
   summary_table_code <- reactive({
