@@ -12,6 +12,7 @@ library(tidyverse)
 library(lubridate)
 library(scales)
 library(khroma)
+library(patchwork)
 
 ## DATA ##
 semester <- read_csv(here::here("data", "semester.csv"))
@@ -52,6 +53,10 @@ ui <- dashboardPage(
         tabName = "overview", icon = icon("dashboard")
       ),
       menuItem(
+        "Upload Instructions",
+        tabName = "upload", icon = icon("copy")
+      ),
+      menuItem(
         "Spending Over Time",
         tabName = "future", icon = icon("chart-line")
       ),
@@ -62,10 +67,6 @@ ui <- dashboardPage(
       menuItem(
         "Restaurants",
         tabName = "restaurants", icon = icon("utensils")
-      ),
-      menuItem(
-        "Upload Instructions",
-        tabName = "upload", icon = icon("copy")
       ),
       menuItem(
         "Write Up",
@@ -87,11 +88,11 @@ ui <- dashboardPage(
       ),
       tabItem(
         tabName = "overview",
-        h2("Overview"),
+        h2("Food Points Overview"),
         fluidRow(
           box(downloadButton("food_template", "Download Food Point Template"),
               h4(""),
-              fileInput("student_data", "Upload Your Food Point Usage"),
+              fileInput("student_data", "Upload Your Food Point Usage\n(see upload instructions tab)"),
               height = 200
           ),
           box(
@@ -166,7 +167,7 @@ ui <- dashboardPage(
 
       tabItem(
         tabName = "restaurants",
-        h2("Restaurants"),
+        h2("Your Top 5 Restaurants"),
         fluidRow(
           column(12,
                  align = "center",
@@ -182,6 +183,7 @@ ui <- dashboardPage(
                      "top_5_input",
                      "Which Measure Would You Like Visualized?",
                      c(
+                       "All Three",
                        "Total Number of Swipes per Restaurant",
                        "Total Food Points Spent per Restaurant",
                        "Average Food Points Spent per Restaurant"
@@ -302,8 +304,38 @@ server <- function(input, output) {
 
   logos <- c()
   for (i in seq_along(files)) {
-    logos[i] <- paste0("<img src='", files[i], "' width='25' /> <br>", files_name[i])
+    logos[i] <- paste0("<img src='www/", files[i], "' width='25' /> <br>", files_name[i])
   }
+
+  label_logos <- c(
+    bella = "Bella Union",
+    beyu = "<img src='www/beyu_blue.jpeg' width='25' /> <br>beyu_blue",
+    cafe = "<img src='www/cafe.png' width='25' /> <br>cafe",
+    farmstead = "<img src='www/farmstead.jpeg' width='25' /> <br>farmstead",
+    food_truck = "Food Truck at 300 Swift",
+    ginger_and_soy = "<img src='www/ginger-and-soy.jpeg' width='25' /> <br>ginger-and-soy",
+    gyotaku = "<img src='www/gyotaku.jpeg' width='25' /> <br>gyotaku",
+    il_forno = "<img src='www/il_forno.png' width='25' /> <br>il_forno",
+    jsb = "<img src='www/jbs.jpeg' width='25' /> <br>jbs",
+    krafthouse = "<img src='www/krafthouse.jpeg' width='25' /> <br>krafthouse",
+    lobby_shop = "The Lobby Shop",
+    macdonalds = "<img src='www/mcdonalds.png' width='25' /> <br>mcdonalds",
+    nasher_cafe = "<img src='www/nasher-cafe.jpeg' width='25' /> <br>nasher-cafe",
+    panda_express = "<img src='www/panda_express.png' width='25' /> <br>panda_express",
+    panera = "<img src='www/panera.png' width='25' /> <br>panera",
+    pitchforks = "<img src='www/pitchforks.jpeg' width='25' /> <br>pitchforks",
+    red_mango = "<img src='www/red_mango.png' width='25' /> <br>red_mango",
+    sazon = "<img src='www/sazon.png' width='25' /> <br>sazon",
+    skillet = "<img src='www/skillet.jpeg' width='25' /> <br>skillet",
+    sprout = "<img src='www/sprout.jpeg' width='25' /> <br>sprout",
+    tandoor = "<img src='www/tandoor.jpeg' width='25' /> <br>tandoor",
+    the_loop = "<img src='www/the_loop.jpeg' width='25' /> <br>the_loop",
+    thrive = "<img src='www/thrive.png' width='25' /> <br>thrive",
+    trinity_cafe = "<img src='www/trinity-cafe.jpeg' width='25' /> <br>trinity-cafe",
+    twinnies = "<img src='www/twinnies.jpeg' width='25' /> <br>twinnies",
+    vending_machine = "Vending Machine",
+    vondy = "<img src='www/vondy.jpeg' width='25' /> <br>vondy"
+  )
 
   #code for date ranges
   output$daterange2 <- renderUI({
@@ -371,7 +403,7 @@ server <- function(input, output) {
         "Points Remaining" = "points_remaining"
       )
   })
-
+# BAR PLOTS
   # calculate total points spent at each dining location
   food_points_location_cost <- reactive({
     food_points() %>%
@@ -408,20 +440,19 @@ server <- function(input, output) {
         y = fct_reorder(restaurant, total_spent),
         x = total_spent,
         fill = restaurant,
-        label = paste("$", round(total_spent, 0))
+        label = paste0("$", round(total_spent, 0))
       )
     ) +
       geom_col(show.legend = FALSE) +
       geom_text(hjust = -.15, size = 3.5) +
       theme_minimal() +
-      scale_x_continuous(labels = dollar_format(),
-                         limits = c(-100, 300)) +
-      scale_y_discrete(name = NULL, labels = logos) +
+      scale_x_continuous(labels = dollar_format()) +
+      scale_y_discrete(name = NULL, labels = label_logos) +
       scale_fill_okabeito(reverse = TRUE) +
       labs(
         y = NULL,
-        x = "Total Food Points Spent",
-        title = "Total Food Points Spent per Dining Location"
+        x = "\nTotal Food Points Spent",
+        title = "Total Food Points Spent\nper Dining Location"
       ) +
       theme(
         plot.title = element_text(hjust = 0.5, face = "bold"),
@@ -441,13 +472,14 @@ server <- function(input, output) {
         label = freq)
     ) +
       geom_col(show.legend = FALSE) +
-      geom_text(hjust = -.2, size = 3.5) +
+      geom_text(hjust = -.25, size = 3.5) +
       theme_minimal() +
       labs(
         y = NULL,
-        x = "Total Number of Swipes",
-        title = "Total Number of Card Swipes per Dining Location"
+        x = "\nTotal Number of Swipes",
+        title = "Total Number of Card Swipes\nper Dining Location"
       ) +
+      scale_y_discrete(name = NULL, labels = label_logos) +
       scale_fill_okabeito(reverse = TRUE) +
       theme(
         plot.title = element_text(hjust = 0.5, face = "bold"),
@@ -464,19 +496,19 @@ server <- function(input, output) {
         y = fct_reorder(restaurant, avg),
         x = avg,
         fill = restaurant,
-        label = paste("$", round(avg, 0))
+        label = paste0("$", round(avg, 0))
       )
     ) +
       geom_col(show.legend = FALSE) +
       geom_text(hjust = -.15, size = 3.5) +
       theme_minimal() +
       scale_x_continuous(labels = dollar_format()) +
-      #scale_y_discrete(name = NULL, labels = logos) +
+      scale_y_discrete(name = NULL, labels = label_logos) +
       scale_fill_okabeito(reverse = TRUE) +
       labs(
         y = NULL,
-        x = "Average Food Points Spent per Transaction",
-        title = "Average Amount Spent per Dining Location Transaction"
+        x = "\nAverage Food Points Spent per Transaction",
+        title = "Average Food Points Spent\nper Transaction at Dining Locations"
       ) +
       theme(
         plot.title = element_text(hjust = 0.5, face = "bold"),
@@ -486,11 +518,94 @@ server <- function(input, output) {
       )
   })
 
+  all_three <- reactive(
+    (
+      {
+        ggplot(
+          data = food_points_location_freq(),
+          aes(
+            y = fct_reorder(restaurant, freq),
+            x = freq,
+            fill = restaurant)
+        ) +
+          geom_col(show.legend = FALSE) +
+          theme_minimal() +
+          labs(
+            y = NULL,
+            x = "\nTotal Number of Swipes",
+            title = "Total Number of Card Swipes\nper Dining Location"
+          ) +
+          scale_y_discrete(name = NULL, labels = label_logos) +
+          scale_fill_okabeito(reverse = TRUE) +
+          theme(
+            plot.title = element_text(hjust = 0.5, face = "bold"),
+            panel.grid.major.y = element_blank(),
+            panel.grid.minor.y = element_blank(),
+            text = element_text(family = "Times New Roman")
+          )
+      }
+      +
+      {
+        ggplot(
+          data = food_points_location_cost(),
+          aes(
+            y = fct_reorder(restaurant, total_spent),
+            x = total_spent,
+            fill = restaurant
+          )
+        ) +
+          geom_col(show.legend = FALSE) +
+          theme_minimal() +
+          scale_x_continuous(labels = dollar_format()) +
+          scale_y_discrete(name = NULL, labels = label_logos) +
+          scale_fill_okabeito(reverse = TRUE) +
+          labs(
+            y = NULL,
+            x = "\nTotal Food Points Spent",
+            title = "Total Food Points Spent\nper Dining Location"
+          ) +
+          theme(
+            plot.title = element_text(hjust = 0.5, face = "bold"),
+            panel.grid.major.y = element_blank(),
+            panel.grid.minor.y = element_blank(),
+            text = element_text(family = "Times New Roman")
+          )
+      }
+    ) /
+      {
+        ggplot(
+          data = food_points_location_avg(),
+          aes(
+            y = fct_reorder(restaurant, avg),
+            x = avg,
+            fill = restaurant
+          )
+        ) +
+          geom_col(show.legend = FALSE) +
+          theme_minimal() +
+          scale_x_continuous(labels = dollar_format()) +
+          scale_y_discrete(name = NULL, labels = label_logos) +
+          scale_fill_okabeito(reverse = TRUE) +
+          labs(
+            y = NULL,
+            x = "\nAverage Food Points Spent per Transaction",
+            title = "Average Food Points Spent\nper Transaction at Dining Locations"
+          ) +
+          theme(
+            plot.title = element_text(hjust = 0.5, face = "bold"),
+            panel.grid.major.y = element_blank(),
+            panel.grid.minor.y = element_blank(),
+            text = element_text(family = "Times New Roman")
+          )
+      }
+  )
+
   plot_top_5 <- reactive({
     switch(input$top_5_input,
            "Total Number of Swipes per Restaurant" = plot_top_freq(),
            "Total Food Points Spent per Restaurant" = plot_top_costs(),
-           "Average Food Points Spent per Restaurant" = plot_top_avg()
+           "Average Food Points Spent per Restaurant" = plot_top_avg(),
+           "All Three" = all_three()
     )
   })
 
