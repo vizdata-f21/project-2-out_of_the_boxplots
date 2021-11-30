@@ -505,7 +505,7 @@ server <- function(input, output) {
         x = fct_reorder(restaurant, desc(total_spent)),
         y = total_spent,
         fill = restaurant,
-        label = paste0("$", round(total_spent, 2))
+        label = paste0("$", format(round(total_spent, 2), nsmall = 2))
       )
     ) +
       geom_col(show.legend = FALSE) +
@@ -565,7 +565,7 @@ server <- function(input, output) {
         x = fct_reorder(restaurant, desc(avg)),
         y = avg,
         fill = restaurant,
-        label = paste0("$", round(avg, 2))
+        label = paste0("$", format(round(avg, 2), nsmall = 2))
       )
     ) +
       geom_col(show.legend = FALSE) +
@@ -627,7 +627,7 @@ server <- function(input, output) {
             x = fct_reorder(restaurant, desc(total_spent)),
             y = total_spent,
             fill = restaurant,
-            label = paste0("$", round(total_spent, 2))
+            label = paste0("$", format(round(total_spent, 2), nsmall = 2))
           )
         ) +
           geom_col(show.legend = FALSE) +
@@ -658,7 +658,7 @@ server <- function(input, output) {
             x = fct_reorder(restaurant, desc(avg)),
             y = avg,
             fill = restaurant,
-            label = paste0("$", round(avg, 2))
+            label = paste0("$", format(round(avg, 2), nsmall = 2))
           )
         ) +
           geom_col(show.legend = FALSE) +
