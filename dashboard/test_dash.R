@@ -51,6 +51,9 @@ ui <- dashboardPage(
       ),
       menuItem(
         "Spending Over Time", tabName = "future", icon = icon("chart-line")
+      ),
+      menuItem(
+        "Food Points Locations", tabName = "locations", icon = icon("map-marked")
       )
     )
   ),
@@ -91,6 +94,15 @@ ui <- dashboardPage(
           box(
             plotOutput("overtime1"),
             plotOutput("overtime2")
+          )
+        )
+      ),
+      tabItem(
+        tabName = "locations",
+        h2("Where Food Points Are Spent"),
+        fluidPage(
+          box(
+            plotOutput("top_5_locations")
           )
         )
       )
@@ -211,6 +223,7 @@ server <- function(input, output) {
   food_points_location_cost <- reactive({food_points() %>%
     group_by(restaurant) %>%
     summarise(total_spent = sum(cost)) %>%
+    arrange(desc(total_spent)) %>%
     head(5)
   })
 
@@ -299,6 +312,16 @@ server <- function(input, output) {
   timedf
   })
 
+  #location map
+  #add ability to increase number of top locations from 1-10
+  #add checkboxes for switch based on swipes/total amount spent
+  #add time scale for through the years or overall
+  #output$top_5_locations <- renderPlot(
+  #  {
+  #    food_points_location_freq %>%
+  #      ggplot(aes(x = ))
+  #  }
+  #)
   output$overtime1 <- renderPlot({
     time_df() %>%
       mutate(user_points_total = ifelse((user_points_week == 0) &
