@@ -310,16 +310,7 @@ server <- function(input, output) {
       )
   })
 
-  # code for using logo images
-  files <- list.files("dashboard/www/")
-  files <- files[!str_detect(files, ".md")]
-  files_name <- gsub("[.].*", "", files)
-
-  logos <- c()
-  for (i in seq_along(files)) {
-    logos[i] <- paste0("<img src='www/", files[i], "' width='25' /> <br>", files_name[i])
-  }
-
+  # create logo image variable for bar plot
   label_logos <- c(
     "Bella Union" = "Bella Union",
     "Beyu Blue" = "<img src='www/beyu_blue.jpeg' width='100' />",
@@ -336,7 +327,7 @@ server <- function(input, output) {
     "Nasher Cafe" = "<img src='www/nasher-cafe.jpeg' width='100' />",
     "Panda Express" = "<img src='www/panda_express.png' width='100' />",
     "Panera" = "<img src='www/panera.png' width='100' />",
-    "Pitchfork's" = "<img src='www/pitchforks.jpeg' width='90' />",
+    "Pitchfork's" = "<img src='www/pitchforks.jpeg' width='80' />",
     "Red Mango" = "<img src='www/red_mango.png' width='100' />",
     "Sazon" = "<img src='www/sazon.png' width='100' />",
     "The Skillet" = "<img src='www/skillet.jpeg' width='100' />t",
@@ -378,6 +369,37 @@ server <- function(input, output) {
     "Twinnies" = "<img src='www/twinnies.jpeg' width='40' />",
     "Vending Machine" = "Vending Machine",
     "Vondy" = "Vondy"
+  )
+
+  # set colors for each dining location
+  restaurant_colors <- c(
+    "Bella Union" = "deeppink4",
+    "Beyu Blue" = "#263770",
+    "Cafe" = "#000000",
+    "Farmstead" = "#ABE874",
+    "Food Truck at 300 Swift" = "#56645F",
+    "Ginger and Soy" = "#FFF80B",
+    "Gyotaku" = "#8b0000",
+    "Il Forno" = "#E6011D",
+    "JBs Roast and Chops" = "#A6A167",
+    "The Devil's Krafthouse" = "#081898",
+    "The Lobby Shop" = "#00539B",
+    "McDonalds" = "#FEBD07",
+    "Nasher Cafe" = "#8EC62E",
+    "Panda Express" = "#B3101B",
+    "Panera" = "#566714",
+    "Pitchfork's" = "#B0B3B4",
+    "Red Mango" = "#3D2418",
+    "Sazon" = "#D45029",
+    "The Skillet" = "#F5C808",
+    "Sprout" = "#84FF14",
+    "Tandoor" = "#FD8716",
+    "The Loop" = "#6A9A5C",
+    "Thrive Kitchen" = "#182758",
+    "Trinity Cafe" = "#0F635F",
+    "Twinnies" = "#4c2c3c",
+    "Vending Machine" = "#3f4a34",
+    "Vondy" = "#371527"
   )
 
   #code for date ranges
@@ -491,7 +513,8 @@ server <- function(input, output) {
       theme_minimal() +
       scale_x_continuous(labels = dollar_format()) +
       scale_y_discrete(name = NULL, labels = label_logos) +
-      scale_fill_okabeito(reverse = TRUE) +
+      #scale_fill_okabeito(reverse = TRUE) +
+      scale_fill_manual(values = restaurant_colors) +
       labs(
         y = NULL,
         x = "\nTotal Food Points Spent\n",
@@ -524,7 +547,8 @@ server <- function(input, output) {
         title = "\nTotal Number of Card Swipes\nper Dining Location"
       ) +
       scale_y_discrete(name = NULL, labels = label_logos) +
-      scale_fill_okabeito(reverse = TRUE) +
+      #scale_fill_okabeito(reverse = TRUE) +
+      scale_fill_manual(values = restaurant_colors) +
       theme(
         plot.title = element_text(hjust = 0.5, face = "bold"),
         panel.grid.major.y = element_blank(),
@@ -549,7 +573,8 @@ server <- function(input, output) {
       theme_minimal() +
       scale_x_continuous(labels = dollar_format()) +
       scale_y_discrete(name = NULL, labels = label_logos) +
-      scale_fill_okabeito(reverse = TRUE) +
+      #scale_fill_okabeito(reverse = TRUE) +
+      scale_fill_manual(values = restaurant_colors) +
       labs(
         y = NULL,
         x = "\nAverage Food Points Spent per Transaction\n",
@@ -582,7 +607,8 @@ server <- function(input, output) {
             title = "Total Number of Card Swipes\nper Dining Location"
           ) +
           scale_y_discrete(name = NULL, labels = label_logos_small) +
-          scale_fill_okabeito(reverse = TRUE) +
+          #scale_fill_okabeito(reverse = TRUE) +
+          scale_fill_manual(values = restaurant_colors) +
           theme(
             plot.title = element_text(hjust = 0.5, face = "bold"),
             panel.grid.major.y = element_blank(),
@@ -605,7 +631,8 @@ server <- function(input, output) {
           theme_minimal() +
           scale_x_continuous(labels = dollar_format()) +
           scale_y_discrete(name = NULL, labels = label_logos_small) +
-          scale_fill_okabeito(reverse = TRUE) +
+          #scale_fill_okabeito(reverse = TRUE) +
+          scale_fill_manual(values = restaurant_colors) +
           labs(
             y = NULL,
             x = "\nTotal Food Points Spent",
@@ -633,7 +660,8 @@ server <- function(input, output) {
           theme_minimal() +
           scale_x_continuous(labels = dollar_format()) +
           scale_y_discrete(name = NULL, labels = label_logos_small) +
-          scale_fill_okabeito(reverse = TRUE) +
+          #scale_fill_okabeito(reverse = TRUE) +
+          scale_fill_manual(values = restaurant_colors) +
           labs(
             y = NULL,
             x = "\nAverage Food Points Spent per Transaction",
