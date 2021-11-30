@@ -280,8 +280,8 @@ server <- function(input, output) {
   output$daterange2 <- renderUI({
     dateRangeInput(
       "daterange", "Please Select Your Desired Date Range:",
-      start = "2021-08-16",
-      end = "2022-05-21",
+      start = as.character(min(food_points()$date)),
+      end = as.character(max(food_points()$date)),
       min = as.character(min(food_points()$date)),
       max = as.character(max(food_points()$date))
     )
