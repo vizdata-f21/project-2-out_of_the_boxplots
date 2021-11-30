@@ -187,6 +187,7 @@ ui <- dashboardPage(
                        "Average Food Points Spent per Restaurant"
                      )
                    ),
+                   br(),
                    plotOutput("plot_top_5")
                  )
           )
@@ -406,10 +407,12 @@ server <- function(input, output) {
       aes(
         y = fct_reorder(restaurant, total_spent),
         x = total_spent,
-        fill = restaurant
+        fill = restaurant,
+        label = paste("$", round(total_spent, 2))
       )
     ) +
       geom_col(show.legend = FALSE) +
+      geom_text() +
       theme_minimal() +
       scale_x_continuous(labels = dollar_format(),
                          limits = c(-100, 300)) +
@@ -422,6 +425,8 @@ server <- function(input, output) {
       ) +
       theme(
         plot.title = element_text(hjust = 0.5, face = "bold"),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
         text = element_text(family = "Times New Roman")
       )
   })
@@ -432,10 +437,11 @@ server <- function(input, output) {
       aes(
         y = fct_reorder(restaurant, freq),
         x = freq,
-        fill = restaurant
-      )
+        fill = restaurant,
+        label = freq)
     ) +
       geom_col(show.legend = FALSE) +
+      geom_text() +
       theme_minimal() +
       labs(
         y = NULL,
@@ -445,6 +451,8 @@ server <- function(input, output) {
       scale_fill_okabeito(reverse = TRUE) +
       theme(
         plot.title = element_text(hjust = 0.5, face = "bold"),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
         text = element_text(family = "Times New Roman")
       )
   })
@@ -455,14 +463,15 @@ server <- function(input, output) {
       aes(
         y = fct_reorder(restaurant, avg),
         x = avg,
-        fill = restaurant
+        fill = restaurant,
+        label = paste("$", round(avg, 2))
       )
     ) +
       geom_col(show.legend = FALSE) +
+      geom_text(hjust = -.25, size = 3.5) +
       theme_minimal() +
-      scale_x_continuous(labels = dollar_format(),
-                         limits = c(-10, 40)) +
-      scale_y_discrete(name = NULL, labels = logos) +
+      scale_x_continuous(labels = dollar_format()) +
+      #scale_y_discrete(name = NULL, labels = logos) +
       scale_fill_okabeito(reverse = TRUE) +
       labs(
         y = NULL,
@@ -471,6 +480,8 @@ server <- function(input, output) {
       ) +
       theme(
         plot.title = element_text(hjust = 0.5, face = "bold"),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
         text = element_text(family = "Times New Roman")
       )
   })
