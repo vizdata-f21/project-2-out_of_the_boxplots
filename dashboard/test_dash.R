@@ -314,20 +314,20 @@ server <- function(input, output) {
   label_logos <- c(
     "Bella Union" = "Bella Union",
     "Beyu Blue" = "<img src='www/beyu_blue.jpeg' width='100' />",
-    "Cafe" = "<img src='www/cafe.png' width='80' />",
+    "Cafe" = "<img src='www/cafe.png' width='75' />",
     "Farmstead" = "<img src='www/farmstead.jpeg' width='100' />",
     "Food Truck at 300 Swift" = "Food Truck at 300 Swift",
-    "Ginger and Soy" = "<img src='www/ginger-and-soy.jpeg' width='100' />",
+    "Ginger and Soy" = "<img src='www/ginger-and-soy.jpeg' width='110' />",
     "Gyotaku" = "<img src='www/gyotaku.jpeg' width='100' />",
     "Il Forno" = "<img src='www/il_forno.png' width='100' />",
-    "JBs Roast and Chops" = "<img src='www/jbs.jpeg' width='100' />",
+    "JBs Roast and Chops" = "<img src='www/jbs.jpeg' width='110' />",
     "The Devil's Krafthouse" = "<img src='www/krafthouse.jpeg' width='100' />",
     "The Lobby Shop" = "The Lobby Shop",
     "McDonalds" = "<img src='www/mcdonalds.png' width='100' />",
     "Nasher Cafe" = "<img src='www/nasher-cafe.jpeg' width='100' />",
     "Panda Express" = "<img src='www/panda_express.png' width='100' />",
     "Panera" = "<img src='www/panera.png' width='100' />",
-    "Pitchfork's" = "<img src='www/pitchforks.jpeg' width='80' />",
+    "Pitchfork's" = "<img src='www/pitchforks.jpeg' width='100' />",
     "Red Mango" = "<img src='www/red_mango.png' width='100' />",
     "Sazon" = "<img src='www/sazon.png' width='100' />",
     "The Skillet" = "<img src='www/skillet.jpeg' width='100' />t",
@@ -343,32 +343,32 @@ server <- function(input, output) {
 
   label_logos_small <- c(
     "Bella Union" = "Bella Union",
-    "Beyu Blue" = "<img src='www/beyu_blue.jpeg' width='40' />",
-    "Cafe" = "<img src='www/cafe.png' width='30' />",
-    "Farmstead" = "<img src='www/farmstead.jpeg' width='40' />",
+    "Beyu Blue" = "<img src='www/beyu_blue.jpeg' width='50' />",
+    "Cafe" = "<img src='www/cafe.png' width='40' />",
+    "Farmstead" = "<img src='www/farmstead.jpeg' width='50' />",
     "Food Truck at 300 Swift" = "Food Truck at 300 Swift",
-    "Ginger and Soy" = "<img src='www/ginger-and-soy.jpeg' width='40' />",
-    "Gyotaku" = "<img src='www/gyotaku.jpeg' width='40' />",
-    "Il Forno" = "<img src='www/il_forno.png' width='40' />",
-    "JBs Roast and Chops" = "<img src='www/jbs.jpeg' width='40' />",
-    "The Devil's Krafthouse" = "<img src='www/krafthouse.jpeg' width='40' />",
+    "Ginger and Soy" = "<img src='www/ginger-and-soy.jpeg' width='50' />",
+    "Gyotaku" = "<img src='www/gyotaku.jpeg' width='50' />",
+    "Il Forno" = "<img src='www/il_forno.png' width='55' />",
+    "JBs Roast and Chops" = "<img src='www/jbs.jpeg' width='50' />",
+    "The Devil's Krafthouse" = "<img src='www/krafthouse.jpeg' width='50' />",
     "The Lobby Shop" = "The Lobby Shop",
-    "McDonalds" = "<img src='www/mcdonalds.png' width='40' />",
-    "Nasher Cafe" = "<img src='www/nasher-cafe.jpeg' width='40' />",
-    "Panda Express" = "<img src='www/panda_express.png' width='40' />",
-    "Panera" = "<img src='www/panera.png' width='30' />",
-    "Pitchfork's" = "<img src='www/pitchforks.jpeg' width='30' />",
-    "Red Mango" = "<img src='www/red_mango.png' width='40' />",
-    "Sazon" = "<img src='www/sazon.png' width='40' />",
-    "The Skillet" = "<img src='www/skillet.jpeg' width='40' />t",
-    "Sprout" = "<img src='www/sprout.jpeg' width='40' />",
-    "Tandoor" = "<img src='www/tandoor.jpeg' width='40' />",
-    "The Loop" = "<img src='www/the_loop.jpeg' width='40' />",
-    "Thrive Kitchen" = "<img src='www/thrive.png' width='40' />",
-    "Trinity Cafe" = "<img src='www/trinity-cafe.jpeg' width='40' />",
-    "Twinnies" = "<img src='www/twinnies.jpeg' width='40' />",
+    "McDonalds" = "<img src='www/mcdonalds.png' width='50' />",
+    "Nasher Cafe" = "<img src='www/nasher-cafe.jpeg' width='50' />",
+    "Panda Express" = "<img src='www/panda_express.png' width='50' />",
+    "Panera" = "<img src='www/panera.png' width='50' />",
+    "Pitchfork's" = "<img src='www/pitchforks.jpeg' width='50' />",
+    "Red Mango" = "<img src='www/red_mango.png' width='50' />",
+    "Sazon" = "<img src='www/sazon.png' width='50' />",
+    "The Skillet" = "<img src='www/skillet.jpeg' width='50' />t",
+    "Sprout" = "<img src='www/sprout.jpeg' width='50' />",
+    "Tandoor" = "<img src='www/tandoor.jpeg' width='50' />",
+    "The Loop" = "<img src='www/the_loop.jpeg' width='50' />",
+    "Thrive Kitchen" = "<img src='www/thrive.png' width='50' />",
+    "Trinity Cafe" = "<img src='www/trinity-cafe.jpeg' width='50' />",
+    "Twinnies" = "<img src='www/twinnies.jpeg' width='50' />",
     "Vending Machine" = "Vending Machine",
-    "Vondy" = "<img src='www/vondy.png' width='40' />"
+    "Vondy" = "<img src='www/vondy.png' width='50' />"
   )
 
   # set colors for each dining location
@@ -502,29 +502,29 @@ server <- function(input, output) {
     ggplot(
       data = food_points_location_cost(),
       aes(
-        y = fct_reorder(restaurant, total_spent),
-        x = total_spent,
+        x = fct_reorder(restaurant, desc(total_spent)),
+        y = total_spent,
         fill = restaurant,
-        label = paste0("$", round(total_spent, 0))
+        label = paste0("$", round(total_spent, 2))
       )
     ) +
       geom_col(show.legend = FALSE) +
-      geom_text(hjust = -.15, size = 3.5) +
+      geom_text(vjust = -1, size = 4) +
       theme_minimal() +
-      scale_x_continuous(labels = dollar_format()) +
-      scale_y_discrete(name = NULL, labels = label_logos) +
-      #scale_fill_okabeito(reverse = TRUE) +
+      scale_y_continuous(labels = dollar_format()) +
+      scale_x_discrete(name = NULL, labels = label_logos) +
       scale_fill_manual(values = restaurant_colors) +
       labs(
-        y = NULL,
-        x = "\nTotal Food Points Spent\n",
+        x = NULL,
+        y = "\nTotal Food Points Spent\n",
         title = "\nTotal Food Points Spent\nper Dining Location"
       ) +
+      coord_cartesian(clip = "off") +
       theme(
         plot.title = element_text(hjust = 0.5, face = "bold"),
-        panel.grid.major.y = element_blank(),
-        panel.grid.minor.y = element_blank(),
-        axis.text.y = element_markdown(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.text.x = element_markdown(),
         text = element_text(family = "Times New Roman")
       )
   })
@@ -533,27 +533,27 @@ server <- function(input, output) {
     ggplot(
       data = food_points_location_freq(),
       aes(
-        y = fct_reorder(restaurant, freq),
-        x = freq,
+        x = fct_reorder(restaurant, desc(freq)),
+        y = freq,
         fill = restaurant,
         label = freq)
     ) +
       geom_col(show.legend = FALSE) +
-      geom_text(hjust = -.25, size = 3.5) +
+      geom_text(vjust = -1, size = 4) +
       theme_minimal() +
       labs(
-        y = NULL,
-        x = "\nTotal Number of Swipes\n",
+        x = NULL,
+        y = "\nTotal Number of Swipes\n",
         title = "\nTotal Number of Card Swipes\nper Dining Location"
       ) +
-      scale_y_discrete(name = NULL, labels = label_logos) +
-      #scale_fill_okabeito(reverse = TRUE) +
+      scale_x_discrete(name = NULL, labels = label_logos) +
       scale_fill_manual(values = restaurant_colors) +
+      coord_cartesian(clip = "off") +
       theme(
         plot.title = element_text(hjust = 0.5, face = "bold"),
-        panel.grid.major.y = element_blank(),
-        panel.grid.minor.y = element_blank(),
-        axis.text.y = element_markdown(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.text.x = element_markdown(),
         text = element_text(family = "Times New Roman")
       )
   })
@@ -562,29 +562,29 @@ server <- function(input, output) {
     ggplot(
       data = food_points_location_avg(),
       aes(
-        y = fct_reorder(restaurant, avg),
-        x = avg,
+        x = fct_reorder(restaurant, desc(avg)),
+        y = avg,
         fill = restaurant,
-        label = paste0("$", round(avg, 0))
+        label = paste0("$", round(avg, 2))
       )
     ) +
       geom_col(show.legend = FALSE) +
-      geom_text(hjust = -.15, size = 3.5) +
+      geom_text(vjust = -1, size = 4) +
       theme_minimal() +
-      scale_x_continuous(labels = dollar_format()) +
-      scale_y_discrete(name = NULL, labels = label_logos) +
-      #scale_fill_okabeito(reverse = TRUE) +
+      scale_y_continuous(labels = dollar_format()) +
+      scale_x_discrete(name = NULL, labels = label_logos) +
       scale_fill_manual(values = restaurant_colors) +
       labs(
-        y = NULL,
-        x = "\nAverage Food Points Spent per Transaction\n",
+        x = NULL,
+        y = "\nAverage Food Points Spent\nper Transaction\n",
         title = "\nAverage Food Points Spent\nper Transaction at Dining Location"
       ) +
+      coord_cartesian(clip = "off") +
       theme(
         plot.title = element_text(hjust = 0.5, face = "bold"),
-        panel.grid.major.y = element_blank(),
-        panel.grid.minor.y = element_blank(),
-        axis.text.y = element_markdown(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.text.x = element_markdown(),
         text = element_text(family = "Times New Roman")
       )
   })
@@ -595,25 +595,27 @@ server <- function(input, output) {
         ggplot(
           data = food_points_location_freq(),
           aes(
-            y = fct_reorder(restaurant, freq),
-            x = freq,
-            fill = restaurant)
+            x = fct_reorder(restaurant, desc(freq)),
+            y = freq,
+            fill = restaurant,
+            label = freq)
         ) +
           geom_col(show.legend = FALSE) +
+          geom_text(vjust = -1, size = 3) +
           theme_minimal() +
           labs(
-            y = NULL,
-            x = "\nTotal Number of Swipes",
+            x = NULL,
+            y = "\nTotal Number of Swipes",
             title = "Total Number of Card Swipes\nper Dining Location"
           ) +
-          scale_y_discrete(name = NULL, labels = label_logos_small) +
-          #scale_fill_okabeito(reverse = TRUE) +
+          scale_x_discrete(name = NULL, labels = label_logos_small) +
           scale_fill_manual(values = restaurant_colors) +
+          coord_cartesian(clip = "off") +
           theme(
             plot.title = element_text(hjust = 0.5, face = "bold"),
-            panel.grid.major.y = element_blank(),
-            panel.grid.minor.y = element_blank(),
-            axis.text.y = element_markdown(),
+            panel.grid.major.x = element_blank(),
+            panel.grid.minor.x = element_blank(),
+            axis.text.x = element_markdown(),
             text = element_text(family = "Times New Roman")
           )
       }
@@ -622,27 +624,29 @@ server <- function(input, output) {
         ggplot(
           data = food_points_location_cost(),
           aes(
-            y = fct_reorder(restaurant, total_spent),
-            x = total_spent,
-            fill = restaurant
+            x = fct_reorder(restaurant, desc(total_spent)),
+            y = total_spent,
+            fill = restaurant,
+            label = paste0("$", round(total_spent, 2))
           )
         ) +
           geom_col(show.legend = FALSE) +
+          geom_text(vjust = -1, size = 3) +
           theme_minimal() +
-          scale_x_continuous(labels = dollar_format()) +
-          scale_y_discrete(name = NULL, labels = label_logos_small) +
-          #scale_fill_okabeito(reverse = TRUE) +
+          scale_y_continuous(labels = dollar_format()) +
+          scale_x_discrete(name = NULL, labels = label_logos_small) +
           scale_fill_manual(values = restaurant_colors) +
           labs(
-            y = NULL,
-            x = "\nTotal Food Points Spent",
+            x = NULL,
+            y = "\nTotal Food Points Spent",
             title = "Total Food Points Spent\nper Dining Location"
           ) +
+          coord_cartesian(clip = "off") +
           theme(
             plot.title = element_text(hjust = 0.5, face = "bold"),
-            panel.grid.major.y = element_blank(),
-            panel.grid.minor.y = element_blank(),
-            axis.text.y = element_markdown(),
+            panel.grid.major.x = element_blank(),
+            panel.grid.minor.x = element_blank(),
+            axis.text.x = element_markdown(),
             text = element_text(family = "Times New Roman")
           )
       }
@@ -651,27 +655,29 @@ server <- function(input, output) {
         ggplot(
           data = food_points_location_avg(),
           aes(
-            y = fct_reorder(restaurant, avg),
-            x = avg,
-            fill = restaurant
+            x = fct_reorder(restaurant, desc(avg)),
+            y = avg,
+            fill = restaurant,
+            label = paste0("$", round(avg, 2))
           )
         ) +
           geom_col(show.legend = FALSE) +
+          geom_text(vjust = -1, size = 3) +
           theme_minimal() +
-          scale_x_continuous(labels = dollar_format()) +
-          scale_y_discrete(name = NULL, labels = label_logos_small) +
-          #scale_fill_okabeito(reverse = TRUE) +
+          scale_y_continuous(labels = dollar_format()) +
+          scale_x_discrete(name = NULL, labels = label_logos_small) +
           scale_fill_manual(values = restaurant_colors) +
           labs(
-            y = NULL,
-            x = "\nAverage Food Points Spent per Transaction",
+            x = NULL,
+            y = "\nAverage Food Points Spent\nper Transaction",
             title = "Average Food Points Spent\nper Transaction at Dining Location"
           ) +
+          coord_cartesian(clip = "off") +
           theme(
             plot.title = element_text(hjust = 0.5, face = "bold"),
-            panel.grid.major.y = element_blank(),
-            panel.grid.minor.y = element_blank(),
-            axis.text.y = element_markdown(),
+            panel.grid.major.x = element_blank(),
+            panel.grid.minor.x = element_blank(),
+            axis.text.x = element_markdown(),
             text = element_text(family = "Times New Roman")
           )
       }
