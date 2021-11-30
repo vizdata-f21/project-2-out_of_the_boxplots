@@ -408,11 +408,11 @@ server <- function(input, output) {
         y = fct_reorder(restaurant, total_spent),
         x = total_spent,
         fill = restaurant,
-        label = paste("$", round(total_spent, 2))
+        label = paste("$", round(total_spent, 0))
       )
     ) +
       geom_col(show.legend = FALSE) +
-      geom_text() +
+      geom_text(hjust = -.15, size = 3.5) +
       theme_minimal() +
       scale_x_continuous(labels = dollar_format(),
                          limits = c(-100, 300)) +
@@ -441,7 +441,7 @@ server <- function(input, output) {
         label = freq)
     ) +
       geom_col(show.legend = FALSE) +
-      geom_text() +
+      geom_text(hjust = -.2, size = 3.5) +
       theme_minimal() +
       labs(
         y = NULL,
@@ -464,11 +464,11 @@ server <- function(input, output) {
         y = fct_reorder(restaurant, avg),
         x = avg,
         fill = restaurant,
-        label = paste("$", round(avg, 2))
+        label = paste("$", round(avg, 0))
       )
     ) +
       geom_col(show.legend = FALSE) +
-      geom_text(hjust = -.25, size = 3.5) +
+      geom_text(hjust = -.15, size = 3.5) +
       theme_minimal() +
       scale_x_continuous(labels = dollar_format()) +
       #scale_y_discrete(name = NULL, labels = logos) +
