@@ -182,8 +182,9 @@ ui <- dashboardPage(
                      "top_5_input",
                      "Which Measure Would You Like Visualized?",
                      c(
-                       "Number of Swipes per Restaurant",
-                       "Total Food Points Spent per Restaurant"
+                       "Total Number of Swipes per Restaurant",
+                       "Total Food Points Spent per Restaurant",
+                       "Average Food Points Spent per Restaurant"
                      )
                    ),
                    plotOutput("plot_top_5")
@@ -253,12 +254,10 @@ server <- function(input, output) {
       clean_names() %>%
       # separate date time information into two diff recoded variables
       separate(date_time, c("date", "time"), " ") %>%
-      # still nee to convert the time variable in lubridate
       mutate(date = mdy(date)) %>%
       # filter out deposit of food points
       filter(!str_detect(location, "DukeCard Offices")) %>%
       # create variable restaurant based on where food points were spent
-      # (need mcdonalds, freeman center still)
       mutate(
         restaurant = case_when(
           str_detect(location, "Bella Union") ~ "Bella Union",
@@ -270,6 +269,7 @@ server <- function(input, output) {
           str_detect(location, "Gyotaku") ~ "Gyotaku",
           str_detect(location, "Il Forno") ~ "Il Forno",
           str_detect(location, "JBS") ~ "JBs Roast and Chops",
+          str_detect(location, "McDonalds MCDReg2") ~ "McDonalds",
           str_detect(location, "Nasher Cafe") ~ "Nasher Cafe",
           str_detect(location, "Panda Express") ~ "Panda Express",
           str_detect(location, "Panera") ~ "Panera",
@@ -295,7 +295,7 @@ server <- function(input, output) {
   })
 
   # code for using logo images (NEED TO FIX)
-  files <- list.files("images/")
+  files <- list.files("dashboard/www/")
   files <- files[!str_detect(files, ".md")]
   files_name <- gsub("[.].*", "", files)
 
@@ -303,17 +303,6 @@ server <- function(input, output) {
   for (i in seq_along(files)) {
     logos[i] <- paste0("<img src='www/", files[i], "' width='25' /> <br>", files_name[i])
   }
-
-  labels <- c(
-    Beyu = "<img src='www/beyu_blue.jpeg' width ='25' /> <br>Beyu",
-    Cafe = "<img src='www/cafe.png' width='25' /> <br>Cafe",
-    IlForno = "<img src='www/il_forno.png' width='25' /> <br>IlForno",
-    McDonalds = "<img src='www/mcdonalds.png' width='25' /> <br>McDonalds",
-    Panda = "<img src='www/panda_express.png' width='25' /> <br>Panda",
-    Panera = "<img src='www/panera.png' width='25' /> <br>Panera",
-    RedMango = "<img src='www/red_mango.png' width='25' /> <br>RedMango",
-    Loop = "<img src='www/the_loop.jpeg' width='25' /> <br>Loop"
-  )
 
   #code for date ranges
   output$daterange2 <- renderUI({
@@ -402,6 +391,15 @@ server <- function(input, output) {
       rename(freq = n)
   })
 
+  food_points_location_avg <- reactive({
+    food_points() %>%
+      filter(date >= input$daterange[1] & date <= input$daterange[2]) %>%
+      group_by(restaurant) %>%
+      summarise_at(vars(cost), list(name = mean)) %>%
+      head(5) %>%
+      rename(avg = name)
+  })
+
   plot_top_costs <- reactive({
     ggplot(
       data = food_points_location_cost(),
@@ -415,7 +413,7 @@ server <- function(input, output) {
       theme_minimal() +
       scale_x_continuous(labels = dollar_format(),
                          limits = c(-100, 300)) +
-      scale_y_discrete(name = NULL, labels = labels) +
+      scale_y_discrete(name = NULL, labels = logos) +
       scale_fill_discrete_qualitative(palette = "Harmonic") +
       labs(
         y = NULL,
@@ -449,10 +447,37 @@ server <- function(input, output) {
       )
   })
 
+  plot_top_avg <- reactive({
+    ggplot(
+      data = food_points_location_avg(),
+      aes(
+        y = fct_reorder(restaurant, avg),
+        x = avg,
+        fill = restaurant
+      )
+    ) +
+      geom_col(show.legend = FALSE) +
+      theme_minimal() +
+      scale_x_continuous(labels = dollar_format(),
+                         limits = c(-100, 50)) +
+      scale_y_discrete(name = NULL, labels = logos) +
+      scale_fill_discrete_qualitative(palette = "Harmonic") +
+      labs(
+        y = NULL,
+        x = "Average Amount Spent",
+        title = "Average Amount Spent per Dining Location Transaction"
+      ) +
+      theme(
+        plot.title = element_text(hjust = 0.5, face = "bold"),
+        text = element_text(family = "Times New Roman")
+      )
+  })
+
   plot_top_5 <- reactive({
     switch(input$top_5_input,
-           "Number of Swipes per Restaurant" = plot_top_freq(),
-           "Total Food Points Spent per Restaurant" = plot_top_costs()
+           "Total Number of Swipes per Restaurant" = plot_top_freq(),
+           "Total Food Points Spent per Restaurant" = plot_top_costs(),
+           "Average Food Points Spent per Restaurant" = plot_top_avg()
     )
   })
 
