@@ -16,7 +16,8 @@ library(patchwork)
 library(tools)
 library(ggtext)
 
-# options(shiny.sanitize.errors = TRUE)
+# SET TO TRUE AT THE END TO GET RID OF ALL POSSIBLE ERRORS
+#options(shiny.sanitize.errors = FALSE)
 
 ## DATA ##
 semester <- read_csv(here::here("data", "semester.csv"))
@@ -193,11 +194,15 @@ ui <- dashboardPage(
                        "Total Food Points Spent per Restaurant",
                        "Average Food Points Spent per Restaurant"
                      )
-                   ),
-                   br(),
-                   plotOutput("plot_top_5")
+                     )
+                   )
                  )
-          )
+        ),
+          fluidRow(
+            column(12,
+                   align = "center",
+                   wellPanel(plotOutput("plot_top_5")))
+
         )
       )
     )
@@ -305,7 +310,7 @@ server <- function(input, output) {
       )
   })
 
-  # code for using logo images (NEED TO FIX)
+  # code for using logo images
   files <- list.files("dashboard/www/")
   files <- files[!str_detect(files, ".md")]
   files_name <- gsub("[.].*", "", files)
@@ -489,8 +494,8 @@ server <- function(input, output) {
       scale_fill_okabeito(reverse = TRUE) +
       labs(
         y = NULL,
-        x = "\nTotal Food Points Spent",
-        title = "Total Food Points Spent\nper Dining Location"
+        x = "\nTotal Food Points Spent\n",
+        title = "\nTotal Food Points Spent\nper Dining Location"
       ) +
       theme(
         plot.title = element_text(hjust = 0.5, face = "bold"),
@@ -515,8 +520,8 @@ server <- function(input, output) {
       theme_minimal() +
       labs(
         y = NULL,
-        x = "\nTotal Number of Swipes",
-        title = "Total Number of Card Swipes\nper Dining Location"
+        x = "\nTotal Number of Swipes\n",
+        title = "\nTotal Number of Card Swipes\nper Dining Location"
       ) +
       scale_y_discrete(name = NULL, labels = label_logos) +
       scale_fill_okabeito(reverse = TRUE) +
@@ -547,8 +552,8 @@ server <- function(input, output) {
       scale_fill_okabeito(reverse = TRUE) +
       labs(
         y = NULL,
-        x = "\nAverage Food Points Spent per Transaction",
-        title = "Average Food Points Spent\nper Transaction at Dining Location"
+        x = "\nAverage Food Points Spent per Transaction\n",
+        title = "\nAverage Food Points Spent\nper Transaction at Dining Location"
       ) +
       theme(
         plot.title = element_text(hjust = 0.5, face = "bold"),
@@ -653,9 +658,11 @@ server <- function(input, output) {
     )
   })
 
-  output$plot_top_5 <- renderPlot(
+  output$plot_top_5 <- renderPlot({
+    req(food_points())
+    req(input$daterange)
     plot_top_5()
-  )
+  })
 
   # time series plots
   time_df <- reactive({
