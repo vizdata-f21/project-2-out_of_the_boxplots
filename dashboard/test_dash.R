@@ -305,7 +305,7 @@ server <- function(input, output) {
           str_detect(location, "Beyu Blue") ~ "Beyu Blue",
           str_detect(location, "The Cafe") ~ "Cafe",
           str_detect(location, "Farmstead") ~ "Farmstead",
-          str_detect(location, "Gussys|Poblanos") ~ "Food Truck at 300 Swift",
+          str_detect(location, "Gussys|Poblanos") ~ "Food Trucks at 300 Swift",
           str_detect(location, "Ginger and Soy") ~ "Ginger and Soy",
           str_detect(location, "Gyotaku") ~ "Gyotaku",
           str_detect(location, "Il Forno") ~ "Il Forno",
@@ -336,7 +336,7 @@ server <- function(input, output) {
           restaurant == "Beyu Blue" ~ "Bryan Center",
           restaurant == "Cafe" ~ "West Union",
           restaurant == "Farmstead" ~ "West Union",
-          restaurant == "Food Truck at 300 Swift" ~ "300 Swift",
+          restaurant == "Food Trucks at 300 Swift" ~ "300 Swift",
           restaurant == "Ginger and Soy" ~ "West Union",
           restaurant == "Gyotaku" ~ "West Union",
           restaurant == "Il Forno" ~ "West Union",
@@ -357,10 +357,10 @@ server <- function(input, output) {
           restaurant == "Thrive Kitchen" ~ "300 Swift",
           restaurant == "Trinity Cafe" ~ "East Campus",
           restaurant == "Twinnies" ~ "E-Quad",
-          restaurant == "Vending Machine" ~ "Duke's Campus",
+          restaurant == "Vending Machine" ~ "Around Duke's Campus",
           restaurant == "Vondy" ~ "Perkins",
-          restaurant == "Other" ~ "Duke's Campus",
-          TRUE ~ "Duke's Campus"
+          restaurant == "Other" ~ "Around Duke's Campus",
+          TRUE ~ "Around Duke's Campus"
         ),
         # mutate cost variable to make it numeric
         cost = as.numeric(str_extract_all(amount, "[0-9]*\\.[0-9]*")),
@@ -371,17 +371,17 @@ server <- function(input, output) {
 
   # create logo image variable for bar plot
   label_logos <- c(
-    "Bella Union" = "Bella Union",
+    "Bella Union" = "<img src='www/bella-union.png' width='110' />",
     "Beyu Blue" = "<img src='www/beyu_blue.jpeg' width='100' />",
     "Cafe" = "<img src='www/cafe.png' width='75' />",
-    "Farmstead" = "<img src='www/farmstead.jpeg' width='100' />",
-    "Food Truck at 300 Swift" = "Food Truck at 300 Swift",
+    "Farmstead" = "<img src='www/farmstead.jpeg' width='110' />",
+    "Food Trucks at 300 Swift" = "<img src='www/food-trucks-300-swift.png' width='110' />",
     "Ginger and Soy" = "<img src='www/ginger-and-soy.jpeg' width='110' />",
     "Gyotaku" = "<img src='www/gyotaku.jpeg' width='100' />",
     "Il Forno" = "<img src='www/il_forno.png' width='100' />",
     "JBs Roast and Chops" = "<img src='www/jbs.jpeg' width='110' />",
     "The Devil's Krafthouse" = "<img src='www/krafthouse.jpeg' width='100' />",
-    "The Lobby Shop" = "The Lobby Shop",
+    "The Lobby Shop" = "<img src='www/lobby-shop.png' width='110' />",
     "McDonalds" = "<img src='www/mcdonalds.png' width='100' />",
     "Nasher Cafe" = "<img src='www/nasher-cafe.jpeg' width='100' />",
     "Panda Express" = "<img src='www/panda_express.png' width='100' />",
@@ -396,22 +396,23 @@ server <- function(input, output) {
     "Thrive Kitchen" = "<img src='www/thrive.png' width='100' />",
     "Trinity Cafe" = "<img src='www/trinity-cafe.jpeg' width='100' />",
     "Twinnies" = "<img src='www/twinnies.jpeg' width='100' />",
-    "Vending Machine" = "Vending Machine",
-    "Vondy" = "<img src='www/vondy.png' width='100' />"
+    "Vending Machine" = "<img src='www/vending.png' width='110' />",
+    "Vondy" = "<img src='www/vondy.png' width='100' />",
+    "Other" = "<img src='www/other.png' width='110' />"
   )
 
   label_logos_small <- c(
-    "Bella Union" = "Bella Union",
+    "Bella Union" = "<img src='www/bella-union.png' width='60' />",
     "Beyu Blue" = "<img src='www/beyu_blue.jpeg' width='50' />",
     "Cafe" = "<img src='www/cafe.png' width='40' />",
     "Farmstead" = "<img src='www/farmstead.jpeg' width='50' />",
-    "Food Truck at 300 Swift" = "Food Truck at 300 Swift",
+    "Food Trucks at 300 Swift" = "<img src='www/food-trucks-300-swift.png' width='60' />",
     "Ginger and Soy" = "<img src='www/ginger-and-soy.jpeg' width='50' />",
     "Gyotaku" = "<img src='www/gyotaku.jpeg' width='50' />",
     "Il Forno" = "<img src='www/il_forno.png' width='55' />",
     "JBs Roast and Chops" = "<img src='www/jbs.jpeg' width='50' />",
     "The Devil's Krafthouse" = "<img src='www/krafthouse.jpeg' width='50' />",
-    "The Lobby Shop" = "The Lobby Shop",
+    "The Lobby Shop" = "<img src='www/lobby-shop.png' width='60' />",
     "McDonalds" = "<img src='www/mcdonalds.png' width='50' />",
     "Nasher Cafe" = "<img src='www/nasher-cafe.jpeg' width='50' />",
     "Panda Express" = "<img src='www/panda_express.png' width='50' />",
@@ -426,8 +427,9 @@ server <- function(input, output) {
     "Thrive Kitchen" = "<img src='www/thrive.png' width='50' />",
     "Trinity Cafe" = "<img src='www/trinity-cafe.jpeg' width='50' />",
     "Twinnies" = "<img src='www/twinnies.jpeg' width='50' />",
-    "Vending Machine" = "Vending Machine",
-    "Vondy" = "<img src='www/vondy.png' width='50' />"
+    "Vending Machine" = "<img src='www/vending.png' width='50' />",
+    "Vondy" = "<img src='www/vondy.png' width='60' />",
+    "Other" = "<img src='www/other.png' width='60' />"
   )
 
   # set colors for each dining location
@@ -436,7 +438,7 @@ server <- function(input, output) {
     "Beyu Blue" = "#263770",
     "Cafe" = "#000000",
     "Farmstead" = "#ABE874",
-    "Food Truck at 300 Swift" = "#56645F",
+    "Food Trucks at 300 Swift" = "#56645F",
     "Ginger and Soy" = "#FFF80B",
     "Gyotaku" = "#8b0000",
     "Il Forno" = "#E6011D",
@@ -458,7 +460,8 @@ server <- function(input, output) {
     "Trinity Cafe" = "#0F635F",
     "Twinnies" = "#4c2c3c",
     "Vending Machine" = "#3f4a34",
-    "Vondy" = "darkslategray1"
+    "Vondy" = "darkslategray1",
+    "Other" = "gray"
   )
 
   #code for date ranges
