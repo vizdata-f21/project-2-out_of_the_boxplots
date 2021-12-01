@@ -221,6 +221,13 @@ ui <- dashboardPage(
                    DT::dataTableOutput("food_points_all_info_table")
                  )
           )
+
+        ),
+        fluidRow(
+          column(12,
+                 align = "center",
+                 wellPanel(plotOutput("plot_top_freq_overall_location")))
+
         )
       )
     )
@@ -324,36 +331,37 @@ server <- function(input, output) {
           TRUE ~ "Other"
         ),
         # set overall location
-        # location = case_when(
-        #   restaurant == "Bella Union" ~ "McClendon Tower",
-        #   restaurant == "Beyu Blue" ~ "Bryan Center"
-        #   restaurant == "Cafe" ~ "West Union",
-        #   restaurant == "Farmstead" ~ "West Union",
-        #   str_detect(location, "Gussys|Poblanos") ~ "Food Truck at 300 Swift",
-        #   str_detect(location, "Ginger and Soy") ~ "Ginger and Soy",
-        #   str_detect(location, "Gyotaku") ~ "Gyotaku",
-        #   str_detect(location, "Il Forno") ~ "Il Forno",
-        #   str_detect(location, "JBS") ~ "JBs Roast and Chops",
-        #   str_detect(location, "McDonalds MCDReg2") ~ "McDonalds",
-        #   str_detect(location, "Nasher Cafe") ~ "Nasher Cafe",
-        #   str_detect(location, "Panda Express") ~ "Panda Express",
-        #   str_detect(location, "Panera") ~ "Panera",
-        #   str_detect(location, "Pitchfork") ~ "Pitchfork's",
-        #   str_detect(location, "Red Mango") ~ "Red Mango",
-        #   str_detect(location, "Sazon") ~ "Sazon",
-        #   str_detect(location, "Sprout") ~ "Sprout",
-        #   str_detect(location, "Tandor") ~ "Tandoor",
-        #   str_detect(location, "Devils Krafthouse") ~ "The Devil's Krafthouse",
-        #   str_detect(location, "Lobby Shop") ~ "The Lobby Shop",
-        #   str_detect(location, "Loop") ~ "The Loop",
-        #   str_detect(location, "Skillet") ~ "The Skillet",
-        #   str_detect(location, "300 Swift") ~ "Thrive Kitchen",
-        #   str_detect(location, "Trinity Cafe") ~ "Trinity Cafe",
-        #   str_detect(location, "Twinnies") ~ "Twinnies",
-        #   str_detect(location, "Vending") ~ "Vending Machine",
-        #   str_detect(location, "Perk") ~ "Vondy",
-        #   TRUE ~ "Other"
-        # )
+        campus_location = case_when(
+          restaurant == "Bella Union" ~ "McClendon Tower",
+          restaurant == "Beyu Blue" ~ "Bryan Center",
+          restaurant == "Cafe" ~ "West Union",
+          restaurant == "Farmstead" ~ "West Union",
+          restaurant == "Food Truck at 300 Swift" ~ "300 Swift",
+          restaurant == "Ginger and Soy" ~ "West Union",
+          restaurant == "Gyotaku" ~ "West Union",
+          restaurant == "Il Forno" ~ "West Union",
+          restaurant == "JBs Roast and Chops" ~ 'West Union',
+          restaurant == "McDonalds" ~ "Bryan Center",
+          restaurant == "Nasher Cafe" ~ "The Nasher",
+          restaurant == "Panda Express" ~ "Bryan Center",
+          restaurant == "Panera" ~ "West Union",
+          restaurant == "Pitchfork's" ~ "McClendon Tower",
+          restaurant == "Red Mango" ~ "Wilson Gym",
+          restaurant == "Sazon" ~ "West Union",
+          restaurant == "Sprout" ~ "West Union",
+          restaurant == "Tandoor" ~ "West Union",
+          restaurant == "The Devil's Krafthouse" ~ "West Union",
+          restaurant == "The Lobby Shop" ~ "Bryan Center",
+          restaurant == "The Loop" ~ "Bryan Center",
+          restaurant == "The Skillet" ~ "West Union",
+          restaurant == "Thrive Kitchen" ~ "300 Swift",
+          restaurant == "Trinity Cafe" ~ "East Campus",
+          restaurant == "Twinnies" ~ "E-Quad",
+          restaurant == "Vending Machine" ~ "Duke's Campus",
+          restaurant == "Vondy" ~ "Perkins",
+          restaurant == "Other" ~ "Duke's Campus",
+          TRUE ~ "Duke's Campus"
+        ),
         # mutate cost variable to make it numeric
         cost = as.numeric(str_extract_all(amount, "[0-9]*\\.[0-9]*")),
         x_coord = dim(campus_map)[2] / 2,
@@ -580,7 +588,7 @@ server <- function(input, output) {
            "Average Cost" = "avg_cost")
   })
 
-  # DATA TABLE
+  # BAR PLOT DATA TABLE
   output$food_points_all_info_table <- DT::renderDataTable({
     req(input$daterange)
     food_points_all_info()
@@ -624,6 +632,7 @@ server <- function(input, output) {
       labs(title = "Top 5 Most Frequented Locations on Camous")
   })
 
+  # BAR PLOT GGPLOT CODE
   plot_top_costs <- reactive({
     ggplot(
       data = food_points_location_cost(),
@@ -832,6 +841,48 @@ server <- function(input, output) {
     req(input$daterange)
     plot_top_5()
   })
+
+  # OVERALL LOCATION PLOTS DATA WRANGLING
+
+  food_points_overall_location_freq <- reactive({
+    food_points() %>%
+      filter(date >= input$daterange[1] & date <= input$daterange[2]) %>%
+      group_by(campus_location) %>%
+      count() %>%
+      arrange(desc(n)) %>%
+      rename(freq = n) %>%
+      mutate(prop = freq / nrow(food_points),
+             bar = 1) %>%
+      head(5) })
+
+  # OVERALL LOCATION PLOTS GGPLOT
+
+  plot_top_freq_overall_location <- reactive({
+  ggplot(
+    data = food_points_overall_location_freq(),
+    aes(
+      x = bar,
+      y = prop,
+      fill = fct_reorder(campus_location, prop))
+  ) +
+    geom_bar(position = "fill", stat = "identity") +
+    coord_flip() +
+    #scale_y_continuous(labels = percent_format()) +
+    theme_minimal() +
+    labs(
+      x = NULL,
+      y = "\n Percent of Total Number of Swipes",
+      fill = "Dining Location",
+      title = "Percent of Total Number of Card Swipes\nper Dining Location"
+    ) +
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold"),
+      panel.grid.major.y = element_blank(),
+      panel.grid.minor.y = element_blank(),
+      axis.text.y = element_markdown(),
+      text = element_text(family = "Times New Roman")
+    )})
+
 
   # time series plots
   time_df <- reactive({
