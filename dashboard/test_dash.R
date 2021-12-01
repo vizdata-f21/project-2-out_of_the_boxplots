@@ -25,6 +25,7 @@ library(ggpubr)
 semester <- read_csv(here::here("data", "semester.csv"))
 usage_chart <- read_csv(here::here("data", "usage_chart.csv"))
 template <- read_csv(here::here("data", "input_food_points_data.csv"))
+campus_map <- readPNG("../images/duke_campus_map.png")
 
 ## SAMPLE PLOTS ##
 
@@ -170,10 +171,10 @@ ui <- dashboardPage(
           box(tableOutput("values"))
         ),
         fluidPage(
-          box(plotOutput("top_5_locations"))
-        )
-      ),
-
+          textOutput("VISIBLE WORDS SHOWN"),
+          plotOutput("top_5_locations")
+          )
+        ),
       tabItem(
         tabName = "writeup",
         h2("Project Write Up:")
@@ -314,7 +315,9 @@ server <- function(input, output) {
           TRUE ~ "Other"
         ),
         # mutate cost variable to make it numeric
-        cost = as.numeric(str_extract_all(amount, "[0-9]*\\.[0-9]*"))
+        cost = as.numeric(str_extract_all(amount, "[0-9]*\\.[0-9]*")),
+        x_coord = dim(campus_map)[2] / 2,
+        y_coord = dim(campus_map)[1] / 2
       )
   })
 
@@ -426,7 +429,7 @@ server <- function(input, output) {
   output$location_date_range <- renderUI({
       req(input$student_data)
       req(food_points())
-      sliderInput("Dates Slider",
+      sliderInput("dates_slider",
                   "Select Range of Dates",
                   min = as.Date("2016-09-01","%Y-%m-%d"),
                   max = as.Date(Sys.Date(),"%Y-%m-%d"),
@@ -437,21 +440,6 @@ server <- function(input, output) {
                   #max = as.Date("2016-12-01","%Y-%m-%d"),
                   #value = as.Date("2016-12-01"),
                   #timeFormat="%Y-%m-%d")
-  })
-
-  # Reactive expression to create map plot of all input values ----
-  sliderValues <- reactive({
-    campus_map <- readPNG("../images/duke_campus_map.png")
-    data.frame(
-      Name = "Dates Slider",
-      Value = as.character(dim(campus_map)),
-      stringsAsFactors = FALSE)
-
-  })
-
-  # Show the values in an HTML table ----
-  output$values <- renderTable({
-    sliderValues()
   })
 
   # code for summary table
@@ -540,7 +528,41 @@ server <- function(input, output) {
   })
 
   #MAP Plot
+  #calculate most frequent locations visited within slider
+  top_5_location_spend <- reactive({
+    food_points() %>%
+      filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
+      group_by(restaurant) %>%
+      summarise(total_spent = sum(cost)) %>%
+      arrange(desc(total_spent)) %>%
+      head(5)
+  })
 
+  top_5_location_freq <- reactive({
+    food_points() %>%
+      filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
+      group_by(restaurant, x_coord, y_coord) %>%
+      count() %>%
+      arrange(desc(n)) %>%
+      head(5) %>%
+      rename(freq = n)
+  })
+
+  top_5_location_avg <- reactive({
+    food_points() %>%
+      filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
+      group_by(restaurant) %>%
+      summarise_at(vars(cost), list(name = mean)) %>%
+      head(5) %>%
+      rename(avg = name)
+  })
+  top_5_locations <- reactive({
+    ggplot(data = food_points(), aes(x = x_coord, y = y_coord,
+                                             color = restaurant, size = 5)) +
+      geom_point() +
+      background_image(campus_map) +
+      labs(title = "Top 5 Most Frequented Locations on Camous")
+  })
 
   plot_top_costs <- reactive({
     ggplot(
@@ -734,6 +756,13 @@ server <- function(input, output) {
            "Average Food Points Spent per Restaurant" = plot_top_avg(),
            "All Three: Total Swipes, Total Spent, & Avg. Spent" = all_three()
     )
+  })
+
+  output$top_5_locations <- renderPlot({
+    req(food_points_location_freq())
+    req(food_points())
+    req(input$daterange)
+    top_5_locations()
   })
 
   output$plot_top_5 <- renderPlot({
