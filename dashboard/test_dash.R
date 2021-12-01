@@ -212,6 +212,15 @@ ui <- dashboardPage(
                    align = "center",
                    wellPanel(plotOutput("plot_top_5")))
 
+        ),
+        fluidRow(
+          column(12,
+                 align = "center", offset = 2,
+                 box(
+                   align = "center", width = 8,
+                   DT::dataTableOutput("food_points_all_info_table")
+                 )
+          )
         )
       )
     )
@@ -527,6 +536,17 @@ server <- function(input, output) {
       rename(avg = name)
   })
 
+  food_points_all_info <- reactive({food_points %>%
+    filter(date >= input$daterange[1] & date <= input$daterange[2]) %>%
+    group_by(restaurant) %>%
+    summarize(freq = n(), total_cost = sum(cost), avg_cost = total_cost/freq)
+  })
+
+  # DATA TABLE
+  output$food_points_all_info_table <- DT::renderDataTable({
+    food_points_all_info()
+  })
+
   #MAP Plot
   #calculate most frequent locations visited within slider
   top_5_location_spend <- reactive({
@@ -555,6 +575,7 @@ server <- function(input, output) {
       summarise_at(vars(cost), list(name = mean)) %>%
       head(5) %>%
       rename(avg = name)
+
   })
   top_5_locations <- reactive({
     ggplot(data = food_points(), aes(x = x_coord, y = y_coord,
