@@ -642,6 +642,7 @@ server <- function(input, output) {
         title = "\nTotal Number of Card Swipes\nper Dining Location"
       ) +
       scale_x_discrete(name = NULL, labels = label_logos) +
+      scale_y_continuous(labels = label_number(accuracy = 1)) +
       scale_fill_manual(values = restaurant_colors) +
       coord_cartesian(clip = "off") +
       theme(
@@ -704,6 +705,7 @@ server <- function(input, output) {
             title = "Total Number of Card Swipes\nper Dining Location"
           ) +
           scale_x_discrete(name = NULL, labels = label_logos_small) +
+          scale_y_continuous(labels = label_number(accuracy = 1)) +
           scale_fill_manual(values = restaurant_colors) +
           coord_cartesian(clip = "off") +
           theme(
