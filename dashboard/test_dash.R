@@ -483,11 +483,6 @@ server <- function(input, output) {
                 max = max(food_points()$date),
                 value = c(min(food_points()$date), max(food_points()$date)),
                 timeFormat="%m-%d-%Y")
-    #SET MIN + MAX TO BE FROM DATA
-    #min = min(food_points()$date),
-    #max = as.Date("2016-12-01","%Y-%m-%d"),
-    #value = as.Date("2016-12-01"),
-    #timeFormat="%Y-%m-%d")
   })
 
   # code for summary table
