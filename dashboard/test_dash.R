@@ -467,19 +467,19 @@ server <- function(input, output) {
   # MAP PLOTS
   #code for location date slider
   output$location_date_range <- renderUI({
-      req(input$student_data)
-      req(food_points())
-      sliderInput("dates_slider",
-                  "Select Range of Dates",
-                  min = as.Date("2016-09-01","%Y-%m-%d"),
-                  max = as.Date(Sys.Date(),"%Y-%m-%d"),
-                  value = c(as.Date("2016-09-01","%Y-%m-%d"), as.Date(Sys.Date(),"%Y-%m-%d")),
-                  timeFormat="%m-%d-%Y")
-      #SET MIN + MAX TO BE FROM DATA
-                  #min = min(food_points()$date),
-                  #max = as.Date("2016-12-01","%Y-%m-%d"),
-                  #value = as.Date("2016-12-01"),
-                  #timeFormat="%Y-%m-%d")
+    req(input$student_data)
+    req(food_points())
+    sliderInput("dates_slider",
+                "Select Range of Dates",
+                min = min(food_points()$date),
+                max = max(food_points()$date),
+                value = c(min(food_points()$date), max(food_points()$date)),
+                timeFormat="%m-%d-%Y")
+    #SET MIN + MAX TO BE FROM DATA
+    #min = min(food_points()$date),
+    #max = as.Date("2016-12-01","%Y-%m-%d"),
+    #value = as.Date("2016-12-01"),
+    #timeFormat="%Y-%m-%d")
   })
 
   # code for summary table
@@ -821,9 +821,9 @@ server <- function(input, output) {
   })
 
   output$top_5_locations <- renderPlot({
-    req(food_points_location_freq())
-    req(food_points())
-    req(input$daterange)
+    # req(food_points_location_freq())
+    # req(food_points())
+    # req(input$daterange)
     top_5_locations()
   })
 
