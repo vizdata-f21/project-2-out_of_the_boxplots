@@ -27,26 +27,6 @@ usage_chart <- read_csv(here::here("data", "usage_chart.csv"))
 template <- read_csv(here::here("data", "input_food_points_data.csv"))
 campus_map <- readPNG(here::here("images", "duke_campus_map.png"))
 
-## SAMPLE PLOTS ##
-
-# ggplot(data = food_points, aes(x = date, y = cost)) +
-#   geom_line() +
-#   geom_smooth(se = FALSE,
-#               linetype = "dashed",
-#               color = "red",
-#               span = .100) +
-#   scale_y_continuous(labels = dollar_format()) +
-#   theme_minimal() +
-#   labs(
-#     x = "Date",
-#     y = "Cost of Meal",
-#     title = "Money Spent on Meals Over Time"
-#   ) +
-#   theme(
-#     plot.title = element_text(hjust = 0.5, face = "bold"),
-#     text = element_text(family = "Times New Roman")
-#   )
-
 ## UI ##
 
 ui <- dashboardPage(
@@ -221,12 +201,6 @@ ui <- dashboardPage(
                    DT::dataTableOutput("food_points_all_info_table")
                  )
           )
-
-        ),
-        fluidRow(
-          column(12,
-                 align = "center",
-                 wellPanel(plotOutput("plot_top_freq_overall_location")))
 
         )
       )
@@ -559,19 +533,15 @@ server <- function(input, output) {
       select(date, restaurant, cost, points_remaining) %>%
       arrange(points_remaining) %>%
       mutate(
-        cost = paste0("$", format(cost, digits = 3)),
-        points_remaining = paste0(
-          "$",
-          format(points_remaining,
-                 digits = 5
-          )
-        )
+        # NOT LEAVING 2 DIGITS --> IDK HOW TO FIX THIS, B/C NEEDS TO BE # IN TABLE
+        cost = as.numeric(format(round(cost, 2), nsmall = 2)),
+        points_remaining = as.numeric(format(round(points_remaining, 2), nsmall = 2))
       ) %>%
       rename(
-        "Date" = "date",
+        "Date (Y-M-D)" = "date",
         "Restaurant" = "restaurant",
-        "Cost" = "cost",
-        "Points Remaining" = "points_remaining"
+        "Cost ($)" = "cost",
+        "Points Remaining ($)" = "points_remaining"
       )
   })
 # BAR PLOTS
@@ -609,12 +579,13 @@ server <- function(input, output) {
     group_by(restaurant) %>%
     summarize(freq = n(), total_cost = sum(cost), avg_cost = total_cost/freq) %>%
     arrange(desc(total_cost)) %>%
-    mutate(total_cost = paste0("$", round(total_cost, 2)),
-           avg_cost = paste0("$", round(avg_cost, 2))) %>%
+      # HAVE TO FIX 2 DIGIT THING HERE, TOO
+    mutate(total_cost = as.numeric(format(round(total_cost, 2), nsmall = 2)),
+           avg_cost = as.numeric(format(round(avg_cost, 2), nsmall = 2))) %>%
     rename("Restaurant" = "restaurant",
            "Frequency" = "freq",
-           "Total Cost" = "total_cost",
-           "Average Cost" = "avg_cost")
+           "Total Cost ($)" = "total_cost",
+           "Average Cost ($)" = "avg_cost")
   })
 
   # BAR PLOT DATA TABLE
@@ -681,7 +652,7 @@ server <- function(input, output) {
       labs(
         x = NULL,
         y = "\nTotal Food Points Spent\n",
-        title = "\nTotal Food Points Spent\nper Dining Location"
+        title = "\nTotal Food Points Spent\nper Restaurant"
       ) +
       coord_cartesian(clip = "off") +
       theme(
@@ -708,7 +679,7 @@ server <- function(input, output) {
       labs(
         x = NULL,
         y = "\nTotal Number of Swipes\n",
-        title = "\nTotal Number of Card Swipes\nper Dining Location"
+        title = "\nTotal Number of Card Swipes\nper Restaurant"
       ) +
       scale_x_discrete(name = NULL, labels = label_logos) +
       scale_y_continuous(labels = label_number(accuracy = 1)) +
@@ -742,7 +713,7 @@ server <- function(input, output) {
       labs(
         x = NULL,
         y = "\nAverage Food Points Spent\nper Transaction\n",
-        title = "\nAverage Food Points Spent\nper Transaction at Dining Location"
+        title = "\nAverage Food Points Spent\nper Transaction at Restaurant"
       ) +
       coord_cartesian(clip = "off") +
       theme(
@@ -771,7 +742,7 @@ server <- function(input, output) {
           labs(
             x = NULL,
             y = "\nTotal Number of Swipes",
-            title = "Total Number of Card Swipes\nper Dining Location"
+            title = "Total Number of Card Swipes\nper Restaurant"
           ) +
           scale_x_discrete(name = NULL, labels = label_logos_small) +
           scale_y_continuous(labels = label_number(accuracy = 1)) +
@@ -805,7 +776,7 @@ server <- function(input, output) {
           labs(
             x = NULL,
             y = "\nTotal Food Points Spent",
-            title = "Total Food Points Spent\nper Dining Location"
+            title = "Total Food Points Spent\nper Restaurant"
           ) +
           coord_cartesian(clip = "off") +
           theme(
@@ -836,7 +807,7 @@ server <- function(input, output) {
           labs(
             x = NULL,
             y = "\nAverage Food Points Spent\nper Transaction",
-            title = "Average Food Points Spent\nper Transaction at Dining Location"
+            title = "Average Food Points Spent\nper Transaction at Restaurant"
           ) +
           coord_cartesian(clip = "off") +
           theme(
@@ -871,46 +842,48 @@ server <- function(input, output) {
     plot_top_5()
   })
 
-  # OVERALL LOCATION PLOTS DATA WRANGLING
+  #CAN DELETE BELOW AFTER BLOSSOM FINISHES MAP (keeping just in case)
 
-  food_points_overall_location_freq <- reactive({
-    food_points() %>%
-      filter(date >= input$daterange[1] & date <= input$daterange[2]) %>%
-      group_by(campus_location) %>%
-      count() %>%
-      arrange(desc(n)) %>%
-      rename(freq = n) %>%
-      mutate(prop = freq / nrow(food_points),
-             bar = 1) %>%
-      head(5) })
-
-  # OVERALL LOCATION PLOTS GGPLOT
-
-  plot_top_freq_overall_location <- reactive({
-  ggplot(
-    data = food_points_overall_location_freq(),
-    aes(
-      x = bar,
-      y = prop,
-      fill = fct_reorder(campus_location, prop))
-  ) +
-    geom_bar(position = "fill", stat = "identity") +
-    coord_flip() +
-    #scale_y_continuous(labels = percent_format()) +
-    theme_minimal() +
-    labs(
-      x = NULL,
-      y = "\n Percent of Total Number of Swipes",
-      fill = "Dining Location",
-      title = "Percent of Total Number of Card Swipes\nper Dining Location"
-    ) +
-    theme(
-      plot.title = element_text(hjust = 0.5, face = "bold"),
-      panel.grid.major.y = element_blank(),
-      panel.grid.minor.y = element_blank(),
-      axis.text.y = element_markdown(),
-      text = element_text(family = "Times New Roman")
-    )})
+  # # OVERALL LOCATION PLOTS DATA WRANGLING
+  #
+  # food_points_overall_location_freq <- reactive({
+  #   food_points() %>%
+  #     filter(date >= input$daterange[1] & date <= input$daterange[2]) %>%
+  #     group_by(campus_location) %>%
+  #     count() %>%
+  #     arrange(desc(n)) %>%
+  #     rename(freq = n) %>%
+  #     mutate(prop = freq / nrow(food_points),
+  #            bar = 1) %>%
+  #     head(5) })
+  #
+  # # OVERALL LOCATION PLOTS GGPLOT
+  #
+  # plot_top_freq_overall_location <- reactive({
+  # ggplot(
+  #   data = food_points_overall_location_freq(),
+  #   aes(
+  #     x = bar,
+  #     y = prop,
+  #     fill = fct_reorder(campus_location, prop))
+  # ) +
+  #   geom_bar(position = "fill", stat = "identity") +
+  #   coord_flip() +
+  #   #scale_y_continuous(labels = percent_format()) +
+  #   theme_minimal() +
+  #   labs(
+  #     x = NULL,
+  #     y = "\n Percent of Total Number of Swipes",
+  #     fill = "Dining Location",
+  #     title = "Percent of Total Number of Card Swipes\nper Dining Location"
+  #   ) +
+  #   theme(
+  #     plot.title = element_text(hjust = 0.5, face = "bold"),
+  #     panel.grid.major.y = element_blank(),
+  #     panel.grid.minor.y = element_blank(),
+  #     axis.text.y = element_markdown(),
+  #     text = element_text(family = "Times New Roman")
+  #   )})
 
 
   # time series plots
