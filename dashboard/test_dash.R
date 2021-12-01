@@ -25,7 +25,7 @@ library(ggpubr)
 semester <- read_csv(here::here("data", "semester.csv"))
 usage_chart <- read_csv(here::here("data", "usage_chart.csv"))
 template <- read_csv(here::here("data", "input_food_points_data.csv"))
-campus_map <- readPNG("../images/duke_campus_map.png")
+campus_map <- readPNG(here::here("images","duke_campus_map.png"))
 
 ## SAMPLE PLOTS ##
 
@@ -541,7 +541,9 @@ server <- function(input, output) {
     group_by(restaurant) %>%
     summarize(freq = n(),
               total_cost = round(sum(cost), 2),
-              avg_cost = round(total_cost/freq, 2))
+              avg_cost = round(total_cost/freq, 2)) %>%
+      mutate(total_cost = paste0("$", round(total_cost, 2)),
+             avg_cost = paste0("$", round(avg_cost, 2)))
   })
 
   # DATA TABLE
