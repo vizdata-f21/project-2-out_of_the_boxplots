@@ -536,15 +536,22 @@ server <- function(input, output) {
       rename(avg = name)
   })
 
-  food_points_all_info <- reactive({food_points %>%
+  food_points_all_info <- reactive({food_points() %>%
     filter(date >= input$daterange[1] & date <= input$daterange[2]) %>%
     group_by(restaurant) %>%
-    summarize(freq = n(), total_cost = sum(cost), avg_cost = total_cost/freq)
+    summarize(freq = n(),
+              total_cost = round(sum(cost), 2),
+              avg_cost = round(total_cost/freq, 2))
   })
 
   # DATA TABLE
   output$food_points_all_info_table <- DT::renderDataTable({
-    food_points_all_info()
+    food_points_all_info() %>%
+      rename(
+        "Total Swipes" = "freq",
+        "Restaurant" = "restaurant",
+        "Total Points Spent" = "total_cost",
+        "Average Points Spent per Transaction" = "avg_cost")
   })
 
   #MAP Plot
