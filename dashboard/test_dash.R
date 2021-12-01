@@ -401,6 +401,37 @@ server <- function(input, output) {
     "Other" = "<img src='www/other.png' width='110' />"
   )
 
+  label_logos_medium <- c(
+    "Bella Union" = "<img src='www/bella-union.png' width='90' />",
+    "Beyu Blue" = "<img src='www/beyu_blue.jpeg' width='80' />",
+    "Cafe" = "<img src='www/cafe.png' width='60' />",
+    "Farmstead" = "<img src='www/farmstead.jpeg' width='90' />",
+    "Food Trucks at 300 Swift" = "<img src='www/food-trucks-300-swift.png' width='90' />",
+    "Ginger and Soy" = "<img src='www/ginger-and-soy.jpeg' width='90' />",
+    "Gyotaku" = "<img src='www/gyotaku.jpeg' width='70' />",
+    "Il Forno" = "<img src='www/il_forno.png' width='75' />",
+    "JBs Roast and Chops" = "<img src='www/jbs.jpeg' width='70' />",
+    "The Devil's Krafthouse" = "<img src='www/krafthouse.jpeg' width='70' />",
+    "The Lobby Shop" = "<img src='www/lobby-shop.png' width='90' />",
+    "McDonalds" = "<img src='www/mcdonalds.png' width='70' />",
+    "Nasher Cafe" = "<img src='www/nasher-cafe.jpeg' width='70' />",
+    "Panda Express" = "<img src='www/panda_express.png' width='70' />",
+    "Panera" = "<img src='www/panera.png' width='70' />",
+    "Pitchfork's" = "<img src='www/pitchforks.jpeg' width='70' />",
+    "Red Mango" = "<img src='www/red_mango.png' width='70' />",
+    "Sazon" = "<img src='www/sazon.png' width='70' />",
+    "The Skillet" = "<img src='www/skillet.jpeg' width='70' />t",
+    "Sprout" = "<img src='www/sprout.jpeg' width='70' />",
+    "Tandoor" = "<img src='www/tandoor.jpeg' width='70' />",
+    "The Loop" = "<img src='www/the_loop.jpeg' width='70' />",
+    "Thrive Kitchen" = "<img src='www/thrive.png' width='70' />",
+    "Trinity Cafe" = "<img src='www/trinity-cafe.jpeg' width='70' />",
+    "Twinnies" = "<img src='www/twinnies.jpeg' width='70' />",
+    "Vending Machine" = "<img src='www/vending.png' width='90' />",
+    "Vondy" = "<img src='www/vondy.png' width='80' />",
+    "Other" = "<img src='www/other.png' width='90' />"
+  )
+
   label_logos_small <- c(
     "Bella Union" = "<img src='www/bella-union.png' width='60' />",
     "Beyu Blue" = "<img src='www/beyu_blue.jpeg' width='50' />",
@@ -800,7 +831,7 @@ server <- function(input, output) {
           geom_text(vjust = -1, size = 3) +
           theme_minimal() +
           scale_y_continuous(labels = dollar_format()) +
-          scale_x_discrete(name = NULL, labels = label_logos_small) +
+          scale_x_discrete(name = NULL, labels = label_logos_medium) +
           scale_fill_manual(values = restaurant_colors) +
           labs(
             x = NULL,
