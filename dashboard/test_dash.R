@@ -25,7 +25,7 @@ library(ggpubr)
 semester <- read_csv(here::here("data", "semester.csv"))
 usage_chart <- read_csv(here::here("data", "usage_chart.csv"))
 template <- read_csv(here::here("data", "input_food_points_data.csv"))
-campus_map <- readPNG("../images/duke_campus_map.png")
+campus_map <- readPNG(here::here("images", "duke_campus_map.png"))
 
 ## SAMPLE PLOTS ##
 
@@ -536,10 +536,17 @@ server <- function(input, output) {
       rename(avg = name)
   })
 
-  food_points_all_info <- reactive({food_points %>%
+  food_points_all_info <- reactive({food_points() %>%
     filter(date >= input$daterange[1] & date <= input$daterange[2]) %>%
     group_by(restaurant) %>%
-    summarize(freq = n(), total_cost = sum(cost), avg_cost = total_cost/freq)
+    summarize(freq = n(), total_cost = sum(cost), avg_cost = total_cost/freq) %>%
+    arrange(desc(total_cost)) %>%
+    mutate(total_cost = paste0("$", round(total_cost, 2)),
+           avg_cost = paste0("$", round(avg_cost, 2))) %>%
+    rename("Restaurant" = "restaurant",
+           "Frequency" = "freq",
+           "Total Cost" = "total_cost",
+           "Average Cost" = "avg_cost")
   })
 
   # DATA TABLE
