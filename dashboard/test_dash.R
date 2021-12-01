@@ -11,10 +11,12 @@ library(janitor)
 library(tidyverse)
 library(lubridate)
 library(scales)
-library(khroma)
+#library(khroma)
 library(patchwork)
 library(tools)
 library(ggtext)
+library(png)
+library(ggpubr)
 
 # SET TO TRUE AT THE END TO GET RID OF ALL POSSIBLE ERRORS
 #options(shiny.sanitize.errors = FALSE)
@@ -159,10 +161,16 @@ ui <- dashboardPage(
       tabItem(
         tabName = "locations",
         h2("Where Food Points Are Spent"),
+        fluidRow(
+          # Sidebar with a slider input for the number of bins
+          column(12,
+                 align = "center",
+                 uiOutput("location_date_range"),
+          ),
+          box(tableOutput("values"))
+        ),
         fluidPage(
-          box(
-            plotOutput("top_5_locations")
-          )
+          box(plotOutput("top_5_locations"))
         )
       ),
 
@@ -413,6 +421,39 @@ server <- function(input, output) {
     )
   })
 
+  # MAP PLOTS
+  #code for location date slider
+  output$location_date_range <- renderUI({
+      req(input$student_data)
+      req(food_points())
+      sliderInput("Dates Slider",
+                  "Select Range of Dates",
+                  min = as.Date("2016-09-01","%Y-%m-%d"),
+                  max = as.Date(Sys.Date(),"%Y-%m-%d"),
+                  value = c(as.Date("2016-09-01","%Y-%m-%d"), as.Date(Sys.Date(),"%Y-%m-%d")),
+                  timeFormat="%m-%d-%Y")
+      #SET MIN + MAX TO BE FROM DATA
+                  #min = min(food_points()$date),
+                  #max = as.Date("2016-12-01","%Y-%m-%d"),
+                  #value = as.Date("2016-12-01"),
+                  #timeFormat="%Y-%m-%d")
+  })
+
+  # Reactive expression to create map plot of all input values ----
+  sliderValues <- reactive({
+    campus_map <- readPNG("../images/duke_campus_map.png")
+    data.frame(
+      Name = "Dates Slider",
+      Value = as.character(dim(campus_map)),
+      stringsAsFactors = FALSE)
+
+  })
+
+  # Show the values in an HTML table ----
+  output$values <- renderTable({
+    sliderValues()
+  })
+
   # code for summary table
   summary_table_code <- reactive({
     req(input$student_data)
@@ -497,6 +538,9 @@ server <- function(input, output) {
       head(5) %>%
       rename(avg = name)
   })
+
+  #MAP Plot
+
 
   plot_top_costs <- reactive({
     ggplot(
@@ -741,6 +785,23 @@ server <- function(input, output) {
   #      ggplot(aes(x = ))
   #  }
   #)
+  # plot_top_avg <- reactive({
+  #   ggplot(
+  #     data = food_points_location_avg(),
+  #     aes(
+  #       x = fct_reorder(restaurant, desc(avg)),
+  #       y = avg,
+  #       fill = restaurant,
+  #       label = paste0("$", format(round(avg, 2), nsmall = 2))
+  #     )
+  #   )
+  #
+  # #variable to save campus_map
+  # campus_map <- readPNG("../images/duke_campus_map.png")
+  # data <- read.csv("../data/blossom_food_points.csv")
+  # map_plot <- reactive({
+  #   ggplot(data) +
+  #   background_image(campus_map)
 
   output$overtime1 <- renderPlot({
     if (input$negative_values == TRUE) {
