@@ -551,6 +551,7 @@ server <- function(input, output) {
 
   # DATA TABLE
   output$food_points_all_info_table <- DT::renderDataTable({
+    req(input$daterange)
     food_points_all_info()
   })
 
@@ -880,7 +881,7 @@ server <- function(input, output) {
           method = "lm", fullrange = TRUE, se = FALSE,
           color = "lightcoral", linetype = "dashed"
         ) +
-        scale_x_date(breaks = time_df()$date, date_labels = "%b-%d",
+        scale_x_date(breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
                      minor_breaks = NULL) +
         scale_y_continuous(labels = scales::dollar_format()) +
         theme_minimal() +
@@ -904,7 +905,7 @@ server <- function(input, output) {
           method = "lm", fullrange = TRUE, se = FALSE,
           color = "lightcoral", linetype = "dashed"
         ) +
-        scale_x_date(breaks = time_df()$date, date_labels = "%b-%d",
+        scale_x_date(breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
                      minor_breaks = NULL) +
         scale_y_continuous(limits = c(0, NA), labels = dollar_format()) +
         theme_minimal() +
@@ -944,9 +945,10 @@ server <- function(input, output) {
         )
       )) +
       labs(title = "Spending Per Week", x = "Weeks", y = "Points Spent") +
-      scale_x_date(breaks = time_df()$date, date_labels = "%b-%d",
+      scale_x_date(breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
                    minor_breaks = NULL) +
       scale_y_continuous(labels = scales::dollar_format()) +
+      coord_cartesian(clip = "off") +
       theme_minimal() +
       theme(plot.title = element_text(hjust = 0.5, size = 16))
   })
@@ -964,13 +966,13 @@ server <- function(input, output) {
     geom_point(aes(x = user_x, y = user_y), color = "red") +
     geom_line(aes(x = reg_x, y = reg_y), color = "red", linetype = "dashed") +
     geom_text(aes(x = 4.5, y = 1.15),
-              label = "Plan Progression (spending from chosen food point plan)",
+              label = "Plan Progression (chosen food point plan)",
               color = "blue") +
     geom_text(aes(x = 4.54, y = .65),
-              label = "Actual Progression (spending from to uploaded data)",
+              label = "Actual Progression (uploaded data)",
               color = "red") +
     geom_text(aes(x = 4.55, y = .15),
-              label = "Expected Progression (spending from a linear regression of uploaded data)",
+              label = "Expected Progression (linear regression of uploaded data)",
               color = "red") +
     ylim(-0.5,1.5) +
     labs(title = "Plan Progression Key") +
