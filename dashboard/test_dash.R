@@ -323,6 +323,37 @@ server <- function(input, output) {
           str_detect(location, "Perk") ~ "Vondy",
           TRUE ~ "Other"
         ),
+        # set overall location
+        # location = case_when(
+        #   restaurant == "Bella Union" ~ "McClendon Tower",
+        #   restaurant == "Beyu Blue" ~ "Bryan Center"
+        #   restaurant == "Cafe" ~ "West Union",
+        #   restaurant == "Farmstead" ~ "West Union",
+        #   str_detect(location, "Gussys|Poblanos") ~ "Food Truck at 300 Swift",
+        #   str_detect(location, "Ginger and Soy") ~ "Ginger and Soy",
+        #   str_detect(location, "Gyotaku") ~ "Gyotaku",
+        #   str_detect(location, "Il Forno") ~ "Il Forno",
+        #   str_detect(location, "JBS") ~ "JBs Roast and Chops",
+        #   str_detect(location, "McDonalds MCDReg2") ~ "McDonalds",
+        #   str_detect(location, "Nasher Cafe") ~ "Nasher Cafe",
+        #   str_detect(location, "Panda Express") ~ "Panda Express",
+        #   str_detect(location, "Panera") ~ "Panera",
+        #   str_detect(location, "Pitchfork") ~ "Pitchfork's",
+        #   str_detect(location, "Red Mango") ~ "Red Mango",
+        #   str_detect(location, "Sazon") ~ "Sazon",
+        #   str_detect(location, "Sprout") ~ "Sprout",
+        #   str_detect(location, "Tandor") ~ "Tandoor",
+        #   str_detect(location, "Devils Krafthouse") ~ "The Devil's Krafthouse",
+        #   str_detect(location, "Lobby Shop") ~ "The Lobby Shop",
+        #   str_detect(location, "Loop") ~ "The Loop",
+        #   str_detect(location, "Skillet") ~ "The Skillet",
+        #   str_detect(location, "300 Swift") ~ "Thrive Kitchen",
+        #   str_detect(location, "Trinity Cafe") ~ "Trinity Cafe",
+        #   str_detect(location, "Twinnies") ~ "Twinnies",
+        #   str_detect(location, "Vending") ~ "Vending Machine",
+        #   str_detect(location, "Perk") ~ "Vondy",
+        #   TRUE ~ "Other"
+        # )
         # mutate cost variable to make it numeric
         cost = as.numeric(str_extract_all(amount, "[0-9]*\\.[0-9]*")),
         x_coord = dim(campus_map)[2] / 2,
