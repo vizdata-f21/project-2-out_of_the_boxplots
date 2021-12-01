@@ -622,8 +622,8 @@ server <- function(input, output) {
   top_5_locations <- reactive({
     ggplot(data = food_points(), aes(x = x_coord, y = y_coord,
                                              color = restaurant, size = 5)) +
-      geom_point() +
       background_image(campus_map) +
+      geom_point() +
       labs(title = "Top 5 Most Frequented Locations on Camous")
   })
 
