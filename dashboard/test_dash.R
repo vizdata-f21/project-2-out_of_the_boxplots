@@ -23,10 +23,10 @@ library(leaflet)
 #options(shiny.sanitize.errors = FALSE)
 
 ## DATA ##
-semester <- read_csv(here::here("data", "semester.csv"))
-usage_chart <- read_csv(here::here("data", "usage_chart.csv"))
-template <- read_csv(here::here("data", "input_food_points_data.csv"))
-campus_map <- readPNG(here::here("www", "duke_campus_map.png"))
+semester <- read_csv(here::here("dashboard/data", "semester.csv"))
+usage_chart <- read_csv(here::here("dashboard/data", "usage_chart.csv"))
+template <- read_csv(here::here("dashboard/data", "input_food_points_data.csv"))
+campus_map <- readPNG(here::here("dashboard/www", "duke_campus_map.png"))
 
 ## UI ##
 ui <- dashboardPage(
@@ -152,7 +152,11 @@ ui <- dashboardPage(
                  align = "center", offset = 3,
                  box(
                    align = "center", width = 6,
-                   uiOutput("location_date_range")
+                   uiOutput("location_date_range"),
+                   selectInput("map_selection",
+                               "Choose a Map:",
+                               choices = c("Swipes",
+                                           "Spending"))
                  )
           )
         ),
@@ -682,6 +686,13 @@ server <- function(input, output) {
       rename(freq = n)
   })
 
+  dining_location_spend <- reactive({
+    food_points() %>%
+      filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
+      group_by(campus_location, x_coord, y_coord) %>%
+      summarise("spending" = sum(cost))
+  })
+
   top_5_location_avg <- reactive({
     food_points() %>%
       filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
@@ -699,6 +710,8 @@ server <- function(input, output) {
     ggplot(data = dining_location_freq(), aes(x = x_coord, y = y_coord)) +
       background_image(campus_map) +
       geom_label(aes(label = paste0(campus_location,
+                                    ": ",
+                                    freq,
                                     " (",
                                     round(100*freq/sum(freq)),
                                     "%)")), hjust = 0.5, nudge_y = 0.2) +
@@ -706,7 +719,25 @@ server <- function(input, output) {
       ylim(0, 600) +
       coord_cartesian(xlim = map_ranges$x, ylim = map_ranges$y,
                       expand = FALSE) +
-      labs(title = "Campus Dining Location Swipe Frequency\n ") +
+      labs(title = "Campus Dining Location Swipes \n ") +
+      theme_void() +
+      theme(plot.title = element_text(hjust = 0.5, size = 16))
+  })
+
+  top_5_locations2 <- reactive({
+    ggplot(data = dining_location_spend(), aes(x = x_coord, y = y_coord)) +
+      background_image(campus_map) +
+      geom_label(aes(label = paste0(campus_location,
+                                    ": $",
+                                    round(spending,2),
+                                    " (",
+                                    round(100*spending/sum(spending)),
+                                    "%)")), hjust = 0.5, nudge_y = 0.2) +
+      xlim(0, 1000) +
+      ylim(0, 600) +
+      coord_cartesian(xlim = map_ranges$x, ylim = map_ranges$y,
+                      expand = FALSE) +
+      labs(title = "Campus Dining Location Spending \n ") +
       theme_void() +
       theme(plot.title = element_text(hjust = 0.5, size = 16))
   })
@@ -922,10 +953,13 @@ server <- function(input, output) {
   })
 
   output$top_5_locations <- renderPlot({
-    # req(food_points_location_freq())
-    # req(food_points())
-    # req(input$daterange)
-    top_5_locations()
+    validate(
+      need(input$dates_slider, message = FALSE)
+    )
+    switch(input$map_selection,
+           "Swipes" = top_5_locations(),
+           "Spending" = top_5_locations2()
+    )
   })
 
   output$plot_top_5 <- renderPlot({
@@ -1062,7 +1096,7 @@ server <- function(input, output) {
                      minor_breaks = NULL) +
         scale_y_continuous(labels = scales::dollar_format()) +
         theme_minimal() +
-        theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+        theme(plot.title = element_text(hjust = 0.5, size = 18)) +
         coord_cartesian(clip = "off")
     } else {
       time2 <- time_df() %>%
@@ -1086,7 +1120,7 @@ server <- function(input, output) {
                      minor_breaks = NULL) +
         scale_y_continuous(limits = c(0, NA), labels = dollar_format()) +
         theme_minimal() +
-        theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+        theme(plot.title = element_text(hjust = 0.5, size = 18)) +
         coord_cartesian(clip = "off")
     }
   })
