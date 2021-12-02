@@ -337,8 +337,30 @@ server <- function(input, output) {
         ),
         # mutate cost variable to make it numeric
         cost = as.numeric(str_extract_all(amount, "[0-9]*\\.[0-9]*")),
-        x_coord = dim(campus_map)[2] / 2,
-        y_coord = dim(campus_map)[1] / 2
+        x_coord = case_when(
+          campus_location == "West Union" ~ 190,
+          campus_location == "Wilson Gym" ~ 130,
+          campus_location == "Bryan Center" ~ 120,
+          campus_location == "Perkins" ~ 230,
+          campus_location == "McClendon Tower" ~ 250,
+          campus_location == "300 Swift" ~ 1000,
+          campus_location == "The Nasher" ~ 700,
+          campus_location == "E-Quad" ~ 150,
+          campus_location == "East Campus" ~ 1050,
+          campus_location == "Around Duke's Campus"~ 300,
+          TRUE ~ dim(campus_map)[2] / 2),
+        y_coord = case_when(
+          campus_location == "West Union" ~ 300,
+          campus_location == "Wilson Gym" ~ 30,
+          campus_location == "Bryan Center" ~ 305,
+          campus_location == "Perkins" ~ 380,
+          campus_location == "McClendon Tower" ~ 170,
+          campus_location == "300 Swift" ~ 440,
+          campus_location == "The Nasher" ~ 170,
+          campus_location == "E-Quad" ~ 500,
+          campus_location == "East Campus" ~ 20,
+          campus_location == "Around Duke's Campus"~ 270,
+          TRUE ~ dim(campus_map)[1] / 2)
       )
   })
 
@@ -598,13 +620,12 @@ server <- function(input, output) {
       head(5)
   })
 
-  top_5_location_freq <- reactive({
+  dining_location_freq <- reactive({
     food_points() %>%
       filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
-      group_by(restaurant, x_coord, y_coord) %>%
+      group_by(campus_location, x_coord, y_coord) %>%
       count() %>%
       arrange(desc(n)) %>%
-      head(5) %>%
       rename(freq = n)
   })
 
@@ -618,11 +639,14 @@ server <- function(input, output) {
 
   })
   top_5_locations <- reactive({
-    ggplot(data = food_points(), aes(x = x_coord, y = y_coord,
-                                             color = restaurant, size = 5)) +
+    ggplot(data = dining_location_freq(), aes(x = x_coord, y = y_coord,
+                                             color = campus_location,
+                                             size = freq)) +
       background_image(campus_map) +
       geom_point() +
-      labs(title = "Top 5 Most Frequented Locations on Camous")
+      xlim(0, 1000) +
+      ylim(0, 600) +
+      labs(title = "Most Frequented Dining Locations on Campus")
   })
 
   # BAR PLOT GGPLOT CODE
