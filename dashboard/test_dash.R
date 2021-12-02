@@ -50,12 +50,16 @@ ui <- dashboardPage(
         tabName = "future", icon = icon("chart-line")
       ),
       menuItem(
-        "Food Points Locations",
+        "Dining Locations",
         tabName = "locations", icon = icon("map-marked")
       ),
       menuItem(
         "Top 5 Restaurants",
         tabName = "restaurants", icon = icon("utensils")
+      ),
+      menuItem(
+        "Food Point Tips",
+        tabName = "spendingtips", icon = icon("money-check-alt")
       ),
       menuItem(
         "Write Up",
@@ -162,7 +166,10 @@ ui <- dashboardPage(
         tabName = "writeup",
         h2("Project Write Up:")
       ),
-
+      tabItem(
+        tabName = "spendingtips",
+        h2("Food Point Spending Tips")
+      ),
       tabItem(
         tabName = "restaurants",
         h2("Your Top 5 Restaurants"),
