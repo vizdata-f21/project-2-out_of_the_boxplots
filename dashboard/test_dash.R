@@ -944,8 +944,7 @@ server <- function(input, output) {
     if (input$negative_values == TRUE) {
       time1 <- time_df() %>%
         mutate(
-          user_points_total = ifelse((user_points_week == 0) &
-                                       (user_points_total != 0),
+          user_points_total = ifelse(date > max(food_points()$date),
                                      NA, user_points_total
           ),
           points_remaining = plan_points[1] - user_points_total
@@ -968,8 +967,7 @@ server <- function(input, output) {
     } else {
       time2 <- time_df() %>%
         mutate(
-          user_points_total = ifelse((user_points_week == 0) &
-                                       (user_points_total != 0),
+          user_points_total = ifelse(date > max(food_points()$date),
                                      NA, user_points_total
           ),
           points_remaining = plan_points[1] - user_points_total
