@@ -1,263 +1,8 @@
-### Test
-
-# Packages
-library(shiny)
-library(shinydashboard)
-library(dplyr)
-library(ggplot2)
-library(readr)
-library(stringr)
-library(janitor)
-library(tidyverse)
-library(lubridate)
-library(scales)
-#library(khroma)
-library(patchwork)
-library(tools)
-library(ggtext)
-library(png)
-library(ggpubr)
-library(leaflet)
-
-# SET TO TRUE AT THE END TO GET RID OF ALL POSSIBLE ERRORS
-#options(shiny.sanitize.errors = FALSE)
-
 ## DATA ##
-semester <- read_csv(here::here("data", "semester.csv"))
-usage_chart <- read_csv(here::here("data", "usage_chart.csv"))
-template <- read_csv(here::here("data", "input_food_points_data.csv"))
-campus_map <- readPNG(here::here("www", "duke_campus_map.png"))
-
-## UI ##
-ui <- dashboardPage(
-  skin = "black",
-  dashboardHeader(
-    title = tags$a(href='https://mralph15.shinyapps.io/dashboard/',
-                                 tags$img(src = 'food_point_logo.png', height='40', width='180'))
-    ),
-  dashboardSidebar(
-    sidebarMenu(
-      menuItem(
-        "Overview",
-        tabName = "overview", icon = icon("dashboard")
-      ),
-      menuItem(
-        "Upload Instructions",
-        tabName = "upload", icon = icon("copy")
-      ),
-      menuItem(
-        "Spending Over Time",
-        tabName = "future", icon = icon("chart-line")
-      ),
-      menuItem(
-        "Dining Locations",
-        tabName = "locations", icon = icon("map-marked")
-      ),
-      menuItem(
-        "Top 5 Restaurants",
-        tabName = "restaurants", icon = icon("utensils")
-      ),
-      menuItem(
-        "Food Point Tips",
-        tabName = "spendingtips", icon = icon("money-check-alt")
-      ),
-      menuItem(
-        "Write Up",
-        tabName = "writeup", icon = icon("pencil-alt")
-      )
-    )
-  ),
-  dashboardBody(
-    tabItems(
-      tabItem(
-        tabName = "upload",
-        h2("How to Access and Upload Your Food Points:"),
-        fluidRow(
-          img(
-            src = "food-points-instructions.png", height = 800, width = 700,
-            style = "display: block; margin-left: auto; margin-right: auto;"
-          ),
-        )
-      ),
-      tabItem(
-        tabName = "overview",
-        h2("Food Points Overview"),
-        fluidRow(
-          box(downloadButton("food_template", "Download Food Point Template"),
-              h4(""),
-              fileInput("student_data", "Upload Your Food Point Usage\n(see upload instructions tab)"),
-              height = 200,
-              accept = ".csv"
-          ),
-          box(
-            align = "center",
-            infoBoxOutput(width = 12, "plan_detected"),
-            tableOutput("summary_table"), height = 200
-          )
-        ),
-        fluidRow(
-          column(12,
-                 align = "center", offset = 2,
-                 box(
-                   align = "center", width = 8,
-                   DT::dataTableOutput("user_points_table")
-                 )
-          )
-        ),
-      ),
-      tabItem(
-        tabName = "future",
-        h2("Spending Over Time"),
-        fluidRow(
-          box(
-            selectInput("select_sem", "Select Semester:",
-                        choices = c("Fall", "Spring")
-            ),
-            selectInput("select_plan", "Select a Food Plan:",
-                        choices = c(
-                          "Plan A", "Plan B", "Plan C", "Plan D",
-                          "Plan F", "Plan I", "Plan J"
-                        )
-            ),
-            checkboxInput(
-              "negative_values",
-              "Allow progression to display negative food points remaining?",
-              value = FALSE
-            ),
-            height = 220, width = 4
-          ),
-          box(align = "center", h4("Selected Plan Characteristics\n \n "),
-              tableOutput("plan_select_table"),
-              height = 220, width = 4
-          ),
-          box(
-            plotOutput("overtime_key"),
-            height = 220, width = 4
-          )
-        ),
-        fluidRow(
-          box(
-            plotOutput("overtime2")
-          ),
-          box(
-            plotOutput("overtime1")
-          )
-        ),
-      ),
-      tabItem(
-        tabName = "locations",
-        h2("Where Food Points Are Spent"),
-        fluidRow(
-          column(12,
-                 align = "center", offset = 3,
-                 box(
-                   align = "center", width = 6,
-                   uiOutput("location_date_range")
-                 )
-          )
-        ),
-        fluidRow(
-          column(12,
-                 align = "center", offset = 1,
-                 box(
-                   align = "center", width = 10, height = 500,
-                   plotOutput("top_5_locations",
-                              dblclick = "map_dblclick",
-                              brush = brushOpts(id = "map_brush",
-                                                resetOnNew = TRUE))
-                 )
-          )
-        )
-        ),
-      tabItem(
-        tabName = "writeup",
-        h2("Project Write Up:")
-      ),
-      tabItem(
-        tabName = "spendingtips",
-        h2("Food Point Spending Tips"),
-        fluidRow(
-          # Sidebar with a slider input for the number of bins
-          column(12,
-          h3("If you are running low on food points:"),
-          p("- Look at the Top 5 Restaurant bar plots and consider frequenting
-          your top average spending locations less often. If you really enjoy
-          these restaurants, consider ordering their $5 Daily Devil Deals,
-          instead. If these top locations have a food in common, such as
-            coffee, consider getting the monthly Panera coffee card"),
-          p("- View the data table on the Top 5 tab and frequent the location
-            with the smallest average spending more often."),
-          p("- View the spending per week visualization and consider how your
-            spending each week compares to your plan’s weekly average. Were
-            there particular weeks where your spending was notably above the
-            average amount? Consider what was going on during these weeks, and
-            how you can use knowledge of this in the future."),
-          p("- Look at how your plan progression compares to your own spending.
-            Would a different plan be more suitable for you in future
-            semesters?"))),
-       fluidRow(
-            column(12,
-          h3("If you have too many food points remaining:"),
-          p("- Look at the Top 5 Restaurant bar plots and consider frequenting
-            your top average spending locations more often."),
-          p("- View the spending per week visualization and consider how your
-          spending each week compares to your plan’s weekly average. Were there
-          particular weeks where your spending was notably below the average
-          amount? Consider what was going on during these weeks, and how you can
-          use knowledge of this in the future."),
-          p("- Look at how your plan progression compares to your own spending.
-          Would a different plan be more suitable for you in future semesters?"),
-          p("- Consider going to The Lobby Shop more to stock up on snacks, or
-          getting Merchants on Points."))
-      )),
-      tabItem(
-        tabName = "restaurants",
-        h2("Your Top 5 Restaurants"),
-        fluidRow(
-          column(12,
-                 align = "center",
-                 uiOutput("daterange2"),
-          )
-        ),
-        fluidRow(
-          column(12,
-                 align = "center", offset = 1,
-                 box(
-                   align = "center", width = 10,
-                   selectInput(
-                     "top_5_input",
-                     "Which Measure(s) Would You Like Visualized?",
-                     c(
-                       "All Three: Total Swipes, Total Spent, & Avg. Spent",
-                       "Total Number of Swipes per Restaurant",
-                       "Total Food Points Spent per Restaurant",
-                       "Average Food Points Spent per Restaurant"
-                     )
-                     )
-                   )
-                 )
-        ),
-          fluidRow(
-            column(12,
-                   align = "center",
-                   wellPanel(plotOutput("plot_top_5")))
-
-        ),
-        fluidRow(
-          column(12,
-                 align = "center", offset = 2,
-                 box(
-                   align = "center", width = 8,
-                   DT::dataTableOutput("food_points_all_info_table")
-                 )
-          )
-
-        )
-      )
-    )
-  )
-)
-
+semester <- read_csv("data/semester.csv")
+usage_chart <- read_csv("data/usage_chart.csv")
+template <- read_csv("data/input_food_points_data.csv")
+campus_map <- readPNG("www/duke_campus_map.png")
 
 ## SERVER ##
 
@@ -604,17 +349,17 @@ server <- function(input, output) {
       }
     }
     DT::datatable(tmp %>%
-      select(date, restaurant, cost, points_remaining) %>%
-      arrange(points_remaining) %>%
-      rename(
-        "Date (Y-M-D)" = "date",
-        "Restaurant" = "restaurant",
-        "Cost" = "cost",
-        "Points Remaining" = "points_remaining"
-      )) %>%
+                    select(date, restaurant, cost, points_remaining) %>%
+                    arrange(points_remaining) %>%
+                    rename(
+                      "Date (Y-M-D)" = "date",
+                      "Restaurant" = "restaurant",
+                      "Cost" = "cost",
+                      "Points Remaining" = "points_remaining"
+                    )) %>%
       DT::formatCurrency(c(3:4))
   })
-# BAR PLOTS
+  # BAR PLOTS
   # calculate total points spent at each dining location
   food_points_location_cost <- reactive({
     food_points() %>%
@@ -645,14 +390,14 @@ server <- function(input, output) {
   })
 
   food_points_all_info <- reactive({food_points() %>%
-    filter(date >= input$daterange[1] & date <= input$daterange[2]) %>%
-    group_by(restaurant) %>%
-    summarize(freq = n(), total_cost = sum(cost), avg_cost = total_cost/freq) %>%
-    arrange(desc(total_cost)) %>%
-    rename("Restaurant" = "restaurant",
-           "Frequency" = "freq",
-           "Total Cost" = "total_cost",
-           "Average Cost" = "avg_cost")
+      filter(date >= input$daterange[1] & date <= input$daterange[2]) %>%
+      group_by(restaurant) %>%
+      summarize(freq = n(), total_cost = sum(cost), avg_cost = total_cost/freq) %>%
+      arrange(desc(total_cost)) %>%
+      rename("Restaurant" = "restaurant",
+             "Frequency" = "freq",
+             "Total Cost" = "total_cost",
+             "Average Cost" = "avg_cost")
   })
 
   # BAR PLOT DATA TABLE
@@ -849,36 +594,36 @@ server <- function(input, output) {
           )
       }
       +
-      {
-        ggplot(
-          data = food_points_location_cost(),
-          aes(
-            x = fct_reorder(restaurant, desc(total_spent)),
-            y = total_spent,
-            fill = restaurant,
-            label = paste0("$", format(round(total_spent, 2), nsmall = 2))
-          )
-        ) +
-          geom_col(show.legend = FALSE) +
-          geom_text(vjust = -1, size = 3) +
-          theme_minimal() +
-          scale_y_continuous(labels = dollar_format()) +
-          scale_x_discrete(name = NULL, labels = label_logos_small) +
-          scale_fill_manual(values = restaurant_colors) +
-          labs(
-            x = NULL,
-            y = "\nTotal Food Points Spent",
-            title = "Total Food Points Spent\nper Restaurant"
+        {
+          ggplot(
+            data = food_points_location_cost(),
+            aes(
+              x = fct_reorder(restaurant, desc(total_spent)),
+              y = total_spent,
+              fill = restaurant,
+              label = paste0("$", format(round(total_spent, 2), nsmall = 2))
+            )
           ) +
-          coord_cartesian(clip = "off") +
-          theme(
-            plot.title = element_text(hjust = 0.5, face = "bold"),
-            panel.grid.major.x = element_blank(),
-            panel.grid.minor.x = element_blank(),
-            axis.text.x = element_markdown(),
-            text = element_text(family = "Times New Roman")
-          )
-      }
+            geom_col(show.legend = FALSE) +
+            geom_text(vjust = -1, size = 3) +
+            theme_minimal() +
+            scale_y_continuous(labels = dollar_format()) +
+            scale_x_discrete(name = NULL, labels = label_logos_small) +
+            scale_fill_manual(values = restaurant_colors) +
+            labs(
+              x = NULL,
+              y = "\nTotal Food Points Spent",
+              title = "Total Food Points Spent\nper Restaurant"
+            ) +
+            coord_cartesian(clip = "off") +
+            theme(
+              plot.title = element_text(hjust = 0.5, face = "bold"),
+              panel.grid.major.x = element_blank(),
+              panel.grid.minor.x = element_blank(),
+              axis.text.x = element_markdown(),
+              text = element_text(family = "Times New Roman")
+            )
+        }
     ) /
       {
         ggplot(
@@ -1148,24 +893,24 @@ server <- function(input, output) {
                 "reg_y" = c(0,0,0,0,0,0,0,0))
 
   plot_key <- reactive({ggplot(key) +
-    geom_line(aes(x = plan_prog_x, y = plan_prog_y), color = "blue") +
-    geom_line(aes(x = user_x, y = user_y), color = "red") +
-    geom_point(aes(x = user_x, y = user_y), color = "red") +
-    geom_line(aes(x = reg_x, y = reg_y), color = "red", linetype = "dashed") +
-    geom_text(aes(x = 4.5, y = 1.15),
-              label = input$select_plan,
-              color = "blue") +
-    geom_text(aes(x = 4.54, y = .65),
-              label = "Uploaded Data",
-              color = "red") +
-    geom_text(aes(x = 4.55, y = .15),
-              label = "Linear Regression of Uploaded",
-              color = "red") +
-    ylim(-0.5, 1.5) +
-    labs(title = "Plan Progression Key") +
-    coord_cartesian(clip = "off") +
-    theme_void() +
-    theme(plot.title = element_text(hjust = 0.5, size = 16))
+      geom_line(aes(x = plan_prog_x, y = plan_prog_y), color = "blue") +
+      geom_line(aes(x = user_x, y = user_y), color = "red") +
+      geom_point(aes(x = user_x, y = user_y), color = "red") +
+      geom_line(aes(x = reg_x, y = reg_y), color = "red", linetype = "dashed") +
+      geom_text(aes(x = 4.5, y = 1.15),
+                label = input$select_plan,
+                color = "blue") +
+      geom_text(aes(x = 4.54, y = .65),
+                label = "Uploaded Data",
+                color = "red") +
+      geom_text(aes(x = 4.55, y = .15),
+                label = "Linear Regression of Uploaded",
+                color = "red") +
+      ylim(-0.5, 1.5) +
+      labs(title = "Plan Progression Key") +
+      coord_cartesian(clip = "off") +
+      theme_void() +
+      theme(plot.title = element_text(hjust = 0.5, size = 16))
   })
 
 
@@ -1192,7 +937,3 @@ server <- function(input, output) {
   )
 
 }
-
-## RUN APP ##
-
-shinyApp(ui, server)
