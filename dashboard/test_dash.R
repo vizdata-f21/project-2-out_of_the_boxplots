@@ -528,20 +528,16 @@ server <- function(input, output) {
         tmp$points_remaining[i] <- tmp$points_remaining[i - 1] - tmp$cost[i]
       }
     }
-    tmp %>%
+    DT::datatable(tmp %>%
       select(date, restaurant, cost, points_remaining) %>%
       arrange(points_remaining) %>%
-      mutate(
-        # NOT LEAVING 2 DIGITS --> IDK HOW TO FIX THIS, B/C NEEDS TO BE # IN TABLE
-        cost = as.numeric(format(round(cost, 2), nsmall = 2)),
-        points_remaining = as.numeric(format(round(points_remaining, 2), nsmall = 2))
-      ) %>%
       rename(
         "Date (Y-M-D)" = "date",
         "Restaurant" = "restaurant",
-        "Cost ($)" = "cost",
-        "Points Remaining ($)" = "points_remaining"
-      )
+        "Cost" = "cost",
+        "Points Remaining" = "points_remaining"
+      )) %>%
+      DT::formatCurrency(c(3:4))
   })
 # BAR PLOTS
   # calculate total points spent at each dining location
@@ -578,19 +574,17 @@ server <- function(input, output) {
     group_by(restaurant) %>%
     summarize(freq = n(), total_cost = sum(cost), avg_cost = total_cost/freq) %>%
     arrange(desc(total_cost)) %>%
-      # HAVE TO FIX 2 DIGIT THING HERE, TOO
-    mutate(total_cost = as.numeric(format(round(total_cost, 2), nsmall = 2)),
-           avg_cost = as.numeric(format(round(avg_cost, 2), nsmall = 2))) %>%
     rename("Restaurant" = "restaurant",
            "Frequency" = "freq",
-           "Total Cost ($)" = "total_cost",
-           "Average Cost ($)" = "avg_cost")
+           "Total Cost" = "total_cost",
+           "Average Cost" = "avg_cost")
   })
 
   # BAR PLOT DATA TABLE
   output$food_points_all_info_table <- DT::renderDataTable({
     req(input$daterange)
-    food_points_all_info()
+    DT::datatable(food_points_all_info()) %>%
+      DT::formatCurrency(c(3:4))
   })
 
   #MAP Plot
