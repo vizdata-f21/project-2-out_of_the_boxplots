@@ -28,12 +28,12 @@ template <- read_csv(here::here("data", "input_food_points_data.csv"))
 campus_map <- readPNG(here::here("images", "duke_campus_map.png"))
 
 ## UI ##
-
 ui <- dashboardPage(
   skin = "black",
   dashboardHeader(
-    title = "Food Point Tracker"
-  ),
+    title = tags$a(href='https://vizdata-f21.github.io/project-2-out_of_the_boxplots/',
+                                 tags$img(src = 'food_point_logo.png', height='40', width='180'))
+    ),
   dashboardSidebar(
     sidebarMenu(
       menuItem(
