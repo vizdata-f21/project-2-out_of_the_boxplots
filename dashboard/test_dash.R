@@ -1129,19 +1129,21 @@ server <- function(input, output) {
     geom_line(aes(x = user_x, y = user_y), color = "red") +
     geom_point(aes(x = user_x, y = user_y), color = "red") +
     geom_line(aes(x = reg_x, y = reg_y), color = "red", linetype = "dashed") +
-    geom_text(aes(x = 4.5, y = 1.15),
-              label = "Plan Progression (chosen food point plan)",
+    geom_text(aes(x = 4.5, y = 1.21),
+              label = "Plan Progression\n(chosen food point plan)",
               color = "blue") +
-    geom_text(aes(x = 4.54, y = .65),
-              label = "Actual Progression (uploaded data)",
+    geom_text(aes(x = 4.54, y = .71),
+              label = "Actual Progression\n(uploaded data)",
               color = "red") +
-    geom_text(aes(x = 4.55, y = .15),
-              label = "Expected Progression (linear regression of uploaded data)",
+    geom_text(aes(x = 4.55, y = .21),
+              label = "Expected Progression\n(linear regression of uploaded data)",
               color = "red") +
     ylim(-0.5,1.5) +
     labs(title = "Plan Progression Key") +
+    coord_cartesian(clip = "off") +
     theme_void() +
-    theme(plot.title = element_text(hjust = 0.5, size = 16))
+    theme(plot.title = element_text(hjust = 0.5, size = 16),
+          text = element_text(family = "Times New Roman"))
 
   output$overtime_key <- renderPlot(plot_key, height = 200)
 
