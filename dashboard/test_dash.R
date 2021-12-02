@@ -180,40 +180,57 @@ ui <- dashboardPage(
       tabItem(
         tabName = "spendingtips",
         h2("Food Point Spending Tips"),
+
+
+        fluidRow(
+          column(12,
+                 align = "center", offset = 3,
+                 box(
+                   align = "center", width = 6,
+                   selectInput("tips_needed",
+                               "How Are You Doing With Your Food Points?",
+                               choices = c("I'm Running Low!",
+                                           "I Have Too Many Remaining!"))
+                 )
+          )
+        ),
+
+
         fluidRow(
           # Sidebar with a slider input for the number of bins
           column(12,
           h3("If you are running low on food points:"),
-          p("- Look at the Top 5 Restaurant bar plots and consider frequenting
+          p(tags$ul(
+            tags$li("Look at the Top 5 Restaurant bar plots and consider frequenting
           your top average spending locations less often. If you really enjoy
           these restaurants, consider ordering their $5 Daily Devil Deals,
           instead. If these top locations have a food in common, such as
             coffee, consider getting the monthly Panera coffee card"),
-          p("- View the data table on the Top 5 tab and frequent the location
+            tags$li("View the data table on the Top 5 tab and frequent the location
             with the smallest average spending more often."),
-          p("- View the spending per week visualization and consider how your
+            tags$li("View the spending per week visualization and consider how your
             spending each week compares to your plan’s weekly average. Were
             there particular weeks where your spending was notably above the
             average amount? Consider what was going on during these weeks, and
             how you can use knowledge of this in the future."),
-          p(tags$ul(tags$li("Look at how your plan progression compares to your own spending.
+          tags$li("Look at how your plan progression compares to your own spending.
             Would a different plan be more suitable for you in future
             semesters?"))))),
        fluidRow(
             column(12,
           h3("If you have too many food points remaining:"),
-          p("- Look at the Top 5 Restaurant bar plots and consider frequenting
+          p(tags$ul(
+            tags$li("Look at the Top 5 Restaurant bar plots and consider frequenting
             your top average spending locations more often."),
-          p("- View the spending per week visualization and consider how your
+            tags$li("View the spending per week visualization and consider how your
           spending each week compares to your plan’s weekly average. Were there
           particular weeks where your spending was notably below the average
           amount? Consider what was going on during these weeks, and how you can
           use knowledge of this in the future."),
-          p("- Look at how your plan progression compares to your own spending.
+            tags$li("Look at how your plan progression compares to your own spending.
           Would a different plan be more suitable for you in future semesters?"),
-          p("- Consider going to The Lobby Shop more to stock up on snacks, or
-          getting Merchants on Points."))
-      )),
+            tags$li("Consider going to The Lobby Shop more to stock up on snacks, or
+          getting Merchants on Points.")))))),
       tabItem(
         tabName = "restaurants",
         h2("Your Top 5 Restaurants"),
@@ -968,6 +985,55 @@ server <- function(input, output) {
     plot_top_5()
   })
 
+  # OUTPUT TEXT (NEED TO MAKE WORKING)
+
+#
+#   output$tips_to_be_displayed <- reactive({
+#     switch(input$tips_needed,
+#            "I'm Running Low!" = fluidRow(
+#              # Sidebar with a slider input for the number of bins
+#              column(12,
+#                     h3("If you are running low on food points:"),
+#                     p(tags$ul(
+#                       tags$li("Look at the Top 5 Restaurant bar plots and consider frequenting
+#           your top average spending locations less often. If you really enjoy
+#           these restaurants, consider ordering their $5 Daily Devil Deals,
+#           instead. If these top locations have a food in common, such as
+#             coffee, consider getting the monthly Panera coffee card"),
+#                       tags$li("View the data table on the Top 5 tab and frequent the location
+#             with the smallest average spending more often."),
+#                       tags$li("View the spending per week visualization and consider how your
+#             spending each week compares to your plan’s weekly average. Were
+#             there particular weeks where your spending was notably above the
+#             average amount? Consider what was going on during these weeks, and
+#             how you can use knowledge of this in the future."),
+#                       tags$li("Look at how your plan progression compares to your own spending.
+#             Would a different plan be more suitable for you in future
+#             semesters?"))))),
+#            "I Have Too Many Remaining!" = fluidRow(
+#              column(12,
+#                     h3("If you have too many food points remaining:"),
+#                     p(tags$ul(
+#                       tags$li("Look at the Top 5 Restaurant bar plots and consider frequenting
+#             your top average spending locations more often."),
+#                       tags$li("View the spending per week visualization and consider how your
+#           spending each week compares to your plan’s weekly average. Were there
+#           particular weeks where your spending was notably below the average
+#           amount? Consider what was going on during these weeks, and how you can
+#           use knowledge of this in the future."),
+#                       tags$li("Look at how your plan progression compares to your own spending.
+#           Would a different plan be more suitable for you in future semesters?"),
+#                       tags$li("Consider going to The Lobby Shop more to stock up on snacks, or
+#           getting Merchants on Points."))))))
+#   })
+#
+#   output$tips_to_be_displayed <- renderText({
+#     tips_to_be_displayed()
+#   })
+
+
+
+
   #CAN DELETE BELOW AFTER BLOSSOM FINISHES MAP (keeping just in case)
 
   # # OVERALL LOCATION PLOTS DATA WRANGLING
@@ -1108,13 +1174,13 @@ server <- function(input, output) {
         )
 
       ggplot(time2, aes(x = date, y = points_remaining)) +
-        geom_line(aes(x = date, y = plan_points), color = "blue") +
-        geom_point(color = "red") +
-        geom_line(color = "red") +
+        geom_line(aes(x = date, y = plan_points), color = "blue", size = .9) +
+        geom_point(color = "red", size = 2) +
+        geom_line(color = "red", size = .75) +
         labs(title = "Plan Progression", x = "Weeks", y = "Points Remaining") +
         geom_smooth(
           method = "lm", fullrange = TRUE, se = FALSE,
-          color = "lightcoral", linetype = "dashed"
+          color = "lightcoral", linetype = "dashed", size = .9
         ) +
         scale_x_date(breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
                      minor_breaks = NULL) +
