@@ -148,19 +148,26 @@ ui <- dashboardPage(
         tabName = "locations",
         h2("Where Food Points Are Spent"),
         fluidRow(
-          # Sidebar with a slider input for the number of bins
           column(12,
-                 align = "center",
-                 uiOutput("location_date_range"),
-          ),
-        fluidPage(
-          plotOutput("top_5_locations",
-                     dblclick = "map_dblclick",
-                     brush = brushOpts(id = "map_brush",
-                                       resetOnNew = TRUE)
-              )
-            )
+                 align = "center", offset = 3,
+                 box(
+                   align = "center", width = 6,
+                   uiOutput("location_date_range")
+                 )
           )
+        ),
+        fluidRow(
+          column(12,
+                 align = "center", offset = 1,
+                 box(
+                   align = "center", width = 10, height = 500,
+                   plotOutput("top_5_locations",
+                              dblclick = "map_dblclick",
+                              brush = brushOpts(id = "map_brush",
+                                                resetOnNew = TRUE))
+                 )
+          )
+        )
         ),
       tabItem(
         tabName = "writeup",
@@ -396,7 +403,7 @@ server <- function(input, output) {
         y_coord = case_when(
           campus_location == "West Union" ~ 300,
           campus_location == "Wilson Gym" ~ 30,
-          campus_location == "Bryan Center" ~ 305,
+          campus_location == "Bryan Center" ~ 330,
           campus_location == "Perkins" ~ 380,
           campus_location == "McClendon Tower" ~ 170,
           campus_location == "300 Swift" ~ 440,
@@ -554,8 +561,10 @@ server <- function(input, output) {
                 "Select Range of Dates",
                 min = min(food_points()$date),
                 max = max(food_points()$date),
-                value = c(min(food_points()$date), max(food_points()$date)),
-                timeFormat="%m-%d-%Y")
+                value = c(min(food_points()$date),
+                          max(food_points()$date)),
+                timeFormat="%m-%d-%Y",
+                step = (max(food_points()$date) - min(food_points()$date))/6)
   })
 
   # code for summary table
@@ -687,16 +696,19 @@ server <- function(input, output) {
   map_ranges <- reactiveValues(x = NULL, y = NULL)
 
   top_5_locations <- reactive({
-    ggplot(data = dining_location_freq(), aes(x = x_coord, y = y_coord,
-                                             label = campus_location)) +
+    ggplot(data = dining_location_freq(), aes(x = x_coord, y = y_coord)) +
       background_image(campus_map) +
-      geom_point(aes(colour = factor(campus_location), size = freq)) +
-      geom_label(hjust = 0.5, nudge_y = 0.2) +
+      geom_label(aes(label = paste0(campus_location,
+                                    " (",
+                                    round(100*freq/sum(freq)),
+                                    "%)")), hjust = 0.5, nudge_y = 0.2) +
       xlim(0, 1000) +
       ylim(0, 600) +
       coord_cartesian(xlim = map_ranges$x, ylim = map_ranges$y,
                       expand = FALSE) +
-      labs(title = "Most Frequented Dining Locations on Campus")
+      labs(title = "Campus Dining Location Swipe Frequency\n ") +
+      theme_void() +
+      theme(plot.title = element_text(hjust = 0.5, size = 16))
   })
 
   # detect double-click on map plot, check if there's a brush on the plot.
