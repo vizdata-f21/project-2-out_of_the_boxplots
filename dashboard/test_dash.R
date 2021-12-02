@@ -27,26 +27,6 @@ usage_chart <- read_csv(here::here("data", "usage_chart.csv"))
 template <- read_csv(here::here("data", "input_food_points_data.csv"))
 campus_map <- readPNG(here::here("images", "duke_campus_map.png"))
 
-## SAMPLE PLOTS ##
-
-# ggplot(data = food_points, aes(x = date, y = cost)) +
-#   geom_line() +
-#   geom_smooth(se = FALSE,
-#               linetype = "dashed",
-#               color = "red",
-#               span = .100) +
-#   scale_y_continuous(labels = dollar_format()) +
-#   theme_minimal() +
-#   labs(
-#     x = "Date",
-#     y = "Cost of Meal",
-#     title = "Money Spent on Meals Over Time"
-#   ) +
-#   theme(
-#     plot.title = element_text(hjust = 0.5, face = "bold"),
-#     text = element_text(family = "Times New Roman")
-#   )
-
 ## UI ##
 
 ui <- dashboardPage(
@@ -221,12 +201,6 @@ ui <- dashboardPage(
                  )
           )
 
-        ),
-        fluidRow(
-          column(12,
-                 align = "center",
-                 wellPanel(plotOutput("plot_top_freq_overall_location")))
-
         )
       )
     )
@@ -304,7 +278,7 @@ server <- function(input, output) {
           str_detect(location, "Beyu Blue") ~ "Beyu Blue",
           str_detect(location, "The Cafe") ~ "Cafe",
           str_detect(location, "Farmstead") ~ "Farmstead",
-          str_detect(location, "Gussys|Poblanos") ~ "Food Truck at 300 Swift",
+          str_detect(location, "Gussys|Poblanos") ~ "Food Trucks at 300 Swift",
           str_detect(location, "Ginger and Soy") ~ "Ginger and Soy",
           str_detect(location, "Gyotaku") ~ "Gyotaku",
           str_detect(location, "Il Forno") ~ "Il Forno",
@@ -335,7 +309,7 @@ server <- function(input, output) {
           restaurant == "Beyu Blue" ~ "Bryan Center",
           restaurant == "Cafe" ~ "West Union",
           restaurant == "Farmstead" ~ "West Union",
-          restaurant == "Food Truck at 300 Swift" ~ "300 Swift",
+          restaurant == "Food Trucks at 300 Swift" ~ "300 Swift",
           restaurant == "Ginger and Soy" ~ "West Union",
           restaurant == "Gyotaku" ~ "West Union",
           restaurant == "Il Forno" ~ "West Union",
@@ -356,10 +330,10 @@ server <- function(input, output) {
           restaurant == "Thrive Kitchen" ~ "300 Swift",
           restaurant == "Trinity Cafe" ~ "East Campus",
           restaurant == "Twinnies" ~ "E-Quad",
-          restaurant == "Vending Machine" ~ "Duke's Campus",
+          restaurant == "Vending Machine" ~ "Around Duke's Campus",
           restaurant == "Vondy" ~ "Perkins",
-          restaurant == "Other" ~ "Duke's Campus",
-          TRUE ~ "Duke's Campus"
+          restaurant == "Other" ~ "Around Duke's Campus",
+          TRUE ~ "Around Duke's Campus"
         ),
         # mutate cost variable to make it numeric
         cost = as.numeric(str_extract_all(amount, "[0-9]*\\.[0-9]*")),
@@ -370,17 +344,17 @@ server <- function(input, output) {
 
   # create logo image variable for bar plot
   label_logos <- c(
-    "Bella Union" = "Bella Union",
+    "Bella Union" = "<img src='www/bella-union.png' width='110' />",
     "Beyu Blue" = "<img src='www/beyu_blue.jpeg' width='100' />",
     "Cafe" = "<img src='www/cafe.png' width='75' />",
-    "Farmstead" = "<img src='www/farmstead.jpeg' width='100' />",
-    "Food Truck at 300 Swift" = "Food Truck at 300 Swift",
+    "Farmstead" = "<img src='www/farmstead.jpeg' width='110' />",
+    "Food Trucks at 300 Swift" = "<img src='www/food-trucks-300-swift.png' width='110' />",
     "Ginger and Soy" = "<img src='www/ginger-and-soy.jpeg' width='110' />",
     "Gyotaku" = "<img src='www/gyotaku.jpeg' width='100' />",
     "Il Forno" = "<img src='www/il_forno.png' width='100' />",
     "JBs Roast and Chops" = "<img src='www/jbs.jpeg' width='110' />",
     "The Devil's Krafthouse" = "<img src='www/krafthouse.jpeg' width='100' />",
-    "The Lobby Shop" = "The Lobby Shop",
+    "The Lobby Shop" = "<img src='www/lobby-shop.png' width='110' />",
     "McDonalds" = "<img src='www/mcdonalds.png' width='100' />",
     "Nasher Cafe" = "<img src='www/nasher-cafe.jpeg' width='100' />",
     "Panda Express" = "<img src='www/panda_express.png' width='100' />",
@@ -395,22 +369,54 @@ server <- function(input, output) {
     "Thrive Kitchen" = "<img src='www/thrive.png' width='100' />",
     "Trinity Cafe" = "<img src='www/trinity-cafe.jpeg' width='100' />",
     "Twinnies" = "<img src='www/twinnies.jpeg' width='100' />",
-    "Vending Machine" = "Vending Machine",
-    "Vondy" = "<img src='www/vondy.png' width='100' />"
+    "Vending Machine" = "<img src='www/vending.png' width='110' />",
+    "Vondy" = "<img src='www/vondy.png' width='100' />",
+    "Other" = "<img src='www/other.png' width='110' />"
+  )
+
+  label_logos_medium <- c(
+    "Bella Union" = "<img src='www/bella-union.png' width='90' />",
+    "Beyu Blue" = "<img src='www/beyu_blue.jpeg' width='80' />",
+    "Cafe" = "<img src='www/cafe.png' width='60' />",
+    "Farmstead" = "<img src='www/farmstead.jpeg' width='90' />",
+    "Food Trucks at 300 Swift" = "<img src='www/food-trucks-300-swift.png' width='90' />",
+    "Ginger and Soy" = "<img src='www/ginger-and-soy.jpeg' width='90' />",
+    "Gyotaku" = "<img src='www/gyotaku.jpeg' width='70' />",
+    "Il Forno" = "<img src='www/il_forno.png' width='75' />",
+    "JBs Roast and Chops" = "<img src='www/jbs.jpeg' width='70' />",
+    "The Devil's Krafthouse" = "<img src='www/krafthouse.jpeg' width='70' />",
+    "The Lobby Shop" = "<img src='www/lobby-shop.png' width='90' />",
+    "McDonalds" = "<img src='www/mcdonalds.png' width='70' />",
+    "Nasher Cafe" = "<img src='www/nasher-cafe.jpeg' width='70' />",
+    "Panda Express" = "<img src='www/panda_express.png' width='70' />",
+    "Panera" = "<img src='www/panera.png' width='70' />",
+    "Pitchfork's" = "<img src='www/pitchforks.jpeg' width='70' />",
+    "Red Mango" = "<img src='www/red_mango.png' width='70' />",
+    "Sazon" = "<img src='www/sazon.png' width='70' />",
+    "The Skillet" = "<img src='www/skillet.jpeg' width='70' />t",
+    "Sprout" = "<img src='www/sprout.jpeg' width='70' />",
+    "Tandoor" = "<img src='www/tandoor.jpeg' width='70' />",
+    "The Loop" = "<img src='www/the_loop.jpeg' width='70' />",
+    "Thrive Kitchen" = "<img src='www/thrive.png' width='70' />",
+    "Trinity Cafe" = "<img src='www/trinity-cafe.jpeg' width='70' />",
+    "Twinnies" = "<img src='www/twinnies.jpeg' width='70' />",
+    "Vending Machine" = "<img src='www/vending.png' width='90' />",
+    "Vondy" = "<img src='www/vondy.png' width='80' />",
+    "Other" = "<img src='www/other.png' width='90' />"
   )
 
   label_logos_small <- c(
-    "Bella Union" = "Bella Union",
+    "Bella Union" = "<img src='www/bella-union.png' width='60' />",
     "Beyu Blue" = "<img src='www/beyu_blue.jpeg' width='50' />",
     "Cafe" = "<img src='www/cafe.png' width='40' />",
     "Farmstead" = "<img src='www/farmstead.jpeg' width='50' />",
-    "Food Truck at 300 Swift" = "Food Truck at 300 Swift",
+    "Food Trucks at 300 Swift" = "<img src='www/food-trucks-300-swift.png' width='60' />",
     "Ginger and Soy" = "<img src='www/ginger-and-soy.jpeg' width='50' />",
     "Gyotaku" = "<img src='www/gyotaku.jpeg' width='50' />",
     "Il Forno" = "<img src='www/il_forno.png' width='55' />",
     "JBs Roast and Chops" = "<img src='www/jbs.jpeg' width='50' />",
     "The Devil's Krafthouse" = "<img src='www/krafthouse.jpeg' width='50' />",
-    "The Lobby Shop" = "The Lobby Shop",
+    "The Lobby Shop" = "<img src='www/lobby-shop.png' width='60' />",
     "McDonalds" = "<img src='www/mcdonalds.png' width='50' />",
     "Nasher Cafe" = "<img src='www/nasher-cafe.jpeg' width='50' />",
     "Panda Express" = "<img src='www/panda_express.png' width='50' />",
@@ -425,8 +431,9 @@ server <- function(input, output) {
     "Thrive Kitchen" = "<img src='www/thrive.png' width='50' />",
     "Trinity Cafe" = "<img src='www/trinity-cafe.jpeg' width='50' />",
     "Twinnies" = "<img src='www/twinnies.jpeg' width='50' />",
-    "Vending Machine" = "Vending Machine",
-    "Vondy" = "<img src='www/vondy.png' width='50' />"
+    "Vending Machine" = "<img src='www/vending.png' width='50' />",
+    "Vondy" = "<img src='www/vondy.png' width='60' />",
+    "Other" = "<img src='www/other.png' width='60' />"
   )
 
   # set colors for each dining location
@@ -435,7 +442,7 @@ server <- function(input, output) {
     "Beyu Blue" = "#263770",
     "Cafe" = "#000000",
     "Farmstead" = "#ABE874",
-    "Food Truck at 300 Swift" = "#56645F",
+    "Food Trucks at 300 Swift" = "#56645F",
     "Ginger and Soy" = "#FFF80B",
     "Gyotaku" = "#8b0000",
     "Il Forno" = "#E6011D",
@@ -457,7 +464,8 @@ server <- function(input, output) {
     "Trinity Cafe" = "#0F635F",
     "Twinnies" = "#4c2c3c",
     "Vending Machine" = "#3f4a34",
-    "Vondy" = "darkslategray1"
+    "Vondy" = "darkslategray1",
+    "Other" = "gray"
   )
 
   #code for date ranges
@@ -524,19 +532,15 @@ server <- function(input, output) {
       select(date, restaurant, cost, points_remaining) %>%
       arrange(points_remaining) %>%
       mutate(
-        cost = paste0("$", format(cost, digits = 3)),
-        points_remaining = paste0(
-          "$",
-          format(points_remaining,
-                 digits = 5
-          )
-        )
+        # NOT LEAVING 2 DIGITS --> IDK HOW TO FIX THIS, B/C NEEDS TO BE # IN TABLE
+        cost = as.numeric(format(round(cost, 2), nsmall = 2)),
+        points_remaining = as.numeric(format(round(points_remaining, 2), nsmall = 2))
       ) %>%
       rename(
-        "Date" = "date",
+        "Date (Y-M-D)" = "date",
         "Restaurant" = "restaurant",
-        "Cost" = "cost",
-        "Points Remaining" = "points_remaining"
+        "Cost ($)" = "cost",
+        "Points Remaining ($)" = "points_remaining"
       )
   })
 # BAR PLOTS
@@ -574,12 +578,13 @@ server <- function(input, output) {
     group_by(restaurant) %>%
     summarize(freq = n(), total_cost = sum(cost), avg_cost = total_cost/freq) %>%
     arrange(desc(total_cost)) %>%
-    mutate(total_cost = paste0("$", round(total_cost, 2)),
-           avg_cost = paste0("$", round(avg_cost, 2))) %>%
+      # HAVE TO FIX 2 DIGIT THING HERE, TOO
+    mutate(total_cost = as.numeric(format(round(total_cost, 2), nsmall = 2)),
+           avg_cost = as.numeric(format(round(avg_cost, 2), nsmall = 2))) %>%
     rename("Restaurant" = "restaurant",
            "Frequency" = "freq",
-           "Total Cost" = "total_cost",
-           "Average Cost" = "avg_cost")
+           "Total Cost ($)" = "total_cost",
+           "Average Cost ($)" = "avg_cost")
   })
 
   # BAR PLOT DATA TABLE
@@ -646,7 +651,7 @@ server <- function(input, output) {
       labs(
         x = NULL,
         y = "\nTotal Food Points Spent\n",
-        title = "\nTotal Food Points Spent\nper Dining Location"
+        title = "\nTotal Food Points Spent\nper Restaurant"
       ) +
       coord_cartesian(clip = "off") +
       theme(
@@ -673,7 +678,7 @@ server <- function(input, output) {
       labs(
         x = NULL,
         y = "\nTotal Number of Swipes\n",
-        title = "\nTotal Number of Card Swipes\nper Dining Location"
+        title = "\nTotal Number of Card Swipes\nper Restaurant"
       ) +
       scale_x_discrete(name = NULL, labels = label_logos) +
       scale_y_continuous(labels = label_number(accuracy = 1)) +
@@ -707,7 +712,7 @@ server <- function(input, output) {
       labs(
         x = NULL,
         y = "\nAverage Food Points Spent\nper Transaction\n",
-        title = "\nAverage Food Points Spent\nper Transaction at Dining Location"
+        title = "\nAverage Food Points Spent\nper Transaction at Restaurant"
       ) +
       coord_cartesian(clip = "off") +
       theme(
@@ -736,7 +741,7 @@ server <- function(input, output) {
           labs(
             x = NULL,
             y = "\nTotal Number of Swipes",
-            title = "Total Number of Card Swipes\nper Dining Location"
+            title = "Total Number of Card Swipes\nper Restaurant"
           ) +
           scale_x_discrete(name = NULL, labels = label_logos_small) +
           scale_y_continuous(labels = label_number(accuracy = 1)) +
@@ -770,7 +775,7 @@ server <- function(input, output) {
           labs(
             x = NULL,
             y = "\nTotal Food Points Spent",
-            title = "Total Food Points Spent\nper Dining Location"
+            title = "Total Food Points Spent\nper Restaurant"
           ) +
           coord_cartesian(clip = "off") +
           theme(
@@ -796,12 +801,12 @@ server <- function(input, output) {
           geom_text(vjust = -1, size = 3) +
           theme_minimal() +
           scale_y_continuous(labels = dollar_format()) +
-          scale_x_discrete(name = NULL, labels = label_logos_small) +
+          scale_x_discrete(name = NULL, labels = label_logos_medium) +
           scale_fill_manual(values = restaurant_colors) +
           labs(
             x = NULL,
             y = "\nAverage Food Points Spent\nper Transaction",
-            title = "Average Food Points Spent\nper Transaction at Dining Location"
+            title = "Average Food Points Spent\nper Transaction at Restaurant"
           ) +
           coord_cartesian(clip = "off") +
           theme(
@@ -836,46 +841,48 @@ server <- function(input, output) {
     plot_top_5()
   })
 
-  # OVERALL LOCATION PLOTS DATA WRANGLING
+  #CAN DELETE BELOW AFTER BLOSSOM FINISHES MAP (keeping just in case)
 
-  food_points_overall_location_freq <- reactive({
-    food_points() %>%
-      filter(date >= input$daterange[1] & date <= input$daterange[2]) %>%
-      group_by(campus_location) %>%
-      count() %>%
-      arrange(desc(n)) %>%
-      rename(freq = n) %>%
-      mutate(prop = freq / nrow(food_points),
-             bar = 1) %>%
-      head(5) })
-
-  # OVERALL LOCATION PLOTS GGPLOT
-
-  plot_top_freq_overall_location <- reactive({
-  ggplot(
-    data = food_points_overall_location_freq(),
-    aes(
-      x = bar,
-      y = prop,
-      fill = fct_reorder(campus_location, prop))
-  ) +
-    geom_bar(position = "fill", stat = "identity") +
-    coord_flip() +
-    #scale_y_continuous(labels = percent_format()) +
-    theme_minimal() +
-    labs(
-      x = NULL,
-      y = "\n Percent of Total Number of Swipes",
-      fill = "Dining Location",
-      title = "Percent of Total Number of Card Swipes\nper Dining Location"
-    ) +
-    theme(
-      plot.title = element_text(hjust = 0.5, face = "bold"),
-      panel.grid.major.y = element_blank(),
-      panel.grid.minor.y = element_blank(),
-      axis.text.y = element_markdown(),
-      text = element_text(family = "Times New Roman")
-    )})
+  # # OVERALL LOCATION PLOTS DATA WRANGLING
+  #
+  # food_points_overall_location_freq <- reactive({
+  #   food_points() %>%
+  #     filter(date >= input$daterange[1] & date <= input$daterange[2]) %>%
+  #     group_by(campus_location) %>%
+  #     count() %>%
+  #     arrange(desc(n)) %>%
+  #     rename(freq = n) %>%
+  #     mutate(prop = freq / nrow(food_points),
+  #            bar = 1) %>%
+  #     head(5) })
+  #
+  # # OVERALL LOCATION PLOTS GGPLOT
+  #
+  # plot_top_freq_overall_location <- reactive({
+  # ggplot(
+  #   data = food_points_overall_location_freq(),
+  #   aes(
+  #     x = bar,
+  #     y = prop,
+  #     fill = fct_reorder(campus_location, prop))
+  # ) +
+  #   geom_bar(position = "fill", stat = "identity") +
+  #   coord_flip() +
+  #   #scale_y_continuous(labels = percent_format()) +
+  #   theme_minimal() +
+  #   labs(
+  #     x = NULL,
+  #     y = "\n Percent of Total Number of Swipes",
+  #     fill = "Dining Location",
+  #     title = "Percent of Total Number of Card Swipes\nper Dining Location"
+  #   ) +
+  #   theme(
+  #     plot.title = element_text(hjust = 0.5, face = "bold"),
+  #     panel.grid.major.y = element_blank(),
+  #     panel.grid.minor.y = element_blank(),
+  #     axis.text.y = element_markdown(),
+  #     text = element_text(family = "Times New Roman")
+  #   )})
 
 
   # time series plots
