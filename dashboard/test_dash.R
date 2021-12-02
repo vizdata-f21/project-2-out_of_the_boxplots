@@ -148,10 +148,13 @@ ui <- dashboardPage(
                  align = "center",
                  uiOutput("location_date_range"),
           ),
-          box(tableOutput("values"))
-        ),
         fluidPage(
-          plotOutput("top_5_locations")
+          plotOutput("top_5_locations",
+                     dblclick = "map_dblclick",
+                     brush = brushOpts(id = "map_brush",
+                                       resetOnNew = TRUE)
+              )
+            )
           )
         ),
       tabItem(
@@ -638,6 +641,10 @@ server <- function(input, output) {
       rename(avg = name)
 
   })
+
+  # zoomable map plot
+  map_ranges <- reactiveValues(x = NULL, y = NULL)
+
   top_5_locations <- reactive({
     ggplot(data = dining_location_freq(), aes(x = x_coord, y = y_coord,
                                              color = campus_location,
@@ -646,7 +653,22 @@ server <- function(input, output) {
       geom_point() +
       xlim(0, 1000) +
       ylim(0, 600) +
+      coord_cartesian(xlim = map_ranges$x, ylim = map_ranges$y,
+                      expand = FALSE) +
       labs(title = "Most Frequented Dining Locations on Campus")
+  })
+
+  # detect double-click on map plot, check if there's a brush on the plot.
+  # If so, zoom to the brush bounds; if not, reset the zoom.
+  observeEvent(input$map_dblclick, {
+    brush <- input$map_brush
+    if (!is.null(brush)) {
+      map_ranges$x <- c(brush$xmin, brush$xmax)
+      map_ranges$y <- c(brush$ymin, brush$ymax)
+    } else {
+      map_ranges$x <- NULL
+      map_ranges$y <- NULL
+    }
   })
 
   # BAR PLOT GGPLOT CODE
