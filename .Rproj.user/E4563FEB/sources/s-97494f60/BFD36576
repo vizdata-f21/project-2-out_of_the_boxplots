@@ -1,0 +1,26 @@
+{
+    "id": "BFD36576",
+    "path": "~/R/project-2-out_of_the_boxplots/dashboard/test_dash.R",
+    "project_path": "dashboard/test_dash.R",
+    "type": "r_source",
+    "hash": "506352511",
+    "contents": "",
+    "dirty": false,
+    "created": 1638244579326.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "956,29",
+        "scrollLine": "948"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1638472011,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1638472011944,
+    "read_only": false,
+    "read_only_alternatives": []
+}
