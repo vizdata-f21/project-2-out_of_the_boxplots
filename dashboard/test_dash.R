@@ -153,10 +153,10 @@ ui <- dashboardPage(
                  box(
                    align = "center", width = 6,
                    uiOutput("location_date_range"),
-                   selectInput("map_selection",
-                               "Choose a Map:",
-                               choices = c("Swipes",
-                                           "Spending"))
+                   # selectInput("map_selection",
+                   #             "Choose a Map:",
+                   #             choices = c("Swipes",
+                   #                         "Spending"))
                  )
           )
         ),
@@ -165,7 +165,7 @@ ui <- dashboardPage(
                  align = "center", offset = 1,
                  box(
                    align = "center", width = 10, height = 500,
-                   h3("Title"),
+                   h3("Campus Dining"),
                    leafletOutput("leafmap")
                    # plotOutput("top_5_locations",
                    #            dblclick = "map_dblclick",
@@ -781,21 +781,14 @@ server <- function(input, output) {
                              campus_location == "E-Quad" ~ 36.003635,
                              campus_location == "East Campus" ~ 36.007619,
                              TRUE ~ 36.002414),
-             pop = case_when(campus_location == "West Union" ~ "test",
-                             campus_location == "Wilson Gym" ~ "test",
-                             campus_location == "Bryan Center" ~ "test",
-                             campus_location == "Perkins" ~ "test",
-                             campus_location == "McClendon Tower" ~ "test",
-                             campus_location == "300 Swift" ~ "test",
-                             campus_location == "The Nasher" ~ "test",
-                             campus_location == "E-Quad" ~ "test",
-                             campus_location == "East Campus" ~ "test",
-                             TRUE ~ "36.002414"))
+             pop = paste(sep = "<br/>",
+                         paste0("<b>", campus_location, "</b>"),
+                         paste0("Swipes: ", freq, " (", round(100*freq/sum(tmp$freq)),"%)"),
+                         paste0("Spending: $", round(spending,2), " (", round(100*spending/sum(tmp$spending)), "%)")))
 
     leaflet(data = mapdf) %>%
       addTiles() %>%
-      addMarkers(~lng, ~lat, label = ~campus_location, popup = ~pop,
-                 labelOptions = labelOptions(noHide = TRUE))
+      addMarkers(~lng, ~lat, popup = ~pop)
   })
 
   # BAR PLOT GGPLOT CODE
