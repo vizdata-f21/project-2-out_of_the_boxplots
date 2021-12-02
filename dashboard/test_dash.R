@@ -165,10 +165,12 @@ ui <- dashboardPage(
                  align = "center", offset = 1,
                  box(
                    align = "center", width = 10, height = 500,
-                   plotOutput("top_5_locations",
-                              dblclick = "map_dblclick",
-                              brush = brushOpts(id = "map_brush",
-                                                resetOnNew = TRUE))
+                   h3("Title"),
+                   leafletOutput("leafmap")
+                   # plotOutput("top_5_locations",
+                   #            dblclick = "map_dblclick",
+                   #            brush = brushOpts(id = "map_brush",
+                   #                              resetOnNew = TRUE))
                  )
           )
         )
@@ -180,60 +182,40 @@ ui <- dashboardPage(
       tabItem(
         tabName = "spendingtips",
         h2("Food Point Spending Tips"),
-
-
         fluidRow(
+          # Sidebar with a slider input for the number of bins
           column(12,
-                 align = "center", offset = 3,
-                 box(
-                   align = "center", width = 6,
-                   selectInput("tips_options",
-                               "How Are You Doing With Your Food Points?",
-                               choices = c("I'm Running Low!",
-                                           "I Have Too Many Remaining!"))
-                 )
-          )
-        ),
-        fluidRow(
-          textOutput("tips_needed")
-        )),
-#
-#
-#         fluidRow(
-#           # Sidebar with a slider input for the number of bins
-#           column(12,
-#           h3("If you are running low on food points:"),
-#           p(tags$ul(
-#             tags$li("Look at the Top 5 Restaurant bar plots and consider frequenting
-#           your top average spending locations less often. If you really enjoy
-#           these restaurants, consider ordering their $5 Daily Devil Deals,
-#           instead. If these top locations have a food in common, such as
-#             coffee, consider getting the monthly Panera coffee card"),
-#             tags$li("View the data table on the Top 5 tab and frequent the location
-#             with the smallest average spending more often."),
-#             tags$li("View the spending per week visualization and consider how your
-#             spending each week compares to your plan’s weekly average. Were
-#             there particular weeks where your spending was notably above the
-#             average amount? Consider what was going on during these weeks, and
-#             how you can use knowledge of this in the future."),
-#           tags$li("Look at how your plan progression compares to your own spending.
-#             Would a different plan be more suitable for you in future
-#             semesters?"))))),
-#        fluidRow(
-#             column(12,
-#           h3("If you have too many food points remaining:"),
-#           p(tags$ul(
-#             tags$li("Look at the Top 5 Restaurant bar plots and consider frequenting
-#             your top average spending locations more often."),
-#             tags$li("View the spending per week visualization and consider how your
-#           spending each week compares to your plan’s weekly average. Were there
-#           particular weeks where your spending was notably below the average
-#           amount? Consider what was going on during these weeks, and how you can
-#           use knowledge of this in the future."),
-#             tags$li("Look at how your plan progression compares to your own spending.
-#           Would a different plan be more suitable for you in future semesters?"),
-#             tags$li("Consider going to The Lobby Shop more to stock up on snacks, or
-#           getting Merchants on Points.")))))),
+          h3("If you are running low on food points:"),
+          p("- Look at the Top 5 Restaurant bar plots and consider frequenting
+          your top average spending locations less often. If you really enjoy
+          these restaurants, consider ordering their $5 Daily Devil Deals,
+          instead. If these top locations have a food in common, such as
+            coffee, consider getting the monthly Panera coffee card"),
+          p("- View the data table on the Top 5 tab and frequent the location
+            with the smallest average spending more often."),
+          p("- View the spending per week visualization and consider how your
+            spending each week compares to your plan’s weekly average. Were
+            there particular weeks where your spending was notably above the
+            average amount? Consider what was going on during these weeks, and
+            how you can use knowledge of this in the future."),
+          p(tags$ul(tags$li("Look at how your plan progression compares to your own spending.
+            Would a different plan be more suitable for you in future
+            semesters?"))))),
+       fluidRow(
+            column(12,
+          h3("If you have too many food points remaining:"),
+          p("- Look at the Top 5 Restaurant bar plots and consider frequenting
+            your top average spending locations more often."),
+          p("- View the spending per week visualization and consider how your
+          spending each week compares to your plan’s weekly average. Were there
+          particular weeks where your spending was notably below the average
+          amount? Consider what was going on during these weeks, and how you can
+          use knowledge of this in the future."),
+          p("- Look at how your plan progression compares to your own spending.
+          Would a different plan be more suitable for you in future semesters?"),
+          p("- Consider going to The Lobby Shop more to stock up on snacks, or
+          getting Merchants on Points."))
+      )),
       tabItem(
         tabName = "restaurants",
         h2("Your Top 5 Restaurants"),
@@ -274,11 +256,13 @@ ui <- dashboardPage(
                    align = "center", width = 8,
                    DT::dataTableOutput("food_points_all_info_table")
                  )
+          )
 
         )
+      )
     )
   )
-)))
+)
 
 
 ## SERVER ##
@@ -686,91 +670,132 @@ server <- function(input, output) {
 
   #MAP Plot
   #calculate most frequent locations visited within slider
-  top_5_location_spend <- reactive({
-    food_points() %>%
-      filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
-      group_by(restaurant) %>%
-      summarise(total_spent = sum(cost)) %>%
-      arrange(desc(total_spent)) %>%
-      head(5)
-  })
+  # top_5_location_spend <- reactive({
+  #   food_points() %>%
+  #     filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
+  #     group_by(restaurant) %>%
+  #     summarise(total_spent = sum(cost)) %>%
+  #     arrange(desc(total_spent)) %>%
+  #     head(5)
+  # })
 
   dining_location_freq <- reactive({
     food_points() %>%
       filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
-      group_by(campus_location, x_coord, y_coord) %>%
+      group_by(campus_location) %>%#, x_coord, y_coord) %>%
       count() %>%
-      arrange(desc(n)) %>%
+      # arrange(desc(n)) %>%
       rename(freq = n)
   })
 
   dining_location_spend <- reactive({
     food_points() %>%
       filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
-      group_by(campus_location, x_coord, y_coord) %>%
+      group_by(campus_location) %>%#, x_coord, y_coord) %>%
       summarise("spending" = sum(cost))
   })
 
-  top_5_location_avg <- reactive({
-    food_points() %>%
-      filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
-      group_by(restaurant) %>%
-      summarise_at(vars(cost), list(name = mean)) %>%
-      head(5) %>%
-      rename(avg = name)
+  # top_5_location_avg <- reactive({
+  #   food_points() %>%
+  #     filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
+  #     group_by(restaurant) %>%
+  #     summarise_at(vars(cost), list(name = mean)) %>%
+  #     head(5) %>%
+  #     rename(avg = name)
+  #
+  # })
 
-  })
+  # # zoomable map plot
+  # map_ranges <- reactiveValues(x = NULL, y = NULL)
+  #
+  # top_5_locations <- reactive({
+  #   ggplot(data = dining_location_freq(), aes(x = x_coord, y = y_coord)) +
+  #     background_image(campus_map) +
+  #     geom_label(aes(label = paste0(campus_location,
+  #                                   ": ",
+  #                                   freq,
+  #                                   " (",
+  #                                   round(100*freq/sum(freq)),
+  #                                   "%)")), hjust = 0.5, nudge_y = 0.2) +
+  #     xlim(0, 1000) +
+  #     ylim(0, 600) +
+  #     coord_cartesian(xlim = map_ranges$x, ylim = map_ranges$y,
+  #                     expand = FALSE) +
+  #     labs(title = "Campus Dining Location Swipes \n ") +
+  #     theme_void() +
+  #     theme(plot.title = element_text(hjust = 0.5, size = 16))
+  # })
+  #
+  # top_5_locations2 <- reactive({
+  #   ggplot(data = dining_location_spend(), aes(x = x_coord, y = y_coord)) +
+  #     background_image(campus_map) +
+  #     geom_label(aes(label = paste0(campus_location,
+  #                                   ": $",
+  #                                   round(spending,2),
+  #                                   " (",
+  #                                   round(100*spending/sum(spending)),
+  #                                   "%)")), hjust = 0.5, nudge_y = 0.2) +
+  #     xlim(0, 1000) +
+  #     ylim(0, 600) +
+  #     coord_cartesian(xlim = map_ranges$x, ylim = map_ranges$y,
+  #                     expand = FALSE) +
+  #     labs(title = "Campus Dining Location Spending \n ") +
+  #     theme_void() +
+  #     theme(plot.title = element_text(hjust = 0.5, size = 16))
+  # })
+  #
+  # # detect double-click on map plot, check if there's a brush on the plot.
+  # # If so, zoom to the brush bounds; if not, reset the zoom.
+  # observeEvent(input$map_dblclick, {
+  #   brush <- input$map_brush
+  #   if (!is.null(brush)) {
+  #     map_ranges$x <- c(brush$xmin, brush$xmax)
+  #     map_ranges$y <- c(brush$ymin, brush$ymax)
+  #   } else {
+  #     map_ranges$x <- NULL
+  #     map_ranges$y <- NULL
+  #   }
+  # })
 
-  # zoomable map plot
-  map_ranges <- reactiveValues(x = NULL, y = NULL)
+  output$leafmap <- renderLeaflet({
+    tmp <- left_join(dining_location_freq(), dining_location_spend(), by = "campus_location")
 
-  top_5_locations <- reactive({
-    ggplot(data = dining_location_freq(), aes(x = x_coord, y = y_coord)) +
-      background_image(campus_map) +
-      geom_label(aes(label = paste0(campus_location,
-                                    ": ",
-                                    freq,
-                                    " (",
-                                    round(100*freq/sum(freq)),
-                                    "%)")), hjust = 0.5, nudge_y = 0.2) +
-      xlim(0, 1000) +
-      ylim(0, 600) +
-      coord_cartesian(xlim = map_ranges$x, ylim = map_ranges$y,
-                      expand = FALSE) +
-      labs(title = "Campus Dining Location Swipes \n ") +
-      theme_void() +
-      theme(plot.title = element_text(hjust = 0.5, size = 16))
-  })
+    mapdf <- tmp %>%
+      mutate(lng = case_when(campus_location == "West Union" ~ -78.939454,
+                             campus_location == "Wilson Gym" ~ -78.941449,
+                             campus_location == "Bryan Center" ~ -78.941014,
+                             campus_location == "Perkins" ~ -78.938645,
+                             campus_location == "McClendon Tower" ~ -78.937178,
+                             campus_location == "300 Swift" ~ -78.922188,
+                             campus_location == "The Nasher" ~ -78.929123,
+                             campus_location == "E-Quad" ~ -78.940290,
+                             campus_location == "East Campus" ~ -78.914628,
+                             TRUE ~ -78.933194),
+             lat = case_when(campus_location == "West Union" ~ 36.000774,
+                             campus_location == "Wilson Gym" ~ 35.997383,
+                             campus_location == "Bryan Center" ~ 36.001009,
+                             campus_location == "Perkins" ~ 36.002389,
+                             campus_location == "McClendon Tower" ~ 35.999341,
+                             campus_location == "300 Swift" ~ 36.002853,
+                             campus_location == "The Nasher" ~ 35.999024,
+                             campus_location == "E-Quad" ~ 36.003635,
+                             campus_location == "East Campus" ~ 36.007619,
+                             TRUE ~ 36.002414),
+             pop = case_when(campus_location == "West Union" ~ "test",
+                             campus_location == "Wilson Gym" ~ "test",
+                             campus_location == "Bryan Center" ~ "test",
+                             campus_location == "Perkins" ~ "test",
+                             campus_location == "McClendon Tower" ~ "test",
+                             campus_location == "300 Swift" ~ "test",
+                             campus_location == "The Nasher" ~ "test",
+                             campus_location == "E-Quad" ~ "test",
+                             campus_location == "East Campus" ~ "test",
+                             TRUE ~ "36.002414"))
 
-  top_5_locations2 <- reactive({
-    ggplot(data = dining_location_spend(), aes(x = x_coord, y = y_coord)) +
-      background_image(campus_map) +
-      geom_label(aes(label = paste0(campus_location,
-                                    ": $",
-                                    round(spending,2),
-                                    " (",
-                                    round(100*spending/sum(spending)),
-                                    "%)")), hjust = 0.5, nudge_y = 0.2) +
-      xlim(0, 1000) +
-      ylim(0, 600) +
-      coord_cartesian(xlim = map_ranges$x, ylim = map_ranges$y,
-                      expand = FALSE) +
-      labs(title = "Campus Dining Location Spending \n ") +
-      theme_void() +
-      theme(plot.title = element_text(hjust = 0.5, size = 16))
-  })
-
-  # detect double-click on map plot, check if there's a brush on the plot.
-  # If so, zoom to the brush bounds; if not, reset the zoom.
-  observeEvent(input$map_dblclick, {
-    brush <- input$map_brush
-    if (!is.null(brush)) {
-      map_ranges$x <- c(brush$xmin, brush$xmax)
-      map_ranges$y <- c(brush$ymin, brush$ymax)
-    } else {
-      map_ranges$x <- NULL
-      map_ranges$y <- NULL
-    }
+    leaflet(data = mapdf) %>%
+      addTiles() %>%
+      addMarkers(~lng, ~lat, label = ~campus_location, popup = ~pop,
+                 labelOptions = labelOptions(noHide = TRUE))
   })
 
   # BAR PLOT GGPLOT CODE
@@ -986,49 +1011,6 @@ server <- function(input, output) {
     plot_top_5()
   })
 
-  # OUTPUT TEXT (NEED TO MAKE WORKING)
-
-
-  output$tips_needed <- renderPrint({
-    switch(input$tips_options,
-           "I'm Running Low!" = p(tags$ul(
-                      tags$li("Look at the Top 5 Restaurant bar plots and consider frequenting
-          your top average spending locations less often. If you really enjoy
-          these restaurants, consider ordering their $5 Daily Devil Deals,
-          instead. If these top locations have a food in common, such as
-            coffee, consider getting the monthly Panera coffee card"),
-                      tags$li("View the data table on the Top 5 tab and frequent the location
-            with the smallest average spending more often."),
-                      tags$li("View the spending per week visualization and consider how your
-            spending each week compares to your plan’s weekly average. Were
-            there particular weeks where your spending was notably above the
-            average amount? Consider what was going on during these weeks, and
-            how you can use knowledge of this in the future."),
-                      tags$li("Look at how your plan progression compares to your own spending.
-            Would a different plan be more suitable for you in future
-            semesters?"))),
-
-           "I Have Too Many Remaining!" = p(tags$ul(
-                      tags$li("Look at the Top 5 Restaurant bar plots and consider frequenting
-            your top average spending locations more often."),
-                      tags$li("View the spending per week visualization and consider how your
-          spending each week compares to your plan’s weekly average. Were there
-          particular weeks where your spending was notably below the average
-          amount? Consider what was going on during these weeks, and how you can
-          use knowledge of this in the future."),
-                      tags$li("Look at how your plan progression compares to your own spending.
-          Would a different plan be more suitable for you in future semesters?"),
-                      tags$li("Consider going to The Lobby Shop more to stock up on snacks, or
-          getting Merchants on Points."))))
-  })
-
-  # output$tips_to_be_displayed <- renderText({
-  #   tips_to_be_displayed()
-  # })
-
-
-
-
   #CAN DELETE BELOW AFTER BLOSSOM FINISHES MAP (keeping just in case)
 
   # # OVERALL LOCATION PLOTS DATA WRANGLING
@@ -1169,13 +1151,13 @@ server <- function(input, output) {
         )
 
       ggplot(time2, aes(x = date, y = points_remaining)) +
-        geom_line(aes(x = date, y = plan_points), color = "blue", size = .9) +
-        geom_point(color = "red", size = 2) +
-        geom_line(color = "red", size = .75) +
+        geom_line(aes(x = date, y = plan_points), color = "blue") +
+        geom_point(color = "red") +
+        geom_line(color = "red") +
         labs(title = "Plan Progression", x = "Weeks", y = "Points Remaining") +
         geom_smooth(
           method = "lm", fullrange = TRUE, se = FALSE,
-          color = "lightcoral", linetype = "dashed", size = .9
+          color = "lightcoral", linetype = "dashed"
         ) +
         scale_x_date(breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
                      minor_breaks = NULL) +
