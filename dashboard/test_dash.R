@@ -17,6 +17,7 @@ library(tools)
 library(ggtext)
 library(png)
 library(ggpubr)
+library(leaflet)
 
 # SET TO TRUE AT THE END TO GET RID OF ALL POSSIBLE ERRORS
 #options(shiny.sanitize.errors = FALSE)
@@ -346,7 +347,7 @@ server <- function(input, output) {
           campus_location == "Bryan Center" ~ 120,
           campus_location == "Perkins" ~ 230,
           campus_location == "McClendon Tower" ~ 250,
-          campus_location == "300 Swift" ~ 1000,
+          campus_location == "300 Swift" ~ 900,
           campus_location == "The Nasher" ~ 700,
           campus_location == "E-Quad" ~ 150,
           campus_location == "East Campus" ~ 1050,
@@ -647,10 +648,10 @@ server <- function(input, output) {
 
   top_5_locations <- reactive({
     ggplot(data = dining_location_freq(), aes(x = x_coord, y = y_coord,
-                                             color = campus_location,
-                                             size = freq)) +
+                                             label = campus_location)) +
       background_image(campus_map) +
-      geom_point() +
+      geom_point(aes(colour = factor(campus_location), size = freq)) +
+      geom_label(hjust = 0.5, nudge_y = 0.2) +
       xlim(0, 1000) +
       ylim(0, 600) +
       coord_cartesian(xlim = map_ranges$x, ylim = map_ranges$y,
