@@ -196,9 +196,9 @@ ui <- dashboardPage(
             there particular weeks where your spending was notably above the
             average amount? Consider what was going on during these weeks, and
             how you can use knowledge of this in the future."),
-          p("- Look at how your plan progression compares to your own spending.
+          p(tags$ul(tags$li("Look at how your plan progression compares to your own spending.
             Would a different plan be more suitable for you in future
-            semesters?"))),
+            semesters?"))))),
        fluidRow(
             column(12,
           h3("If you have too many food points remaining:"),
