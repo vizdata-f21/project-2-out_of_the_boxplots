@@ -1038,19 +1038,20 @@ server <- function(input, output) {
         )
 
       ggplot(time1, aes(x = date, y = points_remaining)) +
-        geom_line(aes(x = date, y = plan_points), color = "blue") +
-        geom_point(color = "red") +
-        geom_line(color = "red") +
+        geom_line(aes(x = date, y = plan_points), color = "blue", size = .9) +
+        geom_point(color = "red", size = 2) +
+        geom_line(color = "red", size = .75) +
         labs(title = "Plan Progression", x = "Weeks", y = "Points Remaining") +
         geom_smooth(
           method = "lm", fullrange = TRUE, se = FALSE,
-          color = "lightcoral", linetype = "dashed"
+          color = "lightcoral", linetype = "dashed", size = .9
         ) +
         scale_x_date(breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
                      minor_breaks = NULL) +
         scale_y_continuous(labels = scales::dollar_format()) +
         theme_minimal() +
-        theme(plot.title = element_text(hjust = 0.5, size = 16))
+        theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+        coord_cartesian(clip = "off")
     } else {
       time2 <- time_df() %>%
         mutate(
@@ -1073,7 +1074,8 @@ server <- function(input, output) {
                      minor_breaks = NULL) +
         scale_y_continuous(limits = c(0, NA), labels = dollar_format()) +
         theme_minimal() +
-        theme(plot.title = element_text(hjust = 0.5, size = 16))
+        theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+        coord_cartesian(clip = "off")
     }
   })
 
@@ -1082,15 +1084,15 @@ server <- function(input, output) {
       ggplot(aes(x = date, y = user_points_week)) +
       geom_col() +
       geom_text(aes(x = date, y = user_points_week,
-                    label = paste0("$", round(user_points_week, 2))),
+                    label = paste0("$", round(user_points_week, 0))),
                 vjust=-0.25, size = 3) +
       geom_hline(aes(yintercept = semester %>%
                        filter(plan == str_extract(
                          input$select_plan,
                          "[:alpha:]$"
                        )) %>%
-                       pull(weekly_avereage)), linetype = "dashed") +
-      geom_hline(aes(yintercept = mean(user_points_week)), linetype = "dashed") +
+                       pull(weekly_avereage)), linetype = "longdash", color = "blue", size = .75) +
+      geom_hline(aes(yintercept = mean(user_points_week)), linetype = "longdash", color = "red", size = .75) +
       geom_label(aes(
         x = date[3],
         y = semester %>%
@@ -1111,12 +1113,12 @@ server <- function(input, output) {
                    )) %>%
                    pull(weekly_avereage))
         )
-      )) +
+      ), color = "blue", size = 3.75) +
       geom_label(aes(
         x = date[15],
         y = mean(user_points_week),
         label = paste0("Uploaded Average: ", "$", round(mean(user_points_week), 2))
-      )) +
+      ), color = "red", size = 3.75) +
       labs(title = "Spending Per Week", x = "Weeks", y = "Points Spent") +
       scale_x_date(breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
                    minor_breaks = NULL) +
