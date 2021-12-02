@@ -171,7 +171,6 @@ ui <- dashboardPage(
           box(tableOutput("values"))
         ),
         fluidPage(
-          textOutput("VISIBLE WORDS SHOWN"),
           plotOutput("top_5_locations")
           )
         ),
