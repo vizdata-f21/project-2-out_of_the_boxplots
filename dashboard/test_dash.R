@@ -1048,12 +1048,16 @@ server <- function(input, output) {
     time_df() %>%
       ggplot(aes(x = date, y = user_points_week)) +
       geom_col() +
+      geom_text(aes(x = date, y = user_points_week,
+                    label = paste0("$", round(user_points_week, 2))),
+                vjust=-0.25, size = 3) +
       geom_hline(aes(yintercept = semester %>%
                        filter(plan == str_extract(
                          input$select_plan,
                          "[:alpha:]$"
                        )) %>%
                        pull(weekly_avereage)), linetype = "dashed") +
+      geom_hline(aes(yintercept = mean(user_points_week)), linetype = "dashed") +
       geom_label(aes(
         x = date[3],
         y = semester %>%
@@ -1075,6 +1079,11 @@ server <- function(input, output) {
                    pull(weekly_avereage))
         )
       )) +
+      geom_label(aes(
+        x = date[15],
+        y = mean(user_points_week),
+        label = paste0("Uploaded Average: ", "$", round(mean(user_points_week), 2))
+      )) +
       labs(title = "Spending Per Week", x = "Weeks", y = "Points Spent") +
       scale_x_date(breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
                    minor_breaks = NULL) +
@@ -1091,32 +1100,32 @@ server <- function(input, output) {
                 "reg_x" = c(1,2,3,4,5,6,7,8),
                 "reg_y" = c(0,0,0,0,0,0,0,0))
 
-  plot_key <- ggplot(key) +
+  plot_key <- reactive({ggplot(key) +
     geom_line(aes(x = plan_prog_x, y = plan_prog_y), color = "blue") +
     geom_line(aes(x = user_x, y = user_y), color = "red") +
     geom_point(aes(x = user_x, y = user_y), color = "red") +
     geom_line(aes(x = reg_x, y = reg_y), color = "red", linetype = "dashed") +
     geom_text(aes(x = 4.5, y = 1.15),
-              label = "Plan Progression (chosen food point plan)",
+              label = input$select_plan,
               color = "blue") +
     geom_text(aes(x = 4.54, y = .65),
-              label = "Actual Progression (uploaded data)",
+              label = "Uploaded Data",
               color = "red") +
     geom_text(aes(x = 4.55, y = .15),
-              label = "Expected Progression (linear regression of uploaded data)",
+              label = "Linear Regression of Uploaded",
               color = "red") +
     ylim(-0.5,1.5) +
     labs(title = "Plan Progression Key") +
     theme_void() +
     theme(plot.title = element_text(hjust = 0.5, size = 16))
+  })
 
-  output$overtime_key <- renderPlot(plot_key, height = 200)
+  output$overtime_key <- renderPlot(plot_key(), height = 200)
 
   plan_select_table_code <- reactive({
     timedf2 <- time_df() %>%
       mutate(
-        user_points_total = ifelse((user_points_week == 0) &
-                                     (user_points_total != 0),
+        user_points_total = ifelse(date > max(food_points()$date),
                                    NA, user_points_total
         ),
         points_remaining = plan_points[1] - user_points_total

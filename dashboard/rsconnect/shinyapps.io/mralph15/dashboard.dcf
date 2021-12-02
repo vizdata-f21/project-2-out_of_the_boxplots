@@ -1,0 +1,13 @@
+name: dashboard
+title:
+username:
+account: mralph15
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5252761
+bundleId: 5319791
+url: https://mralph15.shinyapps.io/dashboard/
+when: 1638461766.47144
+lastSyncTime: 1638461766.47145
+asMultiple: FALSE
+asStatic: FALSE
