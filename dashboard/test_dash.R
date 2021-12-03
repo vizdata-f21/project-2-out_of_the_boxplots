@@ -593,6 +593,8 @@ ui <- dashboardPage(
 
 server <- function(input, output) {
 
+  ## Template Upload & Wrangling -----------------------------------------------
+
   ## Output Food Point Template
   output$food_template <- downloadHandler(
     filename = function() {
@@ -614,36 +616,6 @@ server <- function(input, output) {
     )
     read.csv(input$student_data$datapath)
   })
-
-  ## Detect Student's Plan
-  plan_detect <- reactive({
-    raw() %>%
-      clean_names() %>%
-      filter(transaction_type == "Credit") %>%
-      mutate(points = as.numeric(str_replace(
-        str_extract(amount, "^\\d?,?\\d+.\\d+"), ",", ""
-      ))) %>%
-      summarise(plan_total = sum(points)) %>%
-      pull(plan_total)
-  })
-
-  user_plan_value <- reactive({
-    user_plan <- ""
-    for (i in 1:nrow(semester)) {
-      if (semester$total_value[i] == plan_detect()) {
-        user_plan <- semester$plan[i]
-      }
-    }
-    user_plan
-  })
-
-  output$plan_detected <- renderInfoBox(
-    infoBox(
-      "You Have Plan",
-      value = user_plan_value(),
-      icon = icon("utensils")
-    )
-  )
 
   ## Data Wrangling of Student's Uploaded Data
   food_points <- reactive({
@@ -752,6 +724,440 @@ server <- function(input, output) {
       relocate(campus_location, .after = restaurant)
   })
 
+  ## Overview Tab --------------------------------------------------------------
+
+  ## Detect and Output Student's Plan
+  plan_detect <- reactive({
+    raw() %>%
+      clean_names() %>%
+      filter(transaction_type == "Credit") %>%
+      mutate(points = as.numeric(str_replace(
+        str_extract(amount, "^\\d?,?\\d+.\\d+"), ",", ""
+      ))) %>%
+      summarise(plan_total = sum(points)) %>%
+      pull(plan_total)
+  })
+
+  user_plan_value <- reactive({
+    user_plan <- ""
+    for (i in 1:nrow(semester)) {
+      if (semester$total_value[i] == plan_detect()) {
+        user_plan <- semester$plan[i]
+      }
+    }
+    user_plan
+  })
+
+  output$plan_detected <- renderInfoBox(
+    infoBox(
+      "You Have Plan",
+      value = user_plan_value(),
+      icon = icon("utensils")
+    )
+  )
+
+  ## Display User's Data Upload On Overview Tab
+  output$user_points_table <- DT::renderDataTable({
+    tmp <- food_points() %>%
+      arrange(date) %>%
+      mutate(points_remaining = plan_detect())
+
+    for (i in 1:nrow(tmp)) {
+      if (i == 1) {
+        tmp$points_remaining[1] <- tmp$points_remaining[1] - tmp$cost[1]
+      } else {
+        tmp$points_remaining[i] <- tmp$points_remaining[i - 1] - tmp$cost[i]
+      }
+    }
+    DT::datatable(tmp %>%
+      select(date, restaurant, campus_location, cost, points_remaining) %>%
+      arrange(points_remaining) %>%
+      rename(
+        "Date (Y-M-D)" = "date",
+        "Restaurant" = "restaurant",
+        "Dining Location" = "campus_location",
+        "Cost" = "cost",
+        "Points Remaining" = "points_remaining"
+      )) %>%
+      DT::formatCurrency(c(4:5))
+  })
+
+  ## Spending Over Time Tab ----------------------------------------------------
+
+  ## Create Functionality To Select A Plan
+  plan_select_table_code <- reactive({
+    timedf2 <- time_df() %>%
+      mutate(
+        user_points_total = ifelse(date > max(food_points()$date),
+          NA, user_points_total
+        ),
+        points_remaining = plan_points[1] - user_points_total
+      )
+
+    tibble(
+      "Plan Total" = c(paste0("$", max(timedf2$plan_points))),
+      "Points Spent" = c(paste0(
+        "$",
+        round(max(timedf2$user_points_total,
+          na.rm = TRUE
+        ), 2)
+      )),
+      "Points Remaining" = c(paste0(
+        "$",
+        round(min(timedf2$points_remaining,
+          na.rm = TRUE
+        ), 2)
+      ))
+    )
+  })
+
+  ### Output Selected Plan
+  output$plan_select_table <- renderTable(
+    plan_select_table_code(),
+    align = "c",
+    bordered = TRUE
+  )
+
+  ## Create Summary Table Of Plan Info
+  summary_table_code <- reactive({
+    req(input$student_data)
+    tibble(
+      "plan_total" = semester %>%
+        filter(plan == user_plan_value()) %>%
+        pull(total_value),
+      "points_spent" = sum(food_points()$cost)
+    ) %>%
+      mutate(
+        points_remain = plan_total - points_spent,
+        "Points Remaining" = paste0("$", points_remain),
+        "Plan Total" = paste0("$", plan_total),
+        "Points Spent" = paste0("$", points_spent)
+      ) %>%
+      select(`Plan Total`, `Points Spent`, `Points Remaining`)
+  })
+
+  ## Display Summary Table On Spending Over Time Tab
+  output$summary_table <- renderTable(
+    summary_table_code(),
+    align = "c",
+    bordered = TRUE
+  )
+
+  ## Create Plan Progression Key
+  key <- tibble(
+    "plan_prog_x" = c(1, 2, 3, 4, 5, 6, 7, 8),
+    "plan_prog_y" = c(1, 1, 1, 1, 1, 1, 1, 1),
+    "user_x" = c(1, 2, 3, 4, 5, 6, 7, 8),
+    "user_y" = c(.5, .5, .5, .5, .5, .5, .5, .5),
+    "reg_x" = c(1, 2, 3, 4, 5, 6, 7, 8),
+    "reg_y" = c(0, 0, 0, 0, 0, 0, 0, 0)
+  )
+
+  ### Create Plan Progression Key Plot
+  plot_key <- reactive({
+    ggplot(key) +
+      geom_line(aes(x = plan_prog_x, y = plan_prog_y), color = "blue") +
+      geom_line(aes(x = user_x, y = user_y), color = "red") +
+      geom_point(aes(x = user_x, y = user_y), color = "red") +
+      geom_line(aes(x = reg_x, y = reg_y), color = "red", linetype = "dashed") +
+      geom_text(aes(x = 4.5, y = 1.15),
+        label = input$select_plan,
+        color = "blue"
+      ) +
+      geom_text(aes(x = 4.54, y = .65),
+        label = "Uploaded Data",
+        color = "red"
+      ) +
+      geom_text(aes(x = 4.55, y = .15),
+        label = "Linear Regression of Uploaded",
+        color = "red"
+      ) +
+      ylim(-0.5, 1.5) +
+      labs(title = "Plan Progression Key") +
+      coord_cartesian(clip = "off") +
+      theme_void() +
+      theme(
+        plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
+      )
+  })
+
+  ## Output Plan Progression Key
+  output$overtime_key <- renderPlot(plot_key(), height = 200)
+
+  ## Create Time Series Spending Over Time Plots
+  time_df <- reactive({
+    sem_choice <- str_to_lower(input$select_sem)
+    assign("x", sem_choice)
+
+    plan_choice_tmp <- str_to_lower(input$select_plan)
+    plan_choice <- paste0("plan_", str_extract(plan_choice_tmp, "[:alpha:]$"))
+    timedf <- usage_chart %>%
+      select(x, plan_choice) %>%
+      rename("date" = x, "plan_points" = plan_choice) %>%
+      mutate(
+        date = mdy(date),
+        user_points_total = 0,
+        user_points_week = 0
+      )
+
+    week_sum <- 0
+    total_sum <- 0
+    for (i in 1:(nrow(timedf) - 1)) {
+      week_sum <- 0
+      for (x in 1:nrow(food_points())) {
+        if ((food_points()$date[x] >= timedf$date[i]) &
+          (food_points()$date[x] < timedf$date[i + 1])) {
+          week_sum <- week_sum + food_points()$cost[x]
+          total_sum <- total_sum + food_points()$cost[x]
+        }
+        timedf$user_points_week[i + 1] <- week_sum
+        timedf$user_points_total[i + 1] <- total_sum
+      }
+    }
+    timedf
+  })
+
+  ### Output Plan Progression Plot
+  output$overtime1 <- renderPlot({
+    if (input$negative_values == TRUE) {
+      time1 <- time_df() %>%
+        mutate(
+          user_points_total = ifelse(date > max(food_points()$date),
+            NA, user_points_total
+          ),
+          points_remaining = plan_points[1] - user_points_total
+        )
+
+      ggplot(time1, aes(x = date, y = points_remaining)) +
+        geom_line(aes(x = date, y = plan_points), color = "blue", size = .9) +
+        geom_point(color = "red", size = 2) +
+        geom_line(color = "red", size = .75) +
+        labs(title = "Plan Progression", x = "Weeks", y = "Points Remaining") +
+        geom_smooth(
+          method = "lm", fullrange = TRUE, se = FALSE,
+          color = "lightcoral", linetype = "dashed", size = .9
+        ) +
+        scale_x_date(
+          breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
+          minor_breaks = NULL
+        ) +
+        scale_y_continuous(labels = scales::dollar_format()) +
+        theme_minimal() +
+        theme(
+          plot.title = element_text(hjust = 0.5, size = 18, face = "bold")
+        ) +
+        coord_cartesian(clip = "off")
+    } else {
+      time2 <- time_df() %>%
+        mutate(
+          user_points_total = ifelse(date > max(food_points()$date),
+            NA, user_points_total
+          ),
+          points_remaining = plan_points[1] - user_points_total
+        )
+
+      ggplot(time2, aes(x = date, y = points_remaining)) +
+        geom_line(aes(x = date, y = plan_points), color = "blue", size = .9) +
+        geom_point(color = "red", size = 2) +
+        geom_line(color = "red", size = .75) +
+        labs(title = "Plan Progression", x = "Weeks", y = "Points Remaining") +
+        geom_smooth(
+          method = "lm", fullrange = TRUE, se = FALSE,
+          color = "lightcoral", linetype = "dashed", size = .9
+        ) +
+        scale_x_date(
+          breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
+          minor_breaks = NULL
+        ) +
+        scale_y_continuous(limits = c(0, NA), labels = dollar_format()) +
+        theme_minimal() +
+        theme(
+          plot.title = element_text(hjust = 0.5, size = 18, face = "bold")
+        ) +
+        coord_cartesian(clip = "off")
+    }
+  })
+
+  ### Output Spending Per Week Plot
+  output$overtime2 <- renderPlot({
+    user_avg <- time_df() %>%
+      filter((date > (floor_date(min(food_points()$date), "week") + days(1))) &
+        (date < (ceiling_date(max(food_points()$date), "week") + days(1)))) %>%
+      summarise(tmp = mean(user_points_week)) %>%
+      pull(tmp)
+
+    time_df() %>%
+      ggplot(aes(x = date, y = user_points_week)) +
+      geom_col() +
+      geom_text(aes(
+        x = date, y = user_points_week,
+        label = paste0("$", round(user_points_week, 0))
+      ),
+      vjust = -0.25, size = 3
+      ) +
+      geom_hline(aes(yintercept = semester %>%
+        filter(plan == str_extract(
+          input$select_plan,
+          "[:alpha:]$"
+        )) %>%
+        pull(weekly_avereage)),
+      linetype = "longdash",
+      color = "blue",
+      size = .75
+      ) +
+      geom_hline(aes(yintercept = mean(user_avg)),
+        linetype = "longdash",
+        color = "red",
+        size = .75
+      ) +
+      geom_label(aes(
+        x = date[3],
+        y = semester %>%
+          filter(plan == str_extract(
+            input$select_plan,
+            "[:alpha:]$"
+          )) %>%
+          pull(weekly_avereage),
+        label = paste(
+          "Plan",
+          str_extract(input$select_plan, "[:alpha:]$"),
+          "Weekly Average:",
+          paste0(
+            "$",
+            semester %>%
+              filter(plan == str_extract(
+                input$select_plan,
+                "[:alpha:]$"
+              )) %>%
+              pull(weekly_avereage)
+          )
+        )
+      ), color = "blue", size = 3.75) +
+      geom_label(aes(
+        x = date[15],
+        y = user_avg,
+        label = paste0(
+          "Uploaded Average: ", "$",
+          round(mean(user_avg), 2)
+        )
+      ), color = "red", size = 3.75) +
+      labs(title = "Spending Per Week", x = "Weeks", y = "Points Spent") +
+      scale_x_date(
+        breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
+        minor_breaks = NULL
+      ) +
+      scale_y_continuous(labels = scales::dollar_format()) +
+      coord_cartesian(clip = "off") +
+      theme_minimal() +
+      theme(
+        plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
+      )
+  })
+
+  ## Dining Locations Tab ------------------------------------------------------
+
+  ## Dining Locations Plot
+  ### Create Date Range Slider For Dining Location Tab
+  output$location_date_range <- renderUI({
+    req(input$student_data)
+    req(food_points())
+    sliderInput("dates_slider",
+      "Select Range of Dates",
+      min = min(food_points()$date),
+      max = max(food_points()$date),
+      value = c(
+        min(food_points()$date),
+        max(food_points()$date)
+      ),
+      timeFormat = "%m-%d-%Y"
+    )
+  })
+
+  ## Create DFs for Dining Location Tab
+  ### Create Total Frequency DF for Dining Location Tab
+  dining_location_freq <- reactive({
+    req(input$dates_slider)
+    food_points() %>%
+      filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
+      group_by(campus_location) %>%
+      count() %>%
+      rename(freq = n)
+  })
+
+  ### Create Total Spent DF for Dining Location Tab
+  dining_location_spend <- reactive({
+    req(input$dates_slider)
+    food_points() %>%
+      filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
+      group_by(campus_location) %>%
+      summarise("spending" = sum(cost))
+  })
+
+  ## Output Dining Location Map
+  output$leafmap <- renderLeaflet({
+    req(food_points())
+    req(dining_location_freq())
+    req(dining_location_spend())
+    req(input$dates_slider)
+    validate(
+      need(input$dates_slider, message = FALSE)
+    )
+    tmp <- left_join(dining_location_freq(), dining_location_spend(),
+      by = "campus_location"
+    )
+
+    mapdf <- tmp %>%
+      mutate(
+        lng = case_when(
+          campus_location == "West Union" ~ -78.939454,
+          campus_location == "Wilson Gym" ~ -78.941449,
+          campus_location == "Bryan Center" ~ -78.941014,
+          campus_location == "Perkins" ~ -78.938645,
+          campus_location == "McClendon Tower" ~ -78.937178,
+          campus_location == "300 Swift" ~ -78.922188,
+          campus_location == "The Nasher" ~ -78.929123,
+          campus_location == "E-Quad" ~ -78.940290,
+          campus_location == "East Campus" ~ -78.914628,
+          TRUE ~ -78.933194
+        ),
+        lat = case_when(
+          campus_location == "West Union" ~ 36.000774,
+          campus_location == "Wilson Gym" ~ 35.997383,
+          campus_location == "Bryan Center" ~ 36.001009,
+          campus_location == "Perkins" ~ 36.002389,
+          campus_location == "McClendon Tower" ~ 35.999341,
+          campus_location == "300 Swift" ~ 36.002853,
+          campus_location == "The Nasher" ~ 35.999024,
+          campus_location == "E-Quad" ~ 36.003635,
+          campus_location == "East Campus" ~ 36.007619,
+          TRUE ~ 36.002414
+        ),
+        pop = paste(
+          sep = "<br/>",
+          paste0(
+            "<b><a href='https://app.studentaffairs.duke.edu/dining/menus-hours/'>",
+            campus_location, "</a></b>"
+          ),
+          paste0(
+            "Swipes: ",
+            freq,
+            " (", round(100 * freq / sum(tmp$freq)), "%)"
+          ),
+          paste0(
+            "Spending: $", round(spending, 2),
+            " (", round(100 * spending / sum(tmp$spending)), "%)"
+          )
+        )
+      )
+
+    leaflet(data = mapdf) %>%
+      addTiles() %>%
+      addMarkers(~lng, ~lat, popup = ~pop)
+  })
+
+  ## Bar Plots Tab -------------------------------------------------------------
+
+  ## Top 5 Bar Plots
   ## Create Logo Image Labels
   label_logos <- c(
     "Bella Union" = "<img src='www/bella-union.png' width='110' />",
@@ -894,76 +1300,6 @@ server <- function(input, output) {
     )
   })
 
-  ## Dining Location Plot
-
-  ### Create Date Range Slider For Dining Location Tab
-  output$location_date_range <- renderUI({
-    req(input$student_data)
-    req(food_points())
-    sliderInput("dates_slider",
-      "Select Range of Dates",
-      min = min(food_points()$date),
-      max = max(food_points()$date),
-      value = c(
-        min(food_points()$date),
-        max(food_points()$date)
-      ),
-      timeFormat = "%m-%d-%Y"
-    )
-  })
-
-  ## Create Summary Table On Spending Over Time Tab
-  summary_table_code <- reactive({
-    req(input$student_data)
-    tibble(
-      "plan_total" = semester %>%
-        filter(plan == user_plan_value()) %>%
-        pull(total_value),
-      "points_spent" = sum(food_points()$cost)
-    ) %>%
-      mutate(
-        points_remain = plan_total - points_spent,
-        "Points Remaining" = paste0("$", points_remain),
-        "Plan Total" = paste0("$", plan_total),
-        "Points Spent" = paste0("$", points_spent)
-      ) %>%
-      select(`Plan Total`, `Points Spent`, `Points Remaining`)
-  })
-
-  ## Display Summary Table On Spending Over Time Tab
-  output$summary_table <- renderTable(
-    summary_table_code(),
-    align = "c",
-    bordered = TRUE
-  )
-
-  ## Display User's Data Upload On Overview Tab
-  output$user_points_table <- DT::renderDataTable({
-    tmp <- food_points() %>%
-      arrange(date) %>%
-      mutate(points_remaining = plan_detect())
-
-    for (i in 1:nrow(tmp)) {
-      if (i == 1) {
-        tmp$points_remaining[1] <- tmp$points_remaining[1] - tmp$cost[1]
-      } else {
-        tmp$points_remaining[i] <- tmp$points_remaining[i - 1] - tmp$cost[i]
-      }
-    }
-    DT::datatable(tmp %>%
-      select(date, restaurant, campus_location, cost, points_remaining) %>%
-      arrange(points_remaining) %>%
-      rename(
-        "Date (Y-M-D)" = "date",
-        "Restaurant" = "restaurant",
-        "Dining Location" = "campus_location",
-        "Cost" = "cost",
-        "Points Remaining" = "points_remaining"
-      )) %>%
-      DT::formatCurrency(c(4:5))
-  })
-
-  ## Top 5 Bar Plots
   ### Calculate Total Points Spent at Each Restaurant
   food_points_location_cost <- reactive({
     food_points() %>%
@@ -1013,160 +1349,6 @@ server <- function(input, output) {
         "Total Cost" = "total_cost",
         "Average Cost" = "avg_cost"
       )
-  })
-
-  ### Output DF With All Info
-  output$food_points_all_info_table <- DT::renderDataTable({
-    req(input$daterange)
-    DT::datatable(food_points_all_info()) %>%
-      DT::formatCurrency(c(3:4))
-  })
-
-  ## Create DFs for Dining Location Tab
-  ### Create Total Frequency DF for Dining Location Tab
-  dining_location_freq <- reactive({
-    req(input$dates_slider)
-    food_points() %>%
-      filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
-      group_by(campus_location) %>%
-      count() %>%
-      rename(freq = n)
-  })
-
-  ### Create Total Spent DF for Dining Location Tab
-  dining_location_spend <- reactive({
-    req(input$dates_slider)
-    food_points() %>%
-      filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
-      group_by(campus_location) %>%
-      summarise("spending" = sum(cost))
-  })
-
-  ## Output Dining Location Map
-  output$leafmap <- renderLeaflet({
-    req(food_points())
-    req(dining_location_freq())
-    req(dining_location_spend())
-    req(input$dates_slider)
-    validate(
-      need(input$dates_slider, message = FALSE)
-    )
-    tmp <- left_join(dining_location_freq(), dining_location_spend(),
-      by = "campus_location"
-    )
-
-    mapdf <- tmp %>%
-      mutate(
-        lng = case_when(
-          campus_location == "West Union" ~ -78.939454,
-          campus_location == "Wilson Gym" ~ -78.941449,
-          campus_location == "Bryan Center" ~ -78.941014,
-          campus_location == "Perkins" ~ -78.938645,
-          campus_location == "McClendon Tower" ~ -78.937178,
-          campus_location == "300 Swift" ~ -78.922188,
-          campus_location == "The Nasher" ~ -78.929123,
-          campus_location == "E-Quad" ~ -78.940290,
-          campus_location == "East Campus" ~ -78.914628,
-          TRUE ~ -78.933194
-        ),
-        lat = case_when(
-          campus_location == "West Union" ~ 36.000774,
-          campus_location == "Wilson Gym" ~ 35.997383,
-          campus_location == "Bryan Center" ~ 36.001009,
-          campus_location == "Perkins" ~ 36.002389,
-          campus_location == "McClendon Tower" ~ 35.999341,
-          campus_location == "300 Swift" ~ 36.002853,
-          campus_location == "The Nasher" ~ 35.999024,
-          campus_location == "E-Quad" ~ 36.003635,
-          campus_location == "East Campus" ~ 36.007619,
-          TRUE ~ 36.002414
-        ),
-        pop = paste(
-          sep = "<br/>",
-          paste0(
-      "<b><a href='https://app.studentaffairs.duke.edu/dining/menus-hours/'>",
-      campus_location, "</a></b>"),
-          paste0(
-            "Swipes: ",
-            freq,
-            " (", round(100 * freq / sum(tmp$freq)), "%)"
-          ),
-          paste0(
-            "Spending: $", round(spending, 2),
-            " (", round(100 * spending / sum(tmp$spending)), "%)"
-          )
-        )
-      )
-
-    leaflet(data = mapdf) %>%
-      addTiles() %>%
-      addMarkers(~lng, ~lat, popup = ~pop)
-  })
-
-  ## Output Text on Food Point Tip Tab
-  output$tips_needed <- renderUI({
-    switch(input$tips_options,
-      "I'm Running Low!" = h4(tags$ul(
-        tags$li(
-          "Look at the Top 5 Restaurant bar plots and consider frequenting
-             your top average spending locations less often. If you really enjoy
-             these restaurants, consider ordering their $5 Daily Devil Deals,
-             instead. If these top locations have a food in common, such as
-             coffee, consider getting the monthly Panera coffee card."
-        ),
-        br(),
-        tags$li(
-          "View the data table on the Top 5 tab and frequent the location
-             with the lowest average spending more often."
-        ),
-        br(),
-        tags$li(
-          "View the spending per week visualization and consider how your
-             spending each week compares to your plan’s weekly average. Were
-             there particular weeks where your spending was notably above the
-             average amount? Consider what was going on during these weeks, and
-             how you can use knowledge of this in the future."
-        ),
-        br(),
-        tags$li(
-          "Look at how your plan progression compares to your own spending.
-             Would a different plan be more suitable for you in future
-             semesters?"
-        )
-      )),
-      "I Have Too Many Remaining!" = h4(tags$ul(
-        tags$li(
-          "Look at the Top 5 Restaurant bar plots and consider frequenting
-             your top average spending locations more often."
-        ),
-        br(),
-        tags$li(
-          "Remember that food points roll over upon the completion of Fall
-           Semester, so you can chose a smaller meal plan for Spring Semester."
-        ),
-        br(),
-        tags$li(
-          "View the spending per week visualization and consider how your
-             spending each week compares to your plan’s weekly average. Were
-             there particular weeks where your spending was notably below the
-             average amount? Consider what was going on during these weeks, and
-             how you can use knowledge of this in the future."
-        ),
-        br(),
-        tags$li(
-          "Look at how your plan progression compares to your own spending.
-              Would a different plan be more suitable for you in future
-              semesters?"
-        ),
-        br(),
-        tags$li(
-          "Consider going to different campus locations to stock up on snacks,
-          or get food from dining locations you have never visited before.
-          You can also use Merchants on Points, which offers more expensive,
-             high-quality food."
-        )
-      ))
-    )
   })
 
   ## Create Top 5 Bar Plots
@@ -1370,252 +1552,79 @@ server <- function(input, output) {
     plot_top_5()
   })
 
-  ## Create Time Series Spending Over Time Plots
-  time_df <- reactive({
-    sem_choice <- str_to_lower(input$select_sem)
-    assign("x", sem_choice)
-
-    plan_choice_tmp <- str_to_lower(input$select_plan)
-    plan_choice <- paste0("plan_", str_extract(plan_choice_tmp, "[:alpha:]$"))
-    timedf <- usage_chart %>%
-      select(x, plan_choice) %>%
-      rename("date" = x, "plan_points" = plan_choice) %>%
-      mutate(
-        date = mdy(date),
-        user_points_total = 0,
-        user_points_week = 0
-      )
-
-    week_sum <- 0
-    total_sum <- 0
-    for (i in 1:(nrow(timedf) - 1)) {
-      week_sum <- 0
-      for (x in 1:nrow(food_points())) {
-        if ((food_points()$date[x] >= timedf$date[i]) &
-          (food_points()$date[x] < timedf$date[i + 1])) {
-          week_sum <- week_sum + food_points()$cost[x]
-          total_sum <- total_sum + food_points()$cost[x]
-        }
-        timedf$user_points_week[i + 1] <- week_sum
-        timedf$user_points_total[i + 1] <- total_sum
-      }
-    }
-    timedf
+  ### Output DF With All Info
+  output$food_points_all_info_table <- DT::renderDataTable({
+    req(input$daterange)
+    DT::datatable(food_points_all_info()) %>%
+      DT::formatCurrency(c(3:4))
   })
 
-  ### Output Plan Progression Plot
-  output$overtime1 <- renderPlot({
-    if (input$negative_values == TRUE) {
-      time1 <- time_df() %>%
-        mutate(
-          user_points_total = ifelse(date > max(food_points()$date),
-            NA, user_points_total
-          ),
-          points_remaining = plan_points[1] - user_points_total
-        )
+  ## Food Point Tips Tab -------------------------------------------------------
 
-      ggplot(time1, aes(x = date, y = points_remaining)) +
-        geom_line(aes(x = date, y = plan_points), color = "blue", size = .9) +
-        geom_point(color = "red", size = 2) +
-        geom_line(color = "red", size = .75) +
-        labs(title = "Plan Progression", x = "Weeks", y = "Points Remaining") +
-        geom_smooth(
-          method = "lm", fullrange = TRUE, se = FALSE,
-          color = "lightcoral", linetype = "dashed", size = .9
-        ) +
-        scale_x_date(
-          breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
-          minor_breaks = NULL
-        ) +
-        scale_y_continuous(labels = scales::dollar_format()) +
-        theme_minimal() +
-        theme(
-          plot.title = element_text(hjust = 0.5, size = 18, face = "bold")
-          ) +
-        coord_cartesian(clip = "off")
-    } else {
-      time2 <- time_df() %>%
-        mutate(
-          user_points_total = ifelse(date > max(food_points()$date),
-            NA, user_points_total
-          ),
-          points_remaining = plan_points[1] - user_points_total
-        )
-
-      ggplot(time2, aes(x = date, y = points_remaining)) +
-        geom_line(aes(x = date, y = plan_points), color = "blue", size = .9) +
-        geom_point(color = "red", size = 2) +
-        geom_line(color = "red", size = .75) +
-        labs(title = "Plan Progression", x = "Weeks", y = "Points Remaining") +
-        geom_smooth(
-          method = "lm", fullrange = TRUE, se = FALSE,
-          color = "lightcoral", linetype = "dashed", size = .9
-        ) +
-        scale_x_date(
-          breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
-          minor_breaks = NULL
-        ) +
-        scale_y_continuous(limits = c(0, NA), labels = dollar_format()) +
-        theme_minimal() +
-        theme(
-          plot.title = element_text(hjust = 0.5, size = 18, face = "bold")
-          ) +
-        coord_cartesian(clip = "off")
-    }
-  })
-
-  ### Output Spending Per Week Plot
-  output$overtime2 <- renderPlot({
-    user_avg <- time_df() %>%
-      filter((date > (floor_date(min(food_points()$date), "week") + days(1))) &
-             (date < (ceiling_date(max(food_points()$date), "week") + days(1)))) %>%
-      summarise(tmp = mean(user_points_week)) %>%
-      pull(tmp)
-
-    time_df() %>%
-      ggplot(aes(x = date, y = user_points_week)) +
-      geom_col() +
-      geom_text(aes(
-        x = date, y = user_points_week,
-        label = paste0("$", round(user_points_week, 0))
-      ),
-      vjust = -0.25, size = 3
-      ) +
-      geom_hline(aes(yintercept = semester %>%
-                       filter(plan == str_extract(
-                         input$select_plan,
-                         "[:alpha:]$"
-                       )) %>%
-                       pull(weekly_avereage)),
-                 linetype = "longdash",
-                 color = "blue",
-                 size = .75
-      ) +
-      geom_hline(aes(yintercept = mean(user_avg)),
-                 linetype = "longdash",
-                 color = "red",
-                 size = .75
-      ) +
-      geom_label(aes(
-        x = date[3],
-        y = semester %>%
-          filter(plan == str_extract(
-            input$select_plan,
-            "[:alpha:]$"
-          )) %>%
-          pull(weekly_avereage),
-        label = paste(
-          "Plan",
-          str_extract(input$select_plan, "[:alpha:]$"),
-          "Weekly Average:",
-          paste0(
-            "$",
-            semester %>%
-              filter(plan == str_extract(
-                input$select_plan,
-                "[:alpha:]$"
-              )) %>%
-              pull(weekly_avereage)
-          )
-        )
-      ), color = "blue", size = 3.75) +
-      geom_label(aes(
-        x = date[15],
-        y = user_avg,
-        label = paste0(
-          "Uploaded Average: ", "$",
-          round(mean(user_avg), 2)
-        )
-      ), color = "red", size = 3.75) +
-      labs(title = "Spending Per Week", x = "Weeks", y = "Points Spent") +
-      scale_x_date(
-        breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
-        minor_breaks = NULL
-      ) +
-      scale_y_continuous(labels = scales::dollar_format()) +
-      coord_cartesian(clip = "off") +
-      theme_minimal() +
-      theme(
-        plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
-      )
-  })
-
-  ## Create Plan Progression Key
-  key <- tibble(
-    "plan_prog_x" = c(1, 2, 3, 4, 5, 6, 7, 8),
-    "plan_prog_y" = c(1, 1, 1, 1, 1, 1, 1, 1),
-    "user_x" = c(1, 2, 3, 4, 5, 6, 7, 8),
-    "user_y" = c(.5, .5, .5, .5, .5, .5, .5, .5),
-    "reg_x" = c(1, 2, 3, 4, 5, 6, 7, 8),
-    "reg_y" = c(0, 0, 0, 0, 0, 0, 0, 0)
-  )
-
-  ### Create Plan Progression Key Plot
-  plot_key <- reactive({
-    ggplot(key) +
-      geom_line(aes(x = plan_prog_x, y = plan_prog_y), color = "blue") +
-      geom_line(aes(x = user_x, y = user_y), color = "red") +
-      geom_point(aes(x = user_x, y = user_y), color = "red") +
-      geom_line(aes(x = reg_x, y = reg_y), color = "red", linetype = "dashed") +
-      geom_text(aes(x = 4.5, y = 1.15),
-        label = input$select_plan,
-        color = "blue"
-      ) +
-      geom_text(aes(x = 4.54, y = .65),
-        label = "Uploaded Data",
-        color = "red"
-      ) +
-      geom_text(aes(x = 4.55, y = .15),
-        label = "Linear Regression of Uploaded",
-        color = "red"
-      ) +
-      ylim(-0.5, 1.5) +
-      labs(title = "Plan Progression Key") +
-      coord_cartesian(clip = "off") +
-      theme_void() +
-      theme(
-        plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
-        )
-  })
-
-
-  output$overtime_key <- renderPlot(plot_key(), height = 200)
-
-  ## Create Functionality To Select A Plan
-  plan_select_table_code <- reactive({
-    timedf2 <- time_df() %>%
-      mutate(
-        user_points_total = ifelse(date > max(food_points()$date),
-          NA, user_points_total
+  ## Output Text on Food Point Tip Tab
+  output$tips_needed <- renderUI({
+    switch(input$tips_options,
+      "I'm Running Low!" = h4(tags$ul(
+        tags$li(
+          "Look at the Top 5 Restaurant bar plots and consider frequenting
+          your top average spending locations less often. If you really enjoy
+          these restaurants, consider ordering their $5 Daily Devil Deals,
+          instead. If these top locations have a food in common, such as
+          coffee, consider getting the monthly Panera coffee card."
         ),
-        points_remaining = plan_points[1] - user_points_total
-      )
-
-    tibble(
-      "Plan Total" = c(paste0("$", max(timedf2$plan_points))),
-      "Points Spent" = c(paste0(
-        "$",
-        round(max(timedf2$user_points_total,
-          na.rm = TRUE
-        ), 2)
+        br(),
+        tags$li(
+          "View the data table on the Top 5 tab and frequent the location with
+          the lowest average spending more often."
+        ),
+        br(),
+        tags$li(
+          "View the spending per week visualization and consider how your
+          there particular weeks where your spending was notably above the
+          average amount? Consider what was going on during these weeks, and
+          how you can use knowledge of this in the future."
+        ),
+        br(),
+        tags$li(
+          "Look at how your plan progression compares to your own spending.
+          Would a different plan be more suitable for you in futurese mesters?"
+        )
       )),
-      "Points Remaining" = c(paste0(
-        "$",
-        round(min(timedf2$points_remaining,
-          na.rm = TRUE
-        ), 2)
+      "I Have Too Many Remaining!" = h4(tags$ul(
+        tags$li(
+          "Look at the Top 5 Restaurant bar plots and consider frequenting your
+          top average spending locations more often."
+        ),
+        br(),
+        tags$li(
+          "Remember that food points roll over upon the completion of Fall
+           Semester, so you can chose a smaller meal plan for Spring Semester."
+        ),
+        br(),
+        tags$li(
+          "View the spending per week visualization and consider how your
+          spending each week compares to your plan’s weekly average. Were there
+          particular weeks where your spending was notably below the average
+          amount? Consider what was going on during these weeks, and how you can
+          use knowledge of this in the future."
+        ),
+        br(),
+        tags$li(
+          "Look at how your plan progression compares to your own spending.
+          Would a different plan be more suitable for you in future semesters?"
+        ),
+        br(),
+        tags$li(
+          "Consider going to different campus locations to stock up on snacks,
+          or get food from dining locations you have never visited before.
+          You can also use Merchants on Points, which offers more expensive,
+          high-quality food."
+        )
       ))
     )
   })
-
-  ### Output Selected Plan
-  output$plan_select_table <- renderTable(
-    plan_select_table_code(),
-    align = "c",
-    bordered = TRUE
-  )
 }
 
-## RUN APP ##
+# Run App ----------------------------------------------------------------------
 
 shinyApp(ui, server)
