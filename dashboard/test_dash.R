@@ -165,7 +165,7 @@ ui <- dashboardPage(
                  align = "center", offset = 1,
                  box(
                    align = "center", width = 10, height = 500,
-                   h3("Campus Dining"),
+                   h3("Campus Dining Locations"),
                    leafletOutput("leafmap")
                    # plotOutput("top_5_locations",
                    #            dblclick = "map_dblclick",
@@ -680,6 +680,7 @@ server <- function(input, output) {
   # })
 
   dining_location_freq <- reactive({
+    req(input$dates_slider)
     food_points() %>%
       filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
       group_by(campus_location) %>%#, x_coord, y_coord) %>%
@@ -689,6 +690,7 @@ server <- function(input, output) {
   })
 
   dining_location_spend <- reactive({
+    req(input$dates_slider)
     food_points() %>%
       filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
       group_by(campus_location) %>%#, x_coord, y_coord) %>%
@@ -758,6 +760,13 @@ server <- function(input, output) {
   # })
 
   output$leafmap <- renderLeaflet({
+    req(food_points())
+    req(dining_location_freq())
+    req(dining_location_spend())
+    req(input$dates_slider)
+    validate(
+      need(input$dates_slider, message = FALSE)
+    )
     tmp <- left_join(dining_location_freq(), dining_location_spend(), by = "campus_location")
 
     mapdf <- tmp %>%
@@ -1144,13 +1153,13 @@ server <- function(input, output) {
         )
 
       ggplot(time2, aes(x = date, y = points_remaining)) +
-        geom_line(aes(x = date, y = plan_points), color = "blue") +
-        geom_point(color = "red") +
-        geom_line(color = "red") +
+        geom_line(aes(x = date, y = plan_points), color = "blue", size = .9) +
+        geom_point(color = "red", size = 2) +
+        geom_line(color = "red", size = .75) +
         labs(title = "Plan Progression", x = "Weeks", y = "Points Remaining") +
         geom_smooth(
           method = "lm", fullrange = TRUE, se = FALSE,
-          color = "lightcoral", linetype = "dashed"
+          color = "lightcoral", linetype = "dashed", size = .9
         ) +
         scale_x_date(breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
                      minor_breaks = NULL) +
