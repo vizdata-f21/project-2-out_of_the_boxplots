@@ -378,20 +378,73 @@ ui <- dashboardPage(
                    visualizations inform Matt that he should not switch to a larger plan."),
                  img(
                    src = "spending-over-time-a.png", height = 250, width = 400,
-                   style = "display: block; margin-left: auto; margin-right: auto;"
-                 ),
+                   style = "display: block; margin-left: auto; margin-right: auto;",
+                   alt = "In this image users are given the option to compare their own usage
+                   across the full host of plans offered by Duke dining by selecting a food plan
+                   and semester via the drop down menu in the top left corner. Once a food plan
+                   is selected (Plan A in this case), the Plan Total, Points Spent, and Points
+                   Remaining is displayed in the top middle of the image while two plots are
+                   generated in the bottom half of the image. Plan A offers a total of $2570.33,
+                   the user has spent $839.71, and $1730.62 remains.
+
+                   The first plot shows a user's spending per week over the course of a semester
+                   with bar plots denoting the amount spent week by week and horizontal lines
+                   denoting the user's weekly average compared to the food plan's suggested weekly
+                   average. Our user's spends $51.18 on average each week which is significantly
+                   lower than plan A's suggested weekly average of $165.07.
+
+                   The second plot uses a linear regression model to show a user's projected number
+                   of remaining food points remaining based on their current spending habits. This
+                   projected line plot is plotted against the selected plan's suggested usage rate
+                   and the user's current usage rate. Based on their spending habits, the user is
+                   not projected to run out of food points if they were to switch to Plan A.",
+                   title = "In this image users are given the option to compare their own usage
+                   across the full host of plans offered by Duke dining by selecting a food plan
+                   and semester via the drop down menu in the top left corner. Once a food plan
+                   is selected (Plan A in this case), the Plan Total, Points Spent, and Points
+                   Remaining is displayed in the top middle of the image while two plots are
+                   generated in the bottom half of the image. Plan A offers a total of $2570.33,
+                   the user has spent $839.71, and $1730.62 remains.
+
+                   The first plot shows a user's spending per week over the course of a semester
+                   with bar plots denoting the amount spent week by week and horizontal lines
+                   denoting the user's weekly average compared to the food plan's suggested weekly
+                   average. Our user's spends $51.18 on average each week which is significantly
+                   lower than plan A's suggested weekly average of $165.07.
+
+                   The second plot uses a linear regression model to show a user's projected number
+                   of remaining food points remaining based on their current spending habits. This
+                   projected line plot is plotted against the selected plan's suggested usage rate
+                   and the user's current usage rate. Based on their spending habits, the user is
+                   not projected to run out of food points if they were to switch to Plan A."),
             p("Alternatively, if Matt’s goal is to know whether he should switch
                  to a smaller plan for next semester he can toggle between food plans
                  and compare his current food plan to a smaller one such as plan I.
-                 The bar plot below shows that Matt’s current spending, albeit now
-                 higher than the suggested weekly average, is much closer to aligned
+                 The bar plot below shows that Matt’s current spending is much closer aligned
                  to plan I than any of the larger plans. Therefore, in combination,
                  these visualizations inform the user on what meal plan is right for
                  their spending patterns."),
             img(
               src = "spending-over-time-b.png", height = 250, width = 400,
-              style = "display: block; margin-left: auto; margin-right: auto;"
-            ),
+              style = "display: block; margin-left: auto; margin-right: auto;",
+              alt = "This image shows the same plot as above, but with Plan I
+              selected. Plan I is smaller than Plan A. It has a total of $885.8,
+              the user has spent $839.71, and $46.09 remains.
+
+              The first plot shows our user spends $51.18 on average each week
+              which is lower than plan I's suggested weekly average of $56.89.
+
+              The second plot shows the user is projected to run out of their
+              food points before November 22nd if they were to switch to Plan I.",
+              title = "This image shows the same plot as above, but with Plan I
+              selected. Plan I is smaller than Plan A. It has a total of $885.8,
+              the user has spent $839.71, and $46.09 remains.
+
+              The first plot shows our user spends $51.18 on average each week
+              which is lower than plan I's suggested weekly average of $56.89.
+
+              The second plot shows the user is projected to run out of their
+              food points before November 22nd if they were to switch to Plan I."),
             h4("Dining Locations"),
             p("The next tab, Dining Locations, allows viewers to see a map of Duke’s
             campus. The slider on the top of the page provides the ability to choose
@@ -404,8 +457,23 @@ ui <- dashboardPage(
             to 84% of his total spend."),
             img(
               src = "dining-locations.png", height = 250, width = 400,
-              style = "display: block; margin-left: auto; margin-right: auto;"
-            ),
+              style = "display: block; margin-left: auto; margin-right: auto;",
+              alt = "This figure displays a map with all the dining locations at Duke.
+              Users can click on each location's pin to return the number of transactions
+              made and amount of money spent at each dining location. This semester the
+              user has frequented West Union 71 times spending a total of $776.42, or
+              84% of their spent food points.The map includes zoom capabilities, and
+              users are able to set which dates they would like to see data for by using
+              the slider at the top. The names of each location are also hyperlinked to
+              the duke dining hour website.",
+              title ="This figure displays a map with all the dining locations at Duke.
+              Users can click on each location's pin to return the number of transactions
+              made and amount of money spent at each dining location. This semester the
+              user has frequented West Union 71 times spending a total of $776.42, or
+              84% of their spent food points.The map includes zoom capabilities, and
+              users are able to set which dates they would like to see data for by using
+              the slider at the top. The names of each location are also hyperlinked to
+              the duke dining hour website."),
             h4("Top 5 Restaurants"),
             p("Our next set of visualizations gives a comprehensive look into where
             a student is spending their food points. We created vertical bar charts
@@ -469,7 +537,16 @@ ui <- dashboardPage(
             h3("Discussion"),
             p("In conclusion, this R Shiny app helps visualize Duke students’
               food points spending, helping our peers accomplish their spending-related
-              goals for the semester, whatever these may be."),
+              goals for the semester, whatever these may be.Furthermore, we have included a set of
+              food point tips in order to provide students with guidance on how they should amend
+              their spending habits. We have provided a list of tips for both the over and under
+              spender which you can find below."),
+            img(
+              src = "underspend.png", height = 250, width = 300,
+              style = "display: block; margin-left: auto; margin-right: auto;",),
+            img(
+              src = "overspend.png", height = 250, width = 300,
+              style = "display: block; margin-left: auto; margin-right: auto;"),
             p("It is important to note that there are limitations to the project. For
               example, the R Shiny app takes a noticeable time to load the visualizations
               after the user’s data is imputed. This is because there is a substantial
