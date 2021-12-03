@@ -174,7 +174,7 @@ ui <- dashboardPage(
       ## Project Write-Up Tab
       tabItem(
         tabName = "writeup",
-        h2("Project Write Up:"),
+        h2("Project Write Up"),
         fluidPage(
           column(12,
           h3("Introducton"),
@@ -202,9 +202,10 @@ ui <- dashboardPage(
           all 8 of Duke’s food plans and the suggested usage rate based on daily
           and weekly averages. This is used in combination with the information
           available in a student’s personal usage data, which includes the
-          location food points were spent at — accessed through their
-          [DukeCard eAccounts login](https://dukecard.duke.edu/manage-your-dukecard)
-          to provide a comprehensive report on their food spending. We consulted
+          location food points were spent at — accessed through their",
+            a('DukeCard eAccounts login',
+              href = "https://dukecard.duke.edu/manage-your-dukecard"),
+              "to provide a comprehensive report on their food spending. We consulted
           Duke Dining on the best way to extract food point data and they believe
           our method of copying and pasting is most efficient, rather than using
           an inaccessible API.  Following instructions on the dashboard, students
@@ -223,8 +224,10 @@ ui <- dashboardPage(
             number of points to be spent per week, and the expected number of
             points to be spent per day. There are `r nrow(semester)` observations
             and `r ncol(semester)` variables in the data set. The data was
-            collected from [Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points).
-            The second dataset we use, `usage_chart.csv`, offers in depth
+            collected from",
+            a("Duke's Food Plan and Points Website",
+              href = "https://studentaffairs.duke.edu/dining/plans-points"),
+            ". The second dataset we use, `usage_chart.csv`, offers in depth
             recommended spending information for each plan, which provides the
             ability to track a user’s spending against the typical spending. Each
             observation is a week during a Duke undergraduate semester. The
@@ -234,9 +237,13 @@ ui <- dashboardPage(
             depending on which plan a student has. There are `r nrow(usage_chart)`
             observations and `r ncol(usage_chart)` variables in the data set.
             The data was collected from the Fall 2021 and Spring 2022 Food Points
-            Calculators found on [Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points).
-            A comprehensive code book for each data set can be found in the
-            GitHub repository (LINK TO REPO).  Using the data from the user input
+            Calculators found on",
+            a("Duke's Food Plan and Points Website",
+              href = "https://studentaffairs.duke.edu/dining/plans-points"),
+            ". A comprehensive code book for each data set can be found in the",
+            a("GitHub repository",
+              href = "https://github.com/vizdata-f21/project-2-out_of_the_boxplots"),
+            ". Using the data from the user input
             template, the R Shiny app creates a tool involving visualizations and
             an overall report whose purpose is to provide students with the
             necessary insight on how much they can spend on food and where they
