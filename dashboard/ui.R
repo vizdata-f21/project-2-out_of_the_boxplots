@@ -167,7 +167,13 @@ ui <- dashboardPage(
       ),
       tabItem(
         tabName = "writeup",
-        h2("Project Write Up:")
+        h2("Project Write Up:"),
+        fluidPage(
+          column(12,
+          h3("Test"),
+          p("test")
+          )
+        )
       ),
       tabItem(
         tabName = "spendingtips",
