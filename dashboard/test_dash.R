@@ -76,7 +76,7 @@ ui <- dashboardPage(
       ## Upload Instructions Tab
       tabItem(
         tabName = "upload",
-        h2("How to Access and Upload Your Food Points:"),
+        h2("How to Access and Upload Your Food Points"),
         fluidRow(
           img(
             src = "food-points-instructions.png", height = 800, width = 700,
@@ -107,9 +107,9 @@ ui <- dashboardPage(
         ),
         fluidRow(
           column(12,
-            align = "center", offset = 2,
+            align = "center", offset = 1,
             box(
-              align = "center", width = 8,
+              align = "center", width = 9,
               DT::dataTableOutput("user_points_table")
             )
           )
@@ -138,7 +138,7 @@ ui <- dashboardPage(
             height = 220, width = 4
           ),
           box(
-            align = "center", h4("Selected Plan Characteristics\n \n "),
+            align = "center", h4(strong("Selected Plan Characteristics\n \n ")),
             tableOutput("plan_select_table"),
             height = 220, width = 4
           ),
@@ -166,10 +166,6 @@ ui <- dashboardPage(
             box(
               align = "center", width = 6,
               uiOutput("location_date_range"),
-              # selectInput("map_selection",
-              #             "Choose a Map:",
-              #             choices = c("Swipes",
-              #                         "Spending"))
             )
           )
         ),
@@ -178,12 +174,8 @@ ui <- dashboardPage(
             align = "center", offset = 1,
             box(
               align = "center", width = 10, height = 500,
-              h3("Campus Dining Locations"),
+              h3(strong("Campus Dining Locations")),
               leafletOutput("leafmap")
-              # plotOutput("top_5_locations",
-              #            dblclick = "map_dblclick",
-              #            brush = brushOpts(id = "map_brush",
-              #                              resetOnNew = TRUE))
             )
           )
         )
@@ -554,7 +546,7 @@ server <- function(input, output) {
   ## Create Calender Date Range For Top 5
   output$daterange2 <- renderUI({
     dateRangeInput(
-      "daterange", "Please Select Your Desired Date Range:",
+      "daterange", "Select Range of Dates",
       start = as.character(min(food_points()$date)),
       end = as.character(max(food_points()$date)),
       min = as.character(min(food_points()$date)),
@@ -620,7 +612,7 @@ server <- function(input, output) {
       }
     }
     DT::datatable(tmp %>%
-      select(date, restaurant, cost, points_remaining, campus_location) %>%
+      select(date, restaurant, campus_location, cost, points_remaining) %>%
       arrange(points_remaining) %>%
       rename(
         "Date (Y-M-D)" = "date",
@@ -629,7 +621,7 @@ server <- function(input, output) {
         "Cost" = "cost",
         "Points Remaining" = "points_remaining"
       )) %>%
-      DT::formatCurrency(c(3:4))
+      DT::formatCurrency(c(4:5))
   })
 
   ## Top 5 Bar Plots
@@ -773,7 +765,7 @@ server <- function(input, output) {
   ## Output Text on Food Point Tip Tab
   output$tips_needed <- renderUI({
     switch(input$tips_options,
-      "I'm Running Low!" = p(tags$ul(
+      "I'm Running Low!" = h4(tags$ul(
         tags$li(
           "Look at the Top 5 Restaurant bar plots and consider frequenting
              your top average spending locations less often. If you really enjoy
@@ -801,7 +793,7 @@ server <- function(input, output) {
              semesters?"
         )
       )),
-      "I Have Too Many Remaining!" = p(tags$ul(
+      "I Have Too Many Remaining!" = h4(tags$ul(
         tags$li(
           "Look at the Top 5 Restaurant bar plots and consider frequenting
              your top average spending locations more often."
@@ -858,8 +850,7 @@ server <- function(input, output) {
         plot.title = element_text(hjust = 0.5, face = "bold"),
         panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
-        axis.text.x = element_markdown(),
-        text = element_text(family = "Times New Roman")
+        axis.text.x = element_markdown()
       )
   })
 
@@ -890,8 +881,7 @@ server <- function(input, output) {
         plot.title = element_text(hjust = 0.5, face = "bold"),
         panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
-        axis.text.x = element_markdown(),
-        text = element_text(family = "Times New Roman")
+        axis.text.x = element_markdown()
       )
   })
 
@@ -922,8 +912,7 @@ server <- function(input, output) {
         plot.title = element_text(hjust = 0.5, face = "bold"),
         panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
-        axis.text.x = element_markdown(),
-        text = element_text(family = "Times New Roman")
+        axis.text.x = element_markdown()
       )
   })
 
@@ -955,8 +944,7 @@ server <- function(input, output) {
           plot.title = element_text(hjust = 0.5, face = "bold"),
           panel.grid.major.x = element_blank(),
           panel.grid.minor.x = element_blank(),
-          axis.text.x = element_markdown(),
-          text = element_text(family = "Times New Roman")
+          axis.text.x = element_markdown()
         )
     }
     + {
@@ -985,8 +973,7 @@ server <- function(input, output) {
             plot.title = element_text(hjust = 0.5, face = "bold"),
             panel.grid.major.x = element_blank(),
             panel.grid.minor.x = element_blank(),
-            axis.text.x = element_markdown(),
-            text = element_text(family = "Times New Roman")
+            axis.text.x = element_markdown()
           )
       }) / {
       ggplot(
@@ -1014,8 +1001,7 @@ server <- function(input, output) {
           plot.title = element_text(hjust = 0.5, face = "bold"),
           panel.grid.major.x = element_blank(),
           panel.grid.minor.x = element_blank(),
-          axis.text.x = element_markdown(),
-          text = element_text(family = "Times New Roman")
+          axis.text.x = element_markdown()
         )
     }
   )
@@ -1029,17 +1015,6 @@ server <- function(input, output) {
       "All Three: Total Swipes, Total Spent, & Avg. Spent" = all_three()
     )
   })
-
-
-  # output$top_5_locations <- renderPlot({
-  #   validate(
-  #     need(input$dates_slider, message = FALSE)
-  #   )
-  #   switch(input$map_selection,
-  #     "Swipes" = top_5_locations(),
-  #     "Spending" = top_5_locations2()
-  #   )
-  # })
 
   ### Output Bar Plot Choice
   output$plot_top_5 <- renderPlot({
@@ -1107,7 +1082,9 @@ server <- function(input, output) {
         ) +
         scale_y_continuous(labels = scales::dollar_format()) +
         theme_minimal() +
-        theme(plot.title = element_text(hjust = 0.5, size = 18)) +
+        theme(
+          plot.title = element_text(hjust = 0.5, size = 18, face = "bold")
+          ) +
         coord_cartesian(clip = "off")
     } else {
       time2 <- time_df() %>%
@@ -1133,7 +1110,9 @@ server <- function(input, output) {
         ) +
         scale_y_continuous(limits = c(0, NA), labels = dollar_format()) +
         theme_minimal() +
-        theme(plot.title = element_text(hjust = 0.5, size = 18)) +
+        theme(
+          plot.title = element_text(hjust = 0.5, size = 18, face = "bold")
+          ) +
         coord_cartesian(clip = "off")
     }
   })
@@ -1203,7 +1182,9 @@ server <- function(input, output) {
       scale_y_continuous(labels = scales::dollar_format()) +
       coord_cartesian(clip = "off") +
       theme_minimal() +
-      theme(plot.title = element_text(hjust = 0.5, size = 16))
+      theme(
+        plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
+        )
   })
 
   ## Create Plan Progression Key
@@ -1239,7 +1220,9 @@ server <- function(input, output) {
       labs(title = "Plan Progression Key") +
       coord_cartesian(clip = "off") +
       theme_void() +
-      theme(plot.title = element_text(hjust = 0.5, size = 16))
+      theme(
+        plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
+        )
   })
 
 
