@@ -177,8 +177,83 @@ ui <- dashboardPage(
         h2("Project Write Up:"),
         fluidPage(
           column(12,
-          h3("Test"),
-          p("test")
+          h3("Introducton"),
+          p("How can Duke students better understand their food points usage?
+          Every semester, Duke offers the same various food plans to meet the
+          diverse needs of their undergraduate students. These customized plans
+          are tailored specifically for upper-class, first-year and off-campus
+          students, yet most students, regardless of their food plan, face the
+          same issue — they always either run out of food points by the end of
+          the semester, or have too many remaining. The dreaded feeling of
+          bargaining for your friend’s spare food points is something many Duke
+          students have felt at one point in time, and this is the motivation
+          for a pertinent issue we would like to explore. With all the options
+          Duke offers, why is it so hard to budget our food points, and what can
+          help us understand our spending better? Although the purpose of this
+          project is not to create a food-management tool, our goal is that by
+          illustrating food point usage, students can better understand their
+          own spending, and use the information to inform any personal spending
+          goals they may develop. In order to alleviate the mental hurdles that
+          come with deciding how much money we can spend on food, we have
+          created a R Shiny dashboard app that uses a Duke student’s food plan
+          and data from their DukeCard Account Transaction Report to generate a
+          visual report on their spending. To do this we utilize Duke’s Fall
+          2021 and Spring 2022 Food Points Usage Chart. This chart breaks down
+          all 8 of Duke’s food plans and the suggested usage rate based on daily
+          and weekly averages. This is used in combination with the information
+          available in a student’s personal usage data, which includes the
+          location food points were spent at — accessed through their
+          [DukeCard eAccounts login](https://dukecard.duke.edu/manage-your-dukecard)
+          to provide a comprehensive report on their food spending. We consulted
+          Duke Dining on the best way to extract food point data and they believe
+          our method of copying and pasting is most efficient, rather than using
+          an inaccessible API.  Following instructions on the dashboard, students
+          copy and paste their personal eAccounts information into a provided
+          Excel template, to be uploaded to the R Shiny app. The template includes
+          the `Date/Time` (date and time purchase occurred), `Account Name`,
+          `Card Number`, `Location` (restaurant purchase occurred at),
+          `Transaction Type`, and `Amount` (cost of purchase) variables. Using
+          the R Shiny dashboard, undergraduate students can generate a usage
+          report from their online DukeCard statements."),
+          p("The first dataset used to accomplish this goal, `semester.csv`,
+            offers a brief summary of each plan, which allows us to quickly
+            outline each plan’s offerings. Each observation is an offered Duke
+            undergraduate food plan. The accompanying variables are information
+            about the total number of points offered on the plan, the expected
+            number of points to be spent per week, and the expected number of
+            points to be spent per day. There are `r nrow(semester)` observations
+            and `r ncol(semester)` variables in the data set. The data was
+            collected from [Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points).
+            The second dataset we use, `usage_chart.csv`, offers in depth
+            recommended spending information for each plan, which provides the
+            ability to track a user’s spending against the typical spending. Each
+            observation is a week during a Duke undergraduate semester. The
+            accompanying variables are information about the start date for the
+            week in the Fall or Spring semester (see `fall` and `spring` variables),
+            and the expected number of food points to start that week with,
+            depending on which plan a student has. There are `r nrow(usage_chart)`
+            observations and `r ncol(usage_chart)` variables in the data set.
+            The data was collected from the Fall 2021 and Spring 2022 Food Points
+            Calculators found on [Duke's Food Plan and Points Website](https://studentaffairs.duke.edu/dining/plans-points).
+            A comprehensive code book for each data set can be found in the
+            GitHub repository (LINK TO REPO).  Using the data from the user input
+            template, the R Shiny app creates a tool involving visualizations and
+            an overall report whose purpose is to provide students with the
+            necessary insight on how much they can spend on food and where they
+            should or shouldn’t spend their food, while staying within the
+            limits of their food plan. The intended audience of undergraduate
+            Duke students can use this app to inform their food point spending
+            decision making, helping to accomplish any goals they may have set
+            for themselves."),
+          h4("Justification of Approach"),
+          p("Students begin by uploading their filled-in template csv file
+          containing a full account of their purchases made using food points
+          over a selected semester. Users are instructed to visit the upload
+          instructions tab for further guidance on how to do this. This step must
+          be completed first in order to populate all subsequent visualizations
+          and information on the generated report. However, once completed, users
+          may navigate the tabs in whichever order they please such that they
+          are most effectively able to accomplish their food point spending goals.")
           )
         )
       ),
