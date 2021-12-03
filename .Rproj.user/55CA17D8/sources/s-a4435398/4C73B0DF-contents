@@ -263,6 +263,7 @@ ui <- dashboardPage(
             decision making, helping to accomplish any goals they may have set
             for themselves."),
                  h3("Justification of Approach"),
+            h4("Upload Instructions"),
                  p("Students begin by uploading their filled-in template csv file
           containing a full account of their purchases made using food points
           over a selected semester. Users are instructed to visit the upload
@@ -275,6 +276,7 @@ ui <- dashboardPage(
                    src = "food-points-instructions.png", height = 300, width = 250,
                    style = "display: block; margin-left: auto; margin-right: auto;"
                  ),
+            h4("Overview"),
                  p("Once uploaded, the Shiny app displays which food plan the user has,
             the total points offered on their plan, their points spent thus far,
             and their points remaining for the semester. Below this information,
@@ -284,6 +286,7 @@ ui <- dashboardPage(
                    src = "overview.png", height = 300, width = 400,
                    style = "display: block; margin-left: auto; margin-right: auto;"
                  ),
+            h4("Spending Over Time"),
                  p("Subsequently, students may move to the Spending Over Time tab, which
             allows the opportunity to select the semester and corresponding food plan
             users wish to have analyzed. Once selected, the application generates
@@ -335,6 +338,7 @@ ui <- dashboardPage(
               src = "spending-over-time-b.png", height = 250, width = 400,
               style = "display: block; margin-left: auto; margin-right: auto;"
             ),
+            h4("Dining Locations"),
             p("The next tab, Dining Locations, allows viewers to see a map of Duke’s
             campus. The slider on the top of the page provides the ability to choose
             the desired date range to be visualized, helping students see data for a
@@ -348,6 +352,7 @@ ui <- dashboardPage(
               src = "dining-locations.png", height = 250, width = 400,
               style = "display: block; margin-left: auto; margin-right: auto;"
             ),
+            h4("Top 5 Restaurants"),
             p("Our next set of visualizations gives a comprehensive look into where
             a student is spending their food points. We created vertical bar charts
             to display a student’s top 5 restaurants based on their total number of
