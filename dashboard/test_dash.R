@@ -182,14 +182,14 @@ ui <- dashboardPage(
       tabItem(
         tabName = "spendingtips",
         h2("Food Point Spending Tips"),
-        box(
+        fluidRow(box(
           align = "center", width = 6,
           selectInput("tips_options",
                       "How Are You Doing With Your Food Points?",
                       choices = c("I'm Running Low!",
                                   "I Have Too Many Remaining!"))
-          ),
-        textOutput("tips_needed")
+          )),
+        uiOutput("tips_needed")
       ),
       tabItem(
         tabName = "restaurants",
@@ -777,7 +777,7 @@ server <- function(input, output) {
 
   ## TEXT CODE
 
-  output$tips_needed <- renderPrint({
+  output$tips_needed <- renderUI({
     switch(input$tips_options,
            "I'm Running Low!" = p(tags$ul(
              tags$li("Look at the Top 5 Restaurant bar plots and consider frequenting
