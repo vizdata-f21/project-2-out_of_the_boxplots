@@ -38,7 +38,7 @@ ui <- dashboardPage(
       tags$img(src = "food_point_logo.png", height = "40", width = "180")
     )
   ),
-  ## Create Sidebar Tabs
+  ## Create Sidebar Tabs -------------------------------------------------------
   dashboardSidebar(
     sidebarMenu(
       menuItem(
@@ -73,10 +73,11 @@ ui <- dashboardPage(
   ),
   dashboardBody(
     tabItems(
-      ## Upload Instructions Tab
+      ## Upload Instructions Tab -----------------------------------------------
       tabItem(
         tabName = "upload",
-        h2("How to Access and Upload Your Food Points"),
+        h2(a("How to Access and Upload Your Food Points",
+             href = "https://dukecard.duke.edu/manage-your-dukecard")),
         fluidRow(
           img(
             src = "food-points-instructions.png", height = 800, width = 700,
@@ -84,12 +85,12 @@ ui <- dashboardPage(
           ),
         )
       ),
-      ## Food Points Overview Tab
+      ## Food Points Overview Tab ----------------------------------------------
       tabItem(
         tabName = "overview",
         h2("Food Points Overview"),
         p("First upload your data by going to the upload instructions tab! Then,
-          naviagte the tabs in whichever order you prefer."),
+          naviagte through the tabs in whichever order you prefer."),
         fluidRow(
           box(downloadButton("food_template", "Download Food Point Template"),
             h4(""),
@@ -116,7 +117,7 @@ ui <- dashboardPage(
           )
         ),
       ),
-      ## Spending Over Time Tab
+      ## Spending Over Time Tab ------------------------------------------------
       tabItem(
         tabName = "future",
         h2("Spending Over Time"),
@@ -157,7 +158,7 @@ ui <- dashboardPage(
           )
         ),
       ),
-      ## Dining Location Tabs
+      ## Dining Locations Tab --------------------------------------------------
       tabItem(
         tabName = "locations",
         h2("Where Food Points Are Spent"),
@@ -181,7 +182,7 @@ ui <- dashboardPage(
           )
         )
       ),
-      ## Project Write-Up Tab
+      ## Project Write-Up Tab --------------------------------------------------
       tabItem(
         tabName = "writeup",
         h2("Project Write Up"),
@@ -252,7 +253,7 @@ ui <- dashboardPage(
                      href = "https://studentaffairs.duke.edu/dining/plans-points"),
                    ". A comprehensive code book for each data set can be found in the",
                    a("GitHub repository",
-                     href = "https://github.com/vizdata-f21/project-2-out_of_the_boxplots"),
+                     href = "https://github.com/vizdata-f21/project-2-out_of_the_boxplots/tree/main/dashboard/data"),
                    ". Using the data from the user input
             template, the R Shiny app creates a tool involving visualizations and
             an overall report whose purpose is to provide students with the
@@ -262,7 +263,7 @@ ui <- dashboardPage(
             Duke students can use this app to inform their food point spending
             decision making, helping to accomplish any goals they may have set
             for themselves."),
-                 h3("Justification of Approach"),
+                 h3("Justification & Explanation of Approach"),
             h4("Upload Instructions"),
                  p("Students begin by uploading their filled-in template csv file
           containing a full account of their purchases made using food points
@@ -534,7 +535,7 @@ ui <- dashboardPage(
               Il Forno, and Cafe, in this specific image). Per transaction, the user spent
               approximately $12 at JBs, $11 at Panera, $11 at Ginger and Soy, $10 at Il Forno,
               and $9 at Cafe."),
-            h3("Discussion"),
+            h3("Discussion: Limitations & Future Directions"),
             p("In conclusion, this R Shiny app helps visualize Duke students’
               food points spending, helping our peers accomplish their spending-related
               goals for the semester, whatever these may be.Furthermore, we have included a set of
@@ -595,11 +596,18 @@ ui <- dashboardPage(
               they would be interested in deploying a Beta version of the application with
               the login portal functionality for our peers, so that everyone can more easily
               access a report which helps them accomplish their personal food point spending
-              goals.")
+              goals."),
+            h3("Code"),
+            p("Code for the Shiny application can be accessed here: ",
+              a("UI",
+                href = "https://github.com/vizdata-f21/project-2-out_of_the_boxplots/blob/main/dashboard/ui.R"),
+              "and", a("Server",
+              href = "https://github.com/vizdata-f21/project-2-out_of_the_boxplots/blob/main/dashboard/server.R"),
+              ".")
           )
         )
       ),
-      ## Food Point Tips Tab
+      ## Food Point Tips Tab ---------------------------------------------------
       tabItem(
         tabName = "spendingtips",
         h2("Food Point Spending Tips"),
@@ -618,7 +626,7 @@ ui <- dashboardPage(
         )),
         uiOutput("tips_needed")
       ),
-      ## Top 5 Restaurants Tab
+      ## Top 5 Restaurants Tab -------------------------------------------------
       tabItem(
         tabName = "restaurants",
         h2("Your Top 5 Restaurants"),
