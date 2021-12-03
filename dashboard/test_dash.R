@@ -11,7 +11,7 @@ library(janitor)
 library(tidyverse)
 library(lubridate)
 library(scales)
-#library(khroma)
+# library(khroma)
 library(patchwork)
 library(tools)
 library(ggtext)
@@ -20,7 +20,7 @@ library(ggpubr)
 library(leaflet)
 
 # SET TO TRUE AT THE END TO GET RID OF ALL POSSIBLE ERRORS
-#options(shiny.sanitize.errors = FALSE)
+# options(shiny.sanitize.errors = FALSE)
 
 ## DATA ##
 semester <- read_csv(here::here("dashboard/data", "semester.csv"))
@@ -32,9 +32,11 @@ campus_map <- readPNG(here::here("dashboard/www", "duke_campus_map.png"))
 ui <- dashboardPage(
   skin = "black",
   dashboardHeader(
-    title = tags$a(href='https://mralph15.shinyapps.io/dashboard/',
-                                 tags$img(src = 'food_point_logo.png', height='40', width='180'))
-    ),
+    title = tags$a(
+      href = "https://mralph15.shinyapps.io/dashboard/",
+      tags$img(src = "food_point_logo.png", height = "40", width = "180")
+    )
+  ),
   dashboardSidebar(
     sidebarMenu(
       menuItem(
@@ -85,10 +87,10 @@ ui <- dashboardPage(
         p("First upload your data, then navigate around the app as you please."),
         fluidRow(
           box(downloadButton("food_template", "Download Food Point Template"),
-              h4(""),
-              fileInput("student_data", "Upload Your Food Point Usage\n(see upload instructions tab)"),
-              height = 200,
-              accept = ".csv"
+            h4(""),
+            fileInput("student_data", "Upload Your Food Point Usage\n(see upload instructions tab)"),
+            height = 200,
+            accept = ".csv"
           ),
           box(
             align = "center",
@@ -98,11 +100,11 @@ ui <- dashboardPage(
         ),
         fluidRow(
           column(12,
-                 align = "center", offset = 2,
-                 box(
-                   align = "center", width = 8,
-                   DT::dataTableOutput("user_points_table")
-                 )
+            align = "center", offset = 2,
+            box(
+              align = "center", width = 8,
+              DT::dataTableOutput("user_points_table")
+            )
           )
         ),
       ),
@@ -112,13 +114,13 @@ ui <- dashboardPage(
         fluidRow(
           box(
             selectInput("select_sem", "Select Semester:",
-                        choices = c("Fall", "Spring")
+              choices = c("Fall", "Spring")
             ),
             selectInput("select_plan", "Select a Food Plan:",
-                        choices = c(
-                          "Plan A", "Plan B", "Plan C", "Plan D",
-                          "Plan F", "Plan I", "Plan J"
-                        )
+              choices = c(
+                "Plan A", "Plan B", "Plan C", "Plan D",
+                "Plan F", "Plan I", "Plan J"
+              )
             ),
             checkboxInput(
               "negative_values",
@@ -127,9 +129,10 @@ ui <- dashboardPage(
             ),
             height = 220, width = 4
           ),
-          box(align = "center", h4("Selected Plan Characteristics\n \n "),
-              tableOutput("plan_select_table"),
-              height = 220, width = 4
+          box(
+            align = "center", h4("Selected Plan Characteristics\n \n "),
+            tableOutput("plan_select_table"),
+            height = 220, width = 4
           ),
           box(
             plotOutput("overtime_key"),
@@ -150,48 +153,52 @@ ui <- dashboardPage(
         h2("Where Food Points Are Spent"),
         fluidRow(
           column(12,
-                 align = "center", offset = 3,
-                 box(
-                   align = "center", width = 6,
-                   uiOutput("location_date_range"),
-                   # selectInput("map_selection",
-                   #             "Choose a Map:",
-                   #             choices = c("Swipes",
-                   #                         "Spending"))
-                 )
+            align = "center", offset = 3,
+            box(
+              align = "center", width = 6,
+              uiOutput("location_date_range"),
+              # selectInput("map_selection",
+              #             "Choose a Map:",
+              #             choices = c("Swipes",
+              #                         "Spending"))
+            )
           )
         ),
         fluidRow(
           column(12,
-                 align = "center", offset = 1,
-                 box(
-                   align = "center", width = 10, height = 500,
-                   h3("Campus Dining Locations"),
-                   leafletOutput("leafmap")
-                   # plotOutput("top_5_locations",
-                   #            dblclick = "map_dblclick",
-                   #            brush = brushOpts(id = "map_brush",
-                   #                              resetOnNew = TRUE))
-                 )
+            align = "center", offset = 1,
+            box(
+              align = "center", width = 10, height = 500,
+              h3("Campus Dining Locations"),
+              leafletOutput("leafmap")
+              # plotOutput("top_5_locations",
+              #            dblclick = "map_dblclick",
+              #            brush = brushOpts(id = "map_brush",
+              #                              resetOnNew = TRUE))
+            )
           )
         )
-        ),
+      ),
       tabItem(
         tabName = "writeup",
         h2("Project Write Up:")
       ),
-
       tabItem(
         tabName = "spendingtips",
         h2("Food Point Spending Tips"),
         fluidRow(column(12,
           align = "center", offset = 3,
-          box(align = "center", width = 6,
-          selectInput("tips_options",
-                      "How Are You Doing With Your Food Points?",
-                      choices = c("I'm Running Low!",
-                                  "I Have Too Many Remaining!")))
-          )),
+          box(
+            align = "center", width = 6,
+            selectInput("tips_options",
+              "How Are You Doing With Your Food Points?",
+              choices = c(
+                "I'm Running Low!",
+                "I Have Too Many Remaining!"
+              )
+            )
+          )
+        )),
         uiOutput("tips_needed")
       ),
       tabItem(
@@ -199,43 +206,42 @@ ui <- dashboardPage(
         h2("Your Top 5 Restaurants"),
         fluidRow(
           column(12,
-                 align = "center",
-                 uiOutput("daterange2"),
+            align = "center",
+            uiOutput("daterange2"),
           )
         ),
         fluidRow(
           column(12,
-                 align = "center", offset = 1,
-                 box(
-                   align = "center", width = 10,
-                   selectInput(
-                     "top_5_input",
-                     "Which Measure(s) Would You Like Visualized?",
-                     c(
-                       "All Three: Total Swipes, Total Spent, & Avg. Spent",
-                       "Total Number of Swipes per Restaurant",
-                       "Total Food Points Spent per Restaurant",
-                       "Average Food Points Spent per Restaurant"
-                     )
-                     )
-                   )
-                 )
-        ),
-          fluidRow(
-            column(12,
-                   align = "center",
-                   wellPanel(plotOutput("plot_top_5")))
-
+            align = "center", offset = 1,
+            box(
+              align = "center", width = 10,
+              selectInput(
+                "top_5_input",
+                "Which Measure(s) Would You Like Visualized?",
+                c(
+                  "All Three: Total Swipes, Total Spent, & Avg. Spent",
+                  "Total Number of Swipes per Restaurant",
+                  "Total Food Points Spent per Restaurant",
+                  "Average Food Points Spent per Restaurant"
+                )
+              )
+            )
+          )
         ),
         fluidRow(
           column(12,
-                 align = "center", offset = 2,
-                 box(
-                   align = "center", width = 8,
-                   DT::dataTableOutput("food_points_all_info_table")
-                 )
+            align = "center",
+            wellPanel(plotOutput("plot_top_5"))
           )
-
+        ),
+        fluidRow(
+          column(12,
+            align = "center", offset = 2,
+            box(
+              align = "center", width = 8,
+              DT::dataTableOutput("food_points_all_info_table")
+            )
+          )
         )
       )
     )
@@ -261,8 +267,11 @@ server <- function(input, output) {
   raw <- reactive({
     req(input$student_data, file.exists(input$student_data$datapath))
     validate(
-      need(str_detect(file_ext(input$student_data$name), "csv"),
-           "Wrong File Format! Upload the Food Point Usage Template and Try Again."))
+      need(
+        str_detect(file_ext(input$student_data$name), "csv"),
+        "Wrong File Format! Upload the Food Point Usage Template and Try Again."
+      )
+    )
     read.csv(input$student_data$datapath)
   })
 
@@ -348,7 +357,7 @@ server <- function(input, output) {
           restaurant == "Ginger and Soy" ~ "West Union",
           restaurant == "Gyotaku" ~ "West Union",
           restaurant == "Il Forno" ~ "West Union",
-          restaurant == "JBs Roast and Chops" ~ 'West Union',
+          restaurant == "JBs Roast and Chops" ~ "West Union",
           restaurant == "McDonalds" ~ "Bryan Center",
           restaurant == "Nasher Cafe" ~ "The Nasher",
           restaurant == "Panda Express" ~ "Bryan Center",
@@ -382,8 +391,9 @@ server <- function(input, output) {
           campus_location == "The Nasher" ~ 700,
           campus_location == "E-Quad" ~ 150,
           campus_location == "East Campus" ~ 1050,
-          campus_location == "Around Duke's Campus"~ 300,
-          TRUE ~ dim(campus_map)[2] / 2),
+          campus_location == "Around Duke's Campus" ~ 300,
+          TRUE ~ dim(campus_map)[2] / 2
+        ),
         y_coord = case_when(
           campus_location == "West Union" ~ 300,
           campus_location == "Wilson Gym" ~ 30,
@@ -394,10 +404,11 @@ server <- function(input, output) {
           campus_location == "The Nasher" ~ 170,
           campus_location == "E-Quad" ~ 500,
           campus_location == "East Campus" ~ 20,
-          campus_location == "Around Duke's Campus"~ 270,
-          TRUE ~ dim(campus_map)[1] / 2)
+          campus_location == "Around Duke's Campus" ~ 270,
+          TRUE ~ dim(campus_map)[1] / 2
+        )
       ) %>%
-    relocate(campus_location, .after = restaurant)
+      relocate(campus_location, .after = restaurant)
   })
 
   # create logo image variable for bar plot
@@ -526,7 +537,7 @@ server <- function(input, output) {
     "Other" = "gray"
   )
 
-  #code for date ranges
+  # code for date ranges
   output$daterange2 <- renderUI({
     dateRangeInput(
       "daterange", "Please Select Your Desired Date Range:",
@@ -538,18 +549,21 @@ server <- function(input, output) {
   })
 
   # MAP PLOTS
-  #code for location date slider
+  # code for location date slider
   output$location_date_range <- renderUI({
     req(input$student_data)
     req(food_points())
     sliderInput("dates_slider",
-                "Select Range of Dates",
-                min = min(food_points()$date),
-                max = max(food_points()$date),
-                value = c(min(food_points()$date),
-                          max(food_points()$date)),
-                timeFormat="%m-%d-%Y",
-                step = (max(food_points()$date) - min(food_points()$date))/6)
+      "Select Range of Dates",
+      min = min(food_points()$date),
+      max = max(food_points()$date),
+      value = c(
+        min(food_points()$date),
+        max(food_points()$date)
+      ),
+      timeFormat = "%m-%d-%Y",
+      step = (max(food_points()$date) - min(food_points()$date)) / 6
+    )
   })
 
   # code for summary table
@@ -561,10 +575,12 @@ server <- function(input, output) {
         pull(total_value),
       "points_spent" = sum(food_points()$cost)
     ) %>%
-      mutate(points_remain = plan_total - points_spent,
-             "Points Remaining" = paste0("$", points_remain),
-             "Plan Total" = paste0("$", plan_total),
-             "Points Spent" = paste0("$", points_spent)) %>%
+      mutate(
+        points_remain = plan_total - points_spent,
+        "Points Remaining" = paste0("$", points_remain),
+        "Plan Total" = paste0("$", plan_total),
+        "Points Spent" = paste0("$", points_spent)
+      ) %>%
       select(`Plan Total`, `Points Spent`, `Points Remaining`)
   })
 
@@ -600,7 +616,7 @@ server <- function(input, output) {
       )) %>%
       DT::formatCurrency(c(3:4))
   })
-# BAR PLOTS
+  # BAR PLOTS
   # calculate total points spent at each dining location
   food_points_location_cost <- reactive({
     food_points() %>%
@@ -631,15 +647,18 @@ server <- function(input, output) {
       rename(avg = name)
   })
 
-  food_points_all_info <- reactive({food_points() %>%
-    filter(date >= input$daterange[1] & date <= input$daterange[2]) %>%
-    group_by(restaurant) %>%
-    summarize(freq = n(), total_cost = sum(cost), avg_cost = total_cost/freq) %>%
-    arrange(desc(total_cost)) %>%
-    rename("Restaurant" = "restaurant",
-           "Frequency" = "freq",
-           "Total Cost" = "total_cost",
-           "Average Cost" = "avg_cost")
+  food_points_all_info <- reactive({
+    food_points() %>%
+      filter(date >= input$daterange[1] & date <= input$daterange[2]) %>%
+      group_by(restaurant) %>%
+      summarize(freq = n(), total_cost = sum(cost), avg_cost = total_cost / freq) %>%
+      arrange(desc(total_cost)) %>%
+      rename(
+        "Restaurant" = "restaurant",
+        "Frequency" = "freq",
+        "Total Cost" = "total_cost",
+        "Average Cost" = "avg_cost"
+      )
   })
 
   # BAR PLOT DATA TABLE
@@ -649,8 +668,8 @@ server <- function(input, output) {
       DT::formatCurrency(c(3:4))
   })
 
-  #MAP Plot
-  #calculate most frequent locations visited within slider
+  # MAP Plot
+  # calculate most frequent locations visited within slider
   # top_5_location_spend <- reactive({
   #   food_points() %>%
   #     filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
@@ -664,7 +683,7 @@ server <- function(input, output) {
     req(input$dates_slider)
     food_points() %>%
       filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
-      group_by(campus_location) %>%#, x_coord, y_coord) %>%
+      group_by(campus_location) %>% # , x_coord, y_coord) %>%
       count() %>%
       # arrange(desc(n)) %>%
       rename(freq = n)
@@ -674,7 +693,7 @@ server <- function(input, output) {
     req(input$dates_slider)
     food_points() %>%
       filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
-      group_by(campus_location) %>%#, x_coord, y_coord) %>%
+      group_by(campus_location) %>% # , x_coord, y_coord) %>%
       summarise("spending" = sum(cost))
   })
 
@@ -751,30 +770,38 @@ server <- function(input, output) {
     tmp <- left_join(dining_location_freq(), dining_location_spend(), by = "campus_location")
 
     mapdf <- tmp %>%
-      mutate(lng = case_when(campus_location == "West Union" ~ -78.939454,
-                             campus_location == "Wilson Gym" ~ -78.941449,
-                             campus_location == "Bryan Center" ~ -78.941014,
-                             campus_location == "Perkins" ~ -78.938645,
-                             campus_location == "McClendon Tower" ~ -78.937178,
-                             campus_location == "300 Swift" ~ -78.922188,
-                             campus_location == "The Nasher" ~ -78.929123,
-                             campus_location == "E-Quad" ~ -78.940290,
-                             campus_location == "East Campus" ~ -78.914628,
-                             TRUE ~ -78.933194),
-             lat = case_when(campus_location == "West Union" ~ 36.000774,
-                             campus_location == "Wilson Gym" ~ 35.997383,
-                             campus_location == "Bryan Center" ~ 36.001009,
-                             campus_location == "Perkins" ~ 36.002389,
-                             campus_location == "McClendon Tower" ~ 35.999341,
-                             campus_location == "300 Swift" ~ 36.002853,
-                             campus_location == "The Nasher" ~ 35.999024,
-                             campus_location == "E-Quad" ~ 36.003635,
-                             campus_location == "East Campus" ~ 36.007619,
-                             TRUE ~ 36.002414),
-             pop = paste(sep = "<br/>",
-                         paste0("<b>", campus_location, "</b>"),
-                         paste0("Swipes: ", freq, " (", round(100*freq/sum(tmp$freq)),"%)"),
-                         paste0("Spending: $", round(spending,2), " (", round(100*spending/sum(tmp$spending)), "%)")))
+      mutate(
+        lng = case_when(
+          campus_location == "West Union" ~ -78.939454,
+          campus_location == "Wilson Gym" ~ -78.941449,
+          campus_location == "Bryan Center" ~ -78.941014,
+          campus_location == "Perkins" ~ -78.938645,
+          campus_location == "McClendon Tower" ~ -78.937178,
+          campus_location == "300 Swift" ~ -78.922188,
+          campus_location == "The Nasher" ~ -78.929123,
+          campus_location == "E-Quad" ~ -78.940290,
+          campus_location == "East Campus" ~ -78.914628,
+          TRUE ~ -78.933194
+        ),
+        lat = case_when(
+          campus_location == "West Union" ~ 36.000774,
+          campus_location == "Wilson Gym" ~ 35.997383,
+          campus_location == "Bryan Center" ~ 36.001009,
+          campus_location == "Perkins" ~ 36.002389,
+          campus_location == "McClendon Tower" ~ 35.999341,
+          campus_location == "300 Swift" ~ 36.002853,
+          campus_location == "The Nasher" ~ 35.999024,
+          campus_location == "E-Quad" ~ 36.003635,
+          campus_location == "East Campus" ~ 36.007619,
+          TRUE ~ 36.002414
+        ),
+        pop = paste(
+          sep = "<br/>",
+          paste0("<b>", campus_location, "</b>"),
+          paste0("Swipes: ", freq, " (", round(100 * freq / sum(tmp$freq)), "%)"),
+          paste0("Spending: $", round(spending, 2), " (", round(100 * spending / sum(tmp$spending)), "%)")
+        )
+      )
 
     leaflet(data = mapdf) %>%
       addTiles() %>%
@@ -785,41 +812,43 @@ server <- function(input, output) {
 
   output$tips_needed <- renderUI({
     switch(input$tips_options,
-           "I'm Running Low!" = p(tags$ul(
-             tags$li("Look at the Top 5 Restaurant bar plots and consider frequenting
+      "I'm Running Low!" = p(tags$ul(
+        tags$li("Look at the Top 5 Restaurant bar plots and consider frequenting
           your top average spending locations less often. If you really enjoy
           these restaurants, consider ordering their $5 Daily Devil Deals,
           instead. If these top locations have a food in common, such as
             coffee, consider getting the monthly Panera coffee card"),
-             br(),
-             tags$li("View the data table on the Top 5 tab and frequent the location
+        br(),
+        tags$li("View the data table on the Top 5 tab and frequent the location
             with the smallest average spending more often."),
-             br(),
-             tags$li("View the spending per week visualization and consider how your
+        br(),
+        tags$li("View the spending per week visualization and consider how your
             spending each week compares to your plan’s weekly average. Were
             there particular weeks where your spending was notably above the
             average amount? Consider what was going on during these weeks, and
             how you can use knowledge of this in the future."),
-             br(),
-             tags$li("Look at how your plan progression compares to your own spending.
+        br(),
+        tags$li("Look at how your plan progression compares to your own spending.
             Would a different plan be more suitable for you in future
-            semesters?"))),
-
-           "I Have Too Many Remaining!" = p(tags$ul(
-             tags$li("Look at the Top 5 Restaurant bar plots and consider frequenting
+            semesters?")
+      )),
+      "I Have Too Many Remaining!" = p(tags$ul(
+        tags$li("Look at the Top 5 Restaurant bar plots and consider frequenting
             your top average spending locations more often."),
-             br(),
-             tags$li("View the spending per week visualization and consider how your
+        br(),
+        tags$li("View the spending per week visualization and consider how your
           spending each week compares to your plan’s weekly average. Were there
           particular weeks where your spending was notably below the average
           amount? Consider what was going on during these weeks, and how you can
           use knowledge of this in the future."),
-             br(),
-             tags$li("Look at how your plan progression compares to your own spending.
+        br(),
+        tags$li("Look at how your plan progression compares to your own spending.
           Would a different plan be more suitable for you in future semesters?"),
-             br(),
-             tags$li("Consider going to The Lobby Shop more to stock up on snacks, or
-          getting Merchants on Points, which offers more expensive, high-quality food."))))
+        br(),
+        tags$li("Consider going to The Lobby Shop more to stock up on snacks, or
+          getting Merchants on Points, which offers more expensive, high-quality food.")
+      ))
+    )
   })
 
   # BAR PLOT GGPLOT CODE
@@ -861,7 +890,8 @@ server <- function(input, output) {
         x = fct_reorder(restaurant, desc(freq)),
         y = freq,
         fill = restaurant,
-        label = freq)
+        label = freq
+      )
     ) +
       geom_col(show.legend = FALSE) +
       geom_text(vjust = -1, size = 4) +
@@ -916,38 +946,37 @@ server <- function(input, output) {
   })
 
   all_three <- reactive(
-    (
-      {
-        ggplot(
-          data = food_points_location_freq(),
-          aes(
-            x = fct_reorder(restaurant, desc(freq)),
-            y = freq,
-            fill = restaurant,
-            label = freq)
+    ({
+      ggplot(
+        data = food_points_location_freq(),
+        aes(
+          x = fct_reorder(restaurant, desc(freq)),
+          y = freq,
+          fill = restaurant,
+          label = freq
+        )
+      ) +
+        geom_col(show.legend = FALSE) +
+        geom_text(vjust = -1, size = 3) +
+        theme_minimal() +
+        labs(
+          x = NULL,
+          y = "\nTotal Number of Swipes",
+          title = "Total Number of Card Swipes\nper Restaurant"
         ) +
-          geom_col(show.legend = FALSE) +
-          geom_text(vjust = -1, size = 3) +
-          theme_minimal() +
-          labs(
-            x = NULL,
-            y = "\nTotal Number of Swipes",
-            title = "Total Number of Card Swipes\nper Restaurant"
-          ) +
-          scale_x_discrete(name = NULL, labels = label_logos_small) +
-          scale_y_continuous(labels = label_number(accuracy = 1)) +
-          scale_fill_manual(values = restaurant_colors) +
-          coord_cartesian(clip = "off") +
-          theme(
-            plot.title = element_text(hjust = 0.5, face = "bold"),
-            panel.grid.major.x = element_blank(),
-            panel.grid.minor.x = element_blank(),
-            axis.text.x = element_markdown(),
-            text = element_text(family = "Times New Roman")
-          )
-      }
-      +
-      {
+        scale_x_discrete(name = NULL, labels = label_logos_small) +
+        scale_y_continuous(labels = label_number(accuracy = 1)) +
+        scale_fill_manual(values = restaurant_colors) +
+        coord_cartesian(clip = "off") +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold"),
+          panel.grid.major.x = element_blank(),
+          panel.grid.minor.x = element_blank(),
+          axis.text.x = element_markdown(),
+          text = element_text(family = "Times New Roman")
+        )
+    }
+    + {
         ggplot(
           data = food_points_location_cost(),
           aes(
@@ -976,46 +1005,44 @@ server <- function(input, output) {
             axis.text.x = element_markdown(),
             text = element_text(family = "Times New Roman")
           )
-      }
-    ) /
-      {
-        ggplot(
-          data = food_points_location_avg(),
-          aes(
-            x = fct_reorder(restaurant, desc(avg)),
-            y = avg,
-            fill = restaurant,
-            label = paste0("$", format(round(avg, 2), nsmall = 2))
-          )
+      }) / {
+      ggplot(
+        data = food_points_location_avg(),
+        aes(
+          x = fct_reorder(restaurant, desc(avg)),
+          y = avg,
+          fill = restaurant,
+          label = paste0("$", format(round(avg, 2), nsmall = 2))
+        )
+      ) +
+        geom_col(show.legend = FALSE) +
+        geom_text(vjust = -1, size = 3) +
+        theme_minimal() +
+        scale_y_continuous(labels = dollar_format()) +
+        scale_x_discrete(name = NULL, labels = label_logos_medium) +
+        scale_fill_manual(values = restaurant_colors) +
+        labs(
+          x = NULL,
+          y = "\nAverage Food Points Spent\nper Transaction",
+          title = "Average Food Points Spent\nper Transaction at Restaurant"
         ) +
-          geom_col(show.legend = FALSE) +
-          geom_text(vjust = -1, size = 3) +
-          theme_minimal() +
-          scale_y_continuous(labels = dollar_format()) +
-          scale_x_discrete(name = NULL, labels = label_logos_medium) +
-          scale_fill_manual(values = restaurant_colors) +
-          labs(
-            x = NULL,
-            y = "\nAverage Food Points Spent\nper Transaction",
-            title = "Average Food Points Spent\nper Transaction at Restaurant"
-          ) +
-          coord_cartesian(clip = "off") +
-          theme(
-            plot.title = element_text(hjust = 0.5, face = "bold"),
-            panel.grid.major.x = element_blank(),
-            panel.grid.minor.x = element_blank(),
-            axis.text.x = element_markdown(),
-            text = element_text(family = "Times New Roman")
-          )
-      }
+        coord_cartesian(clip = "off") +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold"),
+          panel.grid.major.x = element_blank(),
+          panel.grid.minor.x = element_blank(),
+          axis.text.x = element_markdown(),
+          text = element_text(family = "Times New Roman")
+        )
+    }
   )
 
   plot_top_5 <- reactive({
     switch(input$top_5_input,
-           "Total Number of Swipes per Restaurant" = plot_top_freq(),
-           "Total Food Points Spent per Restaurant" = plot_top_costs(),
-           "Average Food Points Spent per Restaurant" = plot_top_avg(),
-           "All Three: Total Swipes, Total Spent, & Avg. Spent" = all_three()
+      "Total Number of Swipes per Restaurant" = plot_top_freq(),
+      "Total Food Points Spent per Restaurant" = plot_top_costs(),
+      "Average Food Points Spent per Restaurant" = plot_top_avg(),
+      "All Three: Total Swipes, Total Spent, & Avg. Spent" = all_three()
     )
   })
 
@@ -1024,8 +1051,8 @@ server <- function(input, output) {
       need(input$dates_slider, message = FALSE)
     )
     switch(input$map_selection,
-           "Swipes" = top_5_locations(),
-           "Spending" = top_5_locations2()
+      "Swipes" = top_5_locations(),
+      "Spending" = top_5_locations2()
     )
   })
 
@@ -1035,7 +1062,7 @@ server <- function(input, output) {
     plot_top_5()
   })
 
-  #CAN DELETE BELOW AFTER BLOSSOM FINISHES MAP (keeping just in case)
+  # CAN DELETE BELOW AFTER BLOSSOM FINISHES MAP (keeping just in case)
 
   # # OVERALL LOCATION PLOTS DATA WRANGLING
   #
@@ -1101,7 +1128,7 @@ server <- function(input, output) {
       week_sum <- 0
       for (x in 1:nrow(food_points())) {
         if ((food_points()$date[x] >= timedf$date[i]) &
-            (food_points()$date[x] < timedf$date[i + 1])) {
+          (food_points()$date[x] < timedf$date[i + 1])) {
           week_sum <- week_sum + food_points()$cost[x]
           total_sum <- total_sum + food_points()$cost[x]
         }
@@ -1112,16 +1139,16 @@ server <- function(input, output) {
     timedf
   })
 
-  #location map
-  #add ability to increase number of top locations from 1-10
-  #add checkboxes for switch based on swipes/total amount spent
-  #add time scale for through the years or overall
-  #output$top_5_locations <- renderPlot(
+  # location map
+  # add ability to increase number of top locations from 1-10
+  # add checkboxes for switch based on swipes/total amount spent
+  # add time scale for through the years or overall
+  # output$top_5_locations <- renderPlot(
   #  {
   #    food_points_location_freq %>%
   #      ggplot(aes(x = ))
   #  }
-  #)
+  # )
   # plot_top_avg <- reactive({
   #   ggplot(
   #     data = food_points_location_avg(),
@@ -1145,7 +1172,7 @@ server <- function(input, output) {
       time1 <- time_df() %>%
         mutate(
           user_points_total = ifelse(date > max(food_points()$date),
-                                     NA, user_points_total
+            NA, user_points_total
           ),
           points_remaining = plan_points[1] - user_points_total
         )
@@ -1159,8 +1186,10 @@ server <- function(input, output) {
           method = "lm", fullrange = TRUE, se = FALSE,
           color = "lightcoral", linetype = "dashed", size = .9
         ) +
-        scale_x_date(breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
-                     minor_breaks = NULL) +
+        scale_x_date(
+          breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
+          minor_breaks = NULL
+        ) +
         scale_y_continuous(labels = scales::dollar_format()) +
         theme_minimal() +
         theme(plot.title = element_text(hjust = 0.5, size = 18)) +
@@ -1169,7 +1198,7 @@ server <- function(input, output) {
       time2 <- time_df() %>%
         mutate(
           user_points_total = ifelse(date > max(food_points()$date),
-                                     NA, user_points_total
+            NA, user_points_total
           ),
           points_remaining = plan_points[1] - user_points_total
         )
@@ -1183,8 +1212,10 @@ server <- function(input, output) {
           method = "lm", fullrange = TRUE, se = FALSE,
           color = "lightcoral", linetype = "dashed", size = .9
         ) +
-        scale_x_date(breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
-                     minor_breaks = NULL) +
+        scale_x_date(
+          breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
+          minor_breaks = NULL
+        ) +
         scale_y_continuous(limits = c(0, NA), labels = dollar_format()) +
         theme_minimal() +
         theme(plot.title = element_text(hjust = 0.5, size = 18)) +
@@ -1196,15 +1227,18 @@ server <- function(input, output) {
     time_df() %>%
       ggplot(aes(x = date, y = user_points_week)) +
       geom_col() +
-      geom_text(aes(x = date, y = user_points_week,
-                    label = paste0("$", round(user_points_week, 0))),
-                vjust=-0.25, size = 3) +
+      geom_text(aes(
+        x = date, y = user_points_week,
+        label = paste0("$", round(user_points_week, 0))
+      ),
+      vjust = -0.25, size = 3
+      ) +
       geom_hline(aes(yintercept = semester %>%
-                       filter(plan == str_extract(
-                         input$select_plan,
-                         "[:alpha:]$"
-                       )) %>%
-                       pull(weekly_avereage)), linetype = "longdash", color = "blue", size = .75) +
+        filter(plan == str_extract(
+          input$select_plan,
+          "[:alpha:]$"
+        )) %>%
+        pull(weekly_avereage)), linetype = "longdash", color = "blue", size = .75) +
       geom_hline(aes(yintercept = mean(user_points_week)), linetype = "longdash", color = "red", size = .75) +
       geom_label(aes(
         x = date[3],
@@ -1218,13 +1252,15 @@ server <- function(input, output) {
           "Plan",
           str_extract(input$select_plan, "[:alpha:]$"),
           "Weekly Average:",
-          paste0("$",
-                 semester %>%
-                   filter(plan == str_extract(
-                     input$select_plan,
-                     "[:alpha:]$"
-                   )) %>%
-                   pull(weekly_avereage))
+          paste0(
+            "$",
+            semester %>%
+              filter(plan == str_extract(
+                input$select_plan,
+                "[:alpha:]$"
+              )) %>%
+              pull(weekly_avereage)
+          )
         )
       ), color = "blue", size = 3.75) +
       geom_label(aes(
@@ -1233,40 +1269,48 @@ server <- function(input, output) {
         label = paste0("Uploaded Average: ", "$", round(mean(user_points_week), 2))
       ), color = "red", size = 3.75) +
       labs(title = "Spending Per Week", x = "Weeks", y = "Points Spent") +
-      scale_x_date(breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
-                   minor_breaks = NULL) +
+      scale_x_date(
+        breaks = time_df()$date[c(TRUE, FALSE)], date_labels = "%b-%d",
+        minor_breaks = NULL
+      ) +
       scale_y_continuous(labels = scales::dollar_format()) +
       coord_cartesian(clip = "off") +
       theme_minimal() +
       theme(plot.title = element_text(hjust = 0.5, size = 16))
   })
 
-  key <- tibble("plan_prog_x" = c(1,2,3,4,5,6,7,8),
-                "plan_prog_y" = c(1,1,1,1,1,1,1,1),
-                "user_x" = c(1,2,3,4,5,6,7,8),
-                "user_y" = c(.5,.5,.5,.5,.5,.5,.5,.5),
-                "reg_x" = c(1,2,3,4,5,6,7,8),
-                "reg_y" = c(0,0,0,0,0,0,0,0))
+  key <- tibble(
+    "plan_prog_x" = c(1, 2, 3, 4, 5, 6, 7, 8),
+    "plan_prog_y" = c(1, 1, 1, 1, 1, 1, 1, 1),
+    "user_x" = c(1, 2, 3, 4, 5, 6, 7, 8),
+    "user_y" = c(.5, .5, .5, .5, .5, .5, .5, .5),
+    "reg_x" = c(1, 2, 3, 4, 5, 6, 7, 8),
+    "reg_y" = c(0, 0, 0, 0, 0, 0, 0, 0)
+  )
 
-  plot_key <- reactive({ggplot(key) +
-    geom_line(aes(x = plan_prog_x, y = plan_prog_y), color = "blue") +
-    geom_line(aes(x = user_x, y = user_y), color = "red") +
-    geom_point(aes(x = user_x, y = user_y), color = "red") +
-    geom_line(aes(x = reg_x, y = reg_y), color = "red", linetype = "dashed") +
-    geom_text(aes(x = 4.5, y = 1.15),
-              label = input$select_plan,
-              color = "blue") +
-    geom_text(aes(x = 4.54, y = .65),
-              label = "Uploaded Data",
-              color = "red") +
-    geom_text(aes(x = 4.55, y = .15),
-              label = "Linear Regression of Uploaded",
-              color = "red") +
-    ylim(-0.5, 1.5) +
-    labs(title = "Plan Progression Key") +
-    coord_cartesian(clip = "off") +
-    theme_void() +
-    theme(plot.title = element_text(hjust = 0.5, size = 16))
+  plot_key <- reactive({
+    ggplot(key) +
+      geom_line(aes(x = plan_prog_x, y = plan_prog_y), color = "blue") +
+      geom_line(aes(x = user_x, y = user_y), color = "red") +
+      geom_point(aes(x = user_x, y = user_y), color = "red") +
+      geom_line(aes(x = reg_x, y = reg_y), color = "red", linetype = "dashed") +
+      geom_text(aes(x = 4.5, y = 1.15),
+        label = input$select_plan,
+        color = "blue"
+      ) +
+      geom_text(aes(x = 4.54, y = .65),
+        label = "Uploaded Data",
+        color = "red"
+      ) +
+      geom_text(aes(x = 4.55, y = .15),
+        label = "Linear Regression of Uploaded",
+        color = "red"
+      ) +
+      ylim(-0.5, 1.5) +
+      labs(title = "Plan Progression Key") +
+      coord_cartesian(clip = "off") +
+      theme_void() +
+      theme(plot.title = element_text(hjust = 0.5, size = 16))
   })
 
 
@@ -1276,14 +1320,16 @@ server <- function(input, output) {
     timedf2 <- time_df() %>%
       mutate(
         user_points_total = ifelse(date > max(food_points()$date),
-                                   NA, user_points_total
+          NA, user_points_total
         ),
         points_remaining = plan_points[1] - user_points_total
       )
 
-    tibble("Plan Total" = c(paste0("$", max(timedf2$plan_points))),
-           "Points Spent" = c(paste0("$", round(max(timedf2$user_points_total, na.rm = TRUE), 2))),
-           "Points Remaining" = c(paste0("$", round(min(timedf2$points_remaining, na.rm = TRUE), 2))))
+    tibble(
+      "Plan Total" = c(paste0("$", max(timedf2$plan_points))),
+      "Points Spent" = c(paste0("$", round(max(timedf2$user_points_total, na.rm = TRUE), 2))),
+      "Points Remaining" = c(paste0("$", round(min(timedf2$points_remaining, na.rm = TRUE), 2)))
+    )
   })
 
   output$plan_select_table <- renderTable(
@@ -1291,7 +1337,6 @@ server <- function(input, output) {
     align = "c",
     bordered = TRUE
   )
-
 }
 
 ## RUN APP ##
