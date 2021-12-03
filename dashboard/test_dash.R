@@ -749,7 +749,9 @@ server <- function(input, output) {
         ),
         pop = paste(
           sep = "<br/>",
-          paste0("<b>", campus_location, "</b>"),
+          paste0(
+      "<b><a href='https://app.studentaffairs.duke.edu/dining/menus-hours/'>",
+      campus_location, "</a></b>"),
           paste0(
             "Swipes: ",
             freq,
@@ -805,13 +807,8 @@ server <- function(input, output) {
         ),
         br(),
         tags$li(
-          "Remember food_points roll upon completion of Fall Semester so you can chose
-          a smaller meal plan for Spring Semester"
-        ),
-        br(),
-        tags$li(
-          "Remember food_points roll upon completion of Fall Semester so you can chose
-          a smaller meal plan for Spring Semester"
+          "Remember food_points roll upon completion of Fall Semester so you
+          can chose a smaller meal plan for Spring Semester"
         ),
         br(),
         tags$li(
