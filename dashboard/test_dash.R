@@ -92,12 +92,10 @@ ui <- dashboardPage(
         fluidRow(
           box(downloadButton("food_template", "Download Food Point Template"),
             h4(""),
-            fixedRow(
               fileInput(
                 "student_data",
                 "Upload Your Food Point Usage:"
-              )
-            ),
+              ),
             height = 200,
             accept = ".csv"
           ),
