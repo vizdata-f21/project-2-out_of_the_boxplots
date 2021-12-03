@@ -271,11 +271,19 @@ ui <- dashboardPage(
           and information on the generated report. However, once completed, users
           may navigate the tabs in whichever order they please such that they
           are most effectively able to accomplish their food point spending goals."),
+                 img(
+                   src = "food-points-instructions.png", height = 300, width = 250,
+                   style = "display: block; margin-left: auto; margin-right: auto;"
+                 ),
                  p("Once uploaded, the Shiny app displays which food plan the user has,
             the total points offered on their plan, their points spent thus far,
             and their points remaining for the semester. Below this information,
             users have access to a populated searchable data table with their
             relevant uploaded information."),
+                 img(
+                   src = "overview.png", height = 300, width = 400,
+                   style = "display: block; margin-left: auto; margin-right: auto;"
+                 ),
                  p("Subsequently, students may move to the Spending Over Time tab, which
             allows the opportunity to select the semester and corresponding food plan
             users wish to have analyzed. Once selected, the application generates
@@ -298,6 +306,23 @@ ui <- dashboardPage(
             This page’s functionality also allows users to see how their data compares
             to the recommended spending for alternative plans, which is useful when
             deciding on whether to switch food plans in future semesters."),
+                 p("In the sample visualization below, created using Matt’s data,
+                   we assume Matt’s goal is to know whether he should upgrade to plan A,
+                   from his current plan J, for next semester. The bar plot makes clear
+                   that if the user has plan A, he would be spending much less per week
+                   than allotted on his selected plan. If there are certain bars in the
+                   spending per week visualization which are notably higher, or lower,
+                   than the others, a user can also take the opportunity to reflect on
+                   what was occurring during these weeks. In Matt’s plot, he spent very
+                   little the week of August 23rd, likely because it was the start of
+                   the semester, which may inform his future spending choices. Following
+                   this trend, based on his current spending, the user is projected to
+                   end the semester with a little less than $1,500. Consequently, the
+                   visualizations inform Matt that he should not switch to a larger plan."),
+                 img(
+                   src = "spending-over-time-a.png", height = 250, width = 400,
+                   style = "display: block; margin-left: auto; margin-right: auto;"
+                 ),
             p("Alternatively, if Matt’s goal is to know whether he should switch
                  to a smaller plan for next semester he can toggle between food plans
                  and compare his current food plan to a smaller one such as plan I.
@@ -306,6 +331,10 @@ ui <- dashboardPage(
                  to plan I than any of the larger plans. Therefore, in combination,
                  these visualizations inform the user on what meal plan is right for
                  their spending patterns."),
+            img(
+              src = "spending-over-time-b.png", height = 250, width = 400,
+              style = "display: block; margin-left: auto; margin-right: auto;"
+            ),
             p("The next tab, Dining Locations, allows viewers to see a map of Duke’s
             campus. The slider on the top of the page provides the ability to choose
             the desired date range to be visualized, helping students see data for a
@@ -315,6 +344,10 @@ ui <- dashboardPage(
             compares relative to other dining locations. From the visualization below
             we see Matt spends most of his time eating at West Union which contributes
             to 84% of his total spend."),
+            img(
+              src = "dining-locations.png", height = 250, width = 400,
+              style = "display: block; margin-left: auto; margin-right: auto;"
+            ),
             p("Our next set of visualizations gives a comprehensive look into where
             a student is spending their food points. We created vertical bar charts
             to display a student’s top 5 restaurants based on their total number of
@@ -325,6 +358,10 @@ ui <- dashboardPage(
             information to decide how to better tailor their spending at their favorite
             restaurants such as cutting back on Farmstead due to its high average
             transaction."),
+            img(
+              src = "top-5.png", height = 250, width = 300,
+              style = "display: block; margin-left: auto; margin-right: auto;"
+            ),
             h3("Discussion"),
             p("In conclusion, this R Shiny app helps visualize Duke students’
               food points spending, helping our peers accomplish their spending-related
