@@ -19,7 +19,7 @@ library(leaflet)
 
 # Errors Sanitized  ------------------------------------------------------------
 
-options(shiny.sanitize.errors = FALSE)
+options(shiny.sanitize.errors = TRUE)
 
 # Load Data --------------------------------------------------------------------
 
