@@ -82,6 +82,7 @@ ui <- dashboardPage(
       tabItem(
         tabName = "overview",
         h2("Food Points Overview"),
+        p("First upload your data, then navigate around the app as you please."),
         fluidRow(
           box(downloadButton("food_template", "Download Food Point Template"),
               h4(""),
@@ -395,7 +396,8 @@ server <- function(input, output) {
           campus_location == "East Campus" ~ 20,
           campus_location == "Around Duke's Campus"~ 270,
           TRUE ~ dim(campus_map)[1] / 2)
-      )
+      ) %>%
+    relocate(campus_location, .after = restaurant)
   })
 
   # create logo image variable for bar plot
@@ -587,11 +589,12 @@ server <- function(input, output) {
       }
     }
     DT::datatable(tmp %>%
-      select(date, restaurant, cost, points_remaining) %>%
+      select(date, restaurant, cost, points_remaining, campus_location) %>%
       arrange(points_remaining) %>%
       rename(
         "Date (Y-M-D)" = "date",
         "Restaurant" = "restaurant",
+        "Dining Location" = "campus_location",
         "Cost" = "cost",
         "Points Remaining" = "points_remaining"
       )) %>%
