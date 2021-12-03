@@ -571,8 +571,7 @@ server <- function(input, output) {
         min(food_points()$date),
         max(food_points()$date)
       ),
-      timeFormat = "%m-%d-%Y",
-      step = (max(food_points()$date) - min(food_points()$date)) / 6
+      timeFormat = "%m-%d-%Y"
     )
   })
 
