@@ -88,13 +88,15 @@ ui <- dashboardPage(
       tabItem(
         tabName = "overview",
         h2("Food Points Overview"),
-        p("First upload your data, then navigate around the app as you please."),
+        p("First upload your data by going to the upload instructions tab!"),
         fluidRow(
           box(downloadButton("food_template", "Download Food Point Template"),
             h4(""),
-            fileInput(
-              "student_data",
-              "Upload Your Food Point Usage\n(see upload instructions tab)"
+            fixedRow(
+              fileInput(
+                "student_data",
+                "Upload Your Food Point Usage:"
+              )
             ),
             height = 200,
             accept = ".csv"
@@ -803,6 +805,16 @@ server <- function(input, output) {
         ),
         br(),
         tags$li(
+          "Remember food_points roll upon completion of Fall Semester so you can chose
+          a smaller meal plan for Spring Semester"
+        ),
+        br(),
+        tags$li(
+          "Remember food_points roll upon completion of Fall Semester so you can chose
+          a smaller meal plan for Spring Semester"
+        ),
+        ,
+        tags$li(
           "View the spending per week visualization and consider how your
              spending each week compares to your plan’s weekly average. Were
              there particular weeks where your spending was notably below the
@@ -817,8 +829,9 @@ server <- function(input, output) {
         ),
         br(),
         tags$li(
-          "Consider going to The Lobby Shop more to stock up on snacks, or
-             getting Merchants on Points, which offers more expensive,
+          "Consider going to different campus locations to stock up on snacks,
+          or get food from dining locations you have never visited before.
+          You can also use Merchants on Points, which offers more expensive,
              high-quality food."
         )
       ))
