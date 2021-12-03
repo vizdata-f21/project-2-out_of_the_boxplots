@@ -92,8 +92,10 @@ ui <- dashboardPage(
         fluidRow(
           box(downloadButton("food_template", "Download Food Point Template"),
             h4(""),
-            fileInput("student_data",
-                      "Upload Your Food Point Usage\n(see upload instructions tab)"),
+            fileInput(
+              "student_data",
+              "Upload Your Food Point Usage\n(see upload instructions tab)"
+            ),
             height = 200,
             accept = ".csv"
           ),
@@ -668,7 +670,11 @@ server <- function(input, output) {
     food_points() %>%
       filter(date >= input$daterange[1] & date <= input$daterange[2]) %>%
       group_by(restaurant) %>%
-      summarize(freq = n(), total_cost = sum(cost), avg_cost = total_cost / freq) %>%
+      summarize(
+        freq = n(),
+        total_cost = sum(cost),
+        avg_cost = total_cost / freq
+      ) %>%
       arrange(desc(total_cost)) %>%
       rename(
         "Restaurant" = "restaurant",
@@ -714,7 +720,9 @@ server <- function(input, output) {
     validate(
       need(input$dates_slider, message = FALSE)
     )
-    tmp <- left_join(dining_location_freq(), dining_location_spend(), by = "campus_location")
+    tmp <- left_join(dining_location_freq(), dining_location_spend(),
+      by = "campus_location"
+    )
 
     mapdf <- tmp %>%
       mutate(
@@ -745,8 +753,15 @@ server <- function(input, output) {
         pop = paste(
           sep = "<br/>",
           paste0("<b>", campus_location, "</b>"),
-          paste0("Swipes: ", freq, " (", round(100 * freq / sum(tmp$freq)), "%)"),
-          paste0("Spending: $", round(spending, 2), " (", round(100 * spending / sum(tmp$spending)), "%)")
+          paste0(
+            "Swipes: ",
+            freq,
+            " (", round(100 * freq / sum(tmp$freq)), "%)"
+          ),
+          paste0(
+            "Spending: $", round(spending, 2),
+            " (", round(100 * spending / sum(tmp$spending)), "%)"
+          )
         )
       )
 
@@ -759,40 +774,58 @@ server <- function(input, output) {
   output$tips_needed <- renderUI({
     switch(input$tips_options,
       "I'm Running Low!" = p(tags$ul(
-        tags$li("Look at the Top 5 Restaurant bar plots and consider frequenting
-          your top average spending locations less often. If you really enjoy
-          these restaurants, consider ordering their $5 Daily Devil Deals,
-          instead. If these top locations have a food in common, such as
-            coffee, consider getting the monthly Panera coffee card"),
+        tags$li(
+          "Look at the Top 5 Restaurant bar plots and consider frequenting
+             your top average spending locations less often. If you really enjoy
+             these restaurants, consider ordering their $5 Daily Devil Deals,
+             instead. If these top locations have a food in common, such as
+             coffee, consider getting the monthly Panera coffee card"
+        ),
         br(),
-        tags$li("View the data table on the Top 5 tab and frequent the location
-            with the smallest average spending more often."),
+        tags$li(
+          "View the data table on the Top 5 tab and frequent the location
+             with the smallest average spending more often."
+        ),
         br(),
-        tags$li("View the spending per week visualization and consider how your
-            spending each week compares to your plan’s weekly average. Were
-            there particular weeks where your spending was notably above the
-            average amount? Consider what was going on during these weeks, and
-            how you can use knowledge of this in the future."),
+        tags$li(
+          "View the spending per week visualization and consider how your
+             spending each week compares to your plan’s weekly average. Were
+             there particular weeks where your spending was notably above the
+             average amount? Consider what was going on during these weeks, and
+             how you can use knowledge of this in the future."
+        ),
         br(),
-        tags$li("Look at how your plan progression compares to your own spending.
-            Would a different plan be more suitable for you in future
-            semesters?")
+        tags$li(
+          "Look at how your plan progression compares to your own spending.
+             Would a different plan be more suitable for you in future
+             semesters?"
+        )
       )),
       "I Have Too Many Remaining!" = p(tags$ul(
-        tags$li("Look at the Top 5 Restaurant bar plots and consider frequenting
-            your top average spending locations more often."),
+        tags$li(
+          "Look at the Top 5 Restaurant bar plots and consider frequenting
+             your top average spending locations more often."
+        ),
         br(),
-        tags$li("View the spending per week visualization and consider how your
-          spending each week compares to your plan’s weekly average. Were there
-          particular weeks where your spending was notably below the average
-          amount? Consider what was going on during these weeks, and how you can
-          use knowledge of this in the future."),
+        tags$li(
+          "View the spending per week visualization and consider how your
+             spending each week compares to your plan’s weekly average. Were
+             there particular weeks where your spending was notably below the
+             average amount? Consider what was going on during these weeks, and
+             how you can use knowledge of this in the future."
+        ),
         br(),
-        tags$li("Look at how your plan progression compares to your own spending.
-          Would a different plan be more suitable for you in future semesters?"),
+        tags$li(
+          "Look at how your plan progression compares to your own spending.
+              Would a different plan be more suitable for you in future
+              semesters?"
+        ),
         br(),
-        tags$li("Consider going to The Lobby Shop more to stock up on snacks, or
-          getting Merchants on Points, which offers more expensive, high-quality food.")
+        tags$li(
+          "Consider going to The Lobby Shop more to stock up on snacks, or
+             getting Merchants on Points, which offers more expensive,
+             high-quality food."
+        )
       ))
     )
   })
@@ -1121,8 +1154,16 @@ server <- function(input, output) {
           input$select_plan,
           "[:alpha:]$"
         )) %>%
-        pull(weekly_avereage)), linetype = "longdash", color = "blue", size = .75) +
-      geom_hline(aes(yintercept = mean(user_points_week)), linetype = "longdash", color = "red", size = .75) +
+        pull(weekly_avereage)),
+      linetype = "longdash",
+      color = "blue",
+      size = .75
+      ) +
+      geom_hline(aes(yintercept = mean(user_points_week)),
+        linetype = "longdash",
+        color = "red",
+        size = .75
+      ) +
       geom_label(aes(
         x = date[3],
         y = semester %>%
@@ -1149,7 +1190,10 @@ server <- function(input, output) {
       geom_label(aes(
         x = date[15],
         y = mean(user_points_week),
-        label = paste0("Uploaded Average: ", "$", round(mean(user_points_week), 2))
+        label = paste0(
+          "Uploaded Average: ", "$",
+          round(mean(user_points_week), 2)
+        )
       ), color = "red", size = 3.75) +
       labs(title = "Spending Per Week", x = "Weeks", y = "Points Spent") +
       scale_x_date(
@@ -1213,8 +1257,18 @@ server <- function(input, output) {
 
     tibble(
       "Plan Total" = c(paste0("$", max(timedf2$plan_points))),
-      "Points Spent" = c(paste0("$", round(max(timedf2$user_points_total, na.rm = TRUE), 2))),
-      "Points Remaining" = c(paste0("$", round(min(timedf2$points_remaining, na.rm = TRUE), 2)))
+      "Points Spent" = c(paste0(
+        "$",
+        round(max(timedf2$user_points_total,
+          na.rm = TRUE
+        ), 2)
+      )),
+      "Points Remaining" = c(paste0(
+        "$",
+        round(min(timedf2$points_remaining,
+          na.rm = TRUE
+        ), 2)
+      ))
     )
   })
 
