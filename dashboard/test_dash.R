@@ -88,7 +88,8 @@ ui <- dashboardPage(
       tabItem(
         tabName = "overview",
         h2("Food Points Overview"),
-        p("First upload your data by going to the upload instructions tab!"),
+        p("First upload your data by going to the upload instructions tab! Then,
+          naviagte the tabs in whichever order you prefer."),
         fluidRow(
           box(downloadButton("food_template", "Download Food Point Template"),
             h4(""),
