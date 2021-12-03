@@ -813,7 +813,7 @@ server <- function(input, output) {
           "Remember food_points roll upon completion of Fall Semester so you can chose
           a smaller meal plan for Spring Semester"
         ),
-        ,
+        br(),
         tags$li(
           "View the spending per week visualization and consider how your
              spending each week compares to your plan’s weekly average. Were
