@@ -1130,6 +1130,11 @@ server <- function(input, output) {
 
   ### Output Spending Per Week Plot
   output$overtime2 <- renderPlot({
+    user_avg <- time_df() %>%
+      filter((date > (floor_date(min(food_points()$date), "week") + days(1))) & (date < (ceiling_date(max(food_points()$date), "week") + days(1)))) %>%
+      summarise(tmp = mean(user_points_week)) %>%
+      pull(tmp)
+
     time_df() %>%
       ggplot(aes(x = date, y = user_points_week)) +
       geom_col() +
@@ -1140,19 +1145,19 @@ server <- function(input, output) {
       vjust = -0.25, size = 3
       ) +
       geom_hline(aes(yintercept = semester %>%
-        filter(plan == str_extract(
-          input$select_plan,
-          "[:alpha:]$"
-        )) %>%
-        pull(weekly_avereage)),
-      linetype = "longdash",
-      color = "blue",
-      size = .75
+                       filter(plan == str_extract(
+                         input$select_plan,
+                         "[:alpha:]$"
+                       )) %>%
+                       pull(weekly_avereage)),
+                 linetype = "longdash",
+                 color = "blue",
+                 size = .75
       ) +
-      geom_hline(aes(yintercept = mean(user_points_week)),
-        linetype = "longdash",
-        color = "red",
-        size = .75
+      geom_hline(aes(yintercept = mean(user_avg)),
+                 linetype = "longdash",
+                 color = "red",
+                 size = .75
       ) +
       geom_label(aes(
         x = date[3],
@@ -1179,10 +1184,10 @@ server <- function(input, output) {
       ), color = "blue", size = 3.75) +
       geom_label(aes(
         x = date[15],
-        y = mean(user_points_week),
+        y = user_avg,
         label = paste0(
           "Uploaded Average: ", "$",
-          round(mean(user_points_week), 2)
+          round(mean(user_avg), 2)
         )
       ), color = "red", size = 3.75) +
       labs(title = "Spending Per Week", x = "Weeks", y = "Points Spent") +
@@ -1195,7 +1200,7 @@ server <- function(input, output) {
       theme_minimal() +
       theme(
         plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
-        )
+      )
   })
 
   ## Create Plan Progression Key
