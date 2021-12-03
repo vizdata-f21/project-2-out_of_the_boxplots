@@ -36,7 +36,22 @@ Spring 2022 Food Points Calculators found on [Duke's Food Plan and Points Websit
 |plan_j           |Expected number of food points to start a week with, under Plan J |dbl  |
 
 For reference, PDF versions of the original Food Points Calculators found on 
-Duke's website are also located in this data folder. 
+Duke's website are also located in this data folder, inside of Duke Food Point 
+Usage Chart PDFs. 
 
-This folder also contains the user input template for the eAccounts food points 
-data, as well as a sample template filled out with a team member's data. 
+# eAccounts Food Points Template: CSV File Downloaded Through App (input_food_points_data.csv)
+
+Each observation will be a food points transaction at a Duke dining location. 
+The accompanying variables are information about the date and time the 
+transaction took place, the location of the transaction, and the amount spent. 
+Instructions for how to fill in this template are found on the Shiny app's main 
+page. 
+
+|variable         |description                           |type |
+|:----------------|:-------------------------------------|-----|
+|Date/Time        |Day the transaction took place (m/d/yr), followed by the time time it took place (24 hr clock) |chr  |
+|Account Name     |Will always be Food, representing a transaction to purchase food |chr  |
+|Card Number      |User Duke Card number |dbl  |
+|Location         |Restaurant where transaction took place |dbl  |
+|Transaction Type |Debit for a user's transaction, and Credit when Duke has deposited food point funds |dbl  |
+|Amount           |Food point cost of the purchase |chr  |
