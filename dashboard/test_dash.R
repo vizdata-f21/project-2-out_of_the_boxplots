@@ -999,34 +999,7 @@ server <- function(input, output) {
           TRUE ~ "Around Duke's Campus"
         ),
         ### Mutate Cost Variable To Make Numeric
-        cost = as.numeric(str_extract_all(amount, "[0-9]*\\.[0-9]*")),
-        ### Hard Code Overall Location Coordinates
-        x_coord = case_when(
-          campus_location == "West Union" ~ 190,
-          campus_location == "Wilson Gym" ~ 130,
-          campus_location == "Bryan Center" ~ 120,
-          campus_location == "Perkins" ~ 230,
-          campus_location == "McClendon Tower" ~ 250,
-          campus_location == "300 Swift" ~ 900,
-          campus_location == "The Nasher" ~ 700,
-          campus_location == "E-Quad" ~ 150,
-          campus_location == "East Campus" ~ 1050,
-          campus_location == "Around Duke's Campus" ~ 300,
-          TRUE ~ dim(campus_map)[2] / 2
-        ),
-        y_coord = case_when(
-          campus_location == "West Union" ~ 300,
-          campus_location == "Wilson Gym" ~ 30,
-          campus_location == "Bryan Center" ~ 330,
-          campus_location == "Perkins" ~ 380,
-          campus_location == "McClendon Tower" ~ 170,
-          campus_location == "300 Swift" ~ 440,
-          campus_location == "The Nasher" ~ 170,
-          campus_location == "E-Quad" ~ 500,
-          campus_location == "East Campus" ~ 20,
-          campus_location == "Around Duke's Campus" ~ 270,
-          TRUE ~ dim(campus_map)[1] / 2
-        )
+        cost = as.numeric(str_extract_all(amount, "[0-9]*\\.[0-9]*"))
       ) %>%
       relocate(campus_location, .after = restaurant)
   })
