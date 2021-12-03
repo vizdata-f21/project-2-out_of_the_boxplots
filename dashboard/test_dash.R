@@ -179,15 +179,17 @@ ui <- dashboardPage(
         tabName = "writeup",
         h2("Project Write Up:")
       ),
+
       tabItem(
         tabName = "spendingtips",
         h2("Food Point Spending Tips"),
-        fluidRow(box(
-          align = "center", width = 6,
+        fluidRow(column(12,
+          align = "center", offset = 3,
+          box(align = "center", width = 6,
           selectInput("tips_options",
                       "How Are You Doing With Your Food Points?",
                       choices = c("I'm Running Low!",
-                                  "I Have Too Many Remaining!"))
+                                  "I Have Too Many Remaining!")))
           )),
         uiOutput("tips_needed")
       ),
@@ -613,7 +615,8 @@ server <- function(input, output) {
       count() %>%
       arrange(desc(n)) %>%
       head(5) %>%
-      rename(freq = n)
+      rename(freq = n) %>%
+      mutate(freq = as.integer(freq))
   })
 
   food_points_location_avg <- reactive({
@@ -785,13 +788,16 @@ server <- function(input, output) {
           these restaurants, consider ordering their $5 Daily Devil Deals,
           instead. If these top locations have a food in common, such as
             coffee, consider getting the monthly Panera coffee card"),
+             br(),
              tags$li("View the data table on the Top 5 tab and frequent the location
             with the smallest average spending more often."),
+             br(),
              tags$li("View the spending per week visualization and consider how your
             spending each week compares to your plan’s weekly average. Were
             there particular weeks where your spending was notably above the
             average amount? Consider what was going on during these weeks, and
             how you can use knowledge of this in the future."),
+             br(),
              tags$li("Look at how your plan progression compares to your own spending.
             Would a different plan be more suitable for you in future
             semesters?"))),
@@ -799,15 +805,18 @@ server <- function(input, output) {
            "I Have Too Many Remaining!" = p(tags$ul(
              tags$li("Look at the Top 5 Restaurant bar plots and consider frequenting
             your top average spending locations more often."),
+             br(),
              tags$li("View the spending per week visualization and consider how your
           spending each week compares to your plan’s weekly average. Were there
           particular weeks where your spending was notably below the average
           amount? Consider what was going on during these weeks, and how you can
           use knowledge of this in the future."),
+             br(),
              tags$li("Look at how your plan progression compares to your own spending.
           Would a different plan be more suitable for you in future semesters?"),
+             br(),
              tags$li("Consider going to The Lobby Shop more to stock up on snacks, or
-          getting Merchants on Points."))))
+          getting Merchants on Points, which offers more expensive, high-quality food."))))
   })
 
   # BAR PLOT GGPLOT CODE
