@@ -17,16 +17,19 @@ library(png)
 library(ggpubr)
 library(leaflet)
 
-# SET TO TRUE AT THE END TO GET RID OF ALL POSSIBLE ERRORS
-#options(shiny.sanitize.errors = FALSE)
+options(shiny.sanitize.errors = FALSE)
 
-## UI ##
+# UI ---------------------------------------------------------------------------
+
 ui <- dashboardPage(
   skin = "black",
   dashboardHeader(
-    title = tags$a(href='https://mralph15.shinyapps.io/dashboard/',
-                   tags$img(src = 'food_point_logo.png', height='40', width='180'))
+    title = tags$a(
+      href = "https://mralph15.shinyapps.io/dashboard/",
+      tags$img(src = "food_point_logo.png", height = "40", width = "180")
+    )
   ),
+  ## Create Sidebar Tabs
   dashboardSidebar(
     sidebarMenu(
       menuItem(
@@ -61,9 +64,10 @@ ui <- dashboardPage(
   ),
   dashboardBody(
     tabItems(
+      ## Upload Instructions Tab
       tabItem(
         tabName = "upload",
-        h2("How to Access and Upload Your Food Points:"),
+        h2("How to Access and Upload Your Food Points"),
         fluidRow(
           img(
             src = "food-points-instructions.png", height = 800, width = 700,
@@ -71,13 +75,18 @@ ui <- dashboardPage(
           ),
         )
       ),
+      ## Food Points Overview Tab
       tabItem(
         tabName = "overview",
         h2("Food Points Overview"),
+        p("First upload your data by going to the upload instructions tab!"),
         fluidRow(
           box(downloadButton("food_template", "Download Food Point Template"),
               h4(""),
-              fileInput("student_data", "Upload Your Food Point Usage\n(see upload instructions tab)"),
+              fileInput(
+                "student_data",
+                "Upload Your Food Point Usage:"
+              ),
               height = 200,
               accept = ".csv"
           ),
@@ -89,14 +98,15 @@ ui <- dashboardPage(
         ),
         fluidRow(
           column(12,
-                 align = "center", offset = 2,
+                 align = "center", offset = 1,
                  box(
-                   align = "center", width = 8,
+                   align = "center", width = 9,
                    DT::dataTableOutput("user_points_table")
                  )
           )
         ),
       ),
+      ## Spending Over Time Tab
       tabItem(
         tabName = "future",
         h2("Spending Over Time"),
@@ -118,9 +128,10 @@ ui <- dashboardPage(
             ),
             height = 220, width = 4
           ),
-          box(align = "center", h4("Selected Plan Characteristics\n \n "),
-              tableOutput("plan_select_table"),
-              height = 220, width = 4
+          box(
+            align = "center", h4(strong("Selected Plan Characteristics\n \n ")),
+            tableOutput("plan_select_table"),
+            height = 220, width = 4
           ),
           box(
             plotOutput("overtime_key"),
@@ -136,6 +147,7 @@ ui <- dashboardPage(
           )
         ),
       ),
+      ## Dining Location Tabs
       tabItem(
         tabName = "locations",
         h2("Where Food Points Are Spent"),
@@ -145,10 +157,6 @@ ui <- dashboardPage(
                  box(
                    align = "center", width = 6,
                    uiOutput("location_date_range"),
-                   selectInput("map_selection",
-                               "Choose a Map:",
-                               choices = c("Swipes",
-                                           "Spending"))
                  )
           )
         ),
@@ -157,14 +165,13 @@ ui <- dashboardPage(
                  align = "center", offset = 1,
                  box(
                    align = "center", width = 10, height = 500,
-                   plotOutput("top_5_locations",
-                              dblclick = "map_dblclick",
-                              brush = brushOpts(id = "map_brush",
-                                                resetOnNew = TRUE))
+                   h3(strong("Campus Dining Locations")),
+                   leafletOutput("leafmap")
                  )
           )
         )
       ),
+      ## Project Write-Up Tab
       tabItem(
         tabName = "writeup",
         h2("Project Write Up:"),
@@ -175,43 +182,26 @@ ui <- dashboardPage(
           )
         )
       ),
+      ## Food Point Tips Tab
       tabItem(
         tabName = "spendingtips",
         h2("Food Point Spending Tips"),
-        fluidRow(
-          # Sidebar with a slider input for the number of bins
-          column(12,
-                 h3("If you are running low on food points:"),
-                 p("- Look at the Top 5 Restaurant bar plots and consider frequenting
-          your top average spending locations less often. If you really enjoy
-          these restaurants, consider ordering their $5 Daily Devil Deals,
-          instead. If these top locations have a food in common, such as
-            coffee, consider getting the monthly Panera coffee card"),
-                 p("- View the data table on the Top 5 tab and frequent the location
-            with the smallest average spending more often."),
-                 p("- View the spending per week visualization and consider how your
-            spending each week compares to your plan’s weekly average. Were
-            there particular weeks where your spending was notably above the
-            average amount? Consider what was going on during these weeks, and
-            how you can use knowledge of this in the future."),
-                 p("- Look at how your plan progression compares to your own spending.
-            Would a different plan be more suitable for you in future
-            semesters?"))),
-        fluidRow(
-          column(12,
-                 h3("If you have too many food points remaining:"),
-                 p("- Look at the Top 5 Restaurant bar plots and consider frequenting
-            your top average spending locations more often."),
-                 p("- View the spending per week visualization and consider how your
-          spending each week compares to your plan’s weekly average. Were there
-          particular weeks where your spending was notably below the average
-          amount? Consider what was going on during these weeks, and how you can
-          use knowledge of this in the future."),
-                 p("- Look at how your plan progression compares to your own spending.
-          Would a different plan be more suitable for you in future semesters?"),
-                 p("- Consider going to The Lobby Shop more to stock up on snacks, or
-          getting Merchants on Points."))
+        fluidRow(column(12,
+                        align = "center", offset = 3,
+                        box(
+                          align = "center", width = 6,
+                          selectInput("tips_options",
+                                      "How Are You Doing With Your Food Points?",
+                                      choices = c(
+                                        "I'm Running Low!",
+                                        "I Have Too Many Remaining!"
+                                      )
+                          )
+                        )
         )),
+        uiOutput("tips_needed")
+      ),
+      ## Top 5 Restaurants Tab
       tabItem(
         tabName = "restaurants",
         h2("Your Top 5 Restaurants"),
@@ -242,8 +232,8 @@ ui <- dashboardPage(
         fluidRow(
           column(12,
                  align = "center",
-                 wellPanel(plotOutput("plot_top_5")))
-
+                 wellPanel(plotOutput("plot_top_5"))
+          )
         ),
         fluidRow(
           column(12,
@@ -253,7 +243,6 @@ ui <- dashboardPage(
                    DT::dataTableOutput("food_points_all_info_table")
                  )
           )
-
         )
       )
     )
