@@ -419,8 +419,53 @@ ui <- dashboardPage(
             transaction."),
             img(
               src = "top-5.png", height = 250, width = 300,
-              style = "display: block; margin-left: auto; margin-right: auto;"
-            ),
+              style = "display: block; margin-left: auto; margin-right: auto;",
+              alt = "The figure shows three different reactive bar charts. Users can
+              select individual bar charts to view using a drop down menu.  The dates can
+              be changed using a drop down calendar at the top of the screen. All bar plots
+              show data over a 4 month period, from August to November.
+
+              The first bar chart in the upper left hand corner is titled 'Total Number of
+              Card Swipes per Restaurant'  and it displays the number of total card swipes
+              for the top five restaurants (Ginger and Soy, Sazon, Panera, JBs, and Cafe,
+              in this specific image). The user had 24 swipes at Ginger and Soy, 15 at Sazon,
+              10 at Panera, 9 at JBs, and 6 at Cafe.
+
+              The second bar chart in the upper right hand corner is titled 'Total Food Points
+              Spent per Restaurant' and it displays the total number of food points spent at
+              each of the top five restaurants (Ginger and Soy, Sazon, JBs, Panera, and Pitchforks,
+              in this specific image). The user spent approximately $255 at Ginger and Soy,
+              $176 at Sazon, $111 at JBs, $108 at Panera, and $57 at Pitchforks.
+
+              The third bar chart on the bottom is titled 'Average Food Points Spent per
+              Transaction at Restaurant' and it displays the average number of food points spent
+              per transaction at each of the top five restaurants (JBs, Panera, Ginger and Soy,
+              Il Forno, and Cafe, in this specific image). Per transaction, the user spent
+              approximately $12 at JBs, $11 at Panera, $11 at Ginger and Soy, $10 at Il Forno,
+              and $9 at Cafe.",
+              title = "The figure shows three different reactive bar charts. Users can
+              select individual bar charts to view using a drop down menu.  The dates can
+              be changed using a drop down calendar at the top of the screen. All bar plots
+              show data over a 4 month period, from August to November.
+
+              The first bar chart in the upper left hand corner is titled 'Total Number of
+              Card Swipes per Restaurant'  and it displays the number of total card swipes
+              for the top five restaurants (Ginger and Soy, Sazon, Panera, JBs, and Cafe,
+              in this specific image). The user had 24 swipes at Ginger and Soy, 15 at Sazon,
+              10 at Panera, 9 at JBs, and 6 at Cafe.
+
+              The second bar chart in the upper right hand corner is titled 'Total Food Points
+              Spent per Restaurant' and it displays the total number of food points spent at
+              each of the top five restaurants (Ginger and Soy, Sazon, JBs, Panera, and Pitchforks,
+              in this specific image). The user spent approximately $255 at Ginger and Soy,
+              $176 at Sazon, $111 at JBs, $108 at Panera, and $57 at Pitchforks.
+
+              The third bar chart on the bottom is titled 'Average Food Points Spent per
+              Transaction at Restaurant' and it displays the average number of food points spent
+              per transaction at each of the top five restaurants (JBs, Panera, Ginger and Soy,
+              Il Forno, and Cafe, in this specific image). Per transaction, the user spent
+              approximately $12 at JBs, $11 at Panera, $11 at Ginger and Soy, $10 at Il Forno,
+              and $9 at Cafe."),
             h3("Discussion"),
             p("In conclusion, this R Shiny app helps visualize Duke students’
               food points spending, helping our peers accomplish their spending-related
