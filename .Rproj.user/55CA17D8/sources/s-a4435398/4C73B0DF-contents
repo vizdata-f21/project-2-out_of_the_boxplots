@@ -274,7 +274,41 @@ ui <- dashboardPage(
           are most effectively able to accomplish their food point spending goals."),
                  img(
                    src = "food-points-instructions.png", height = 300, width = 250,
-                   style = "display: block; margin-left: auto; margin-right: auto;"
+                   style = "display: block; margin-left: auto; margin-right: auto;",
+                   alt = "This image shows instructions on how to access and upload
+                   your food points. 1) Click on Download Food Point Template on the
+                   Dashboard, and navigate to bit.ly/food-points.2) Once navigating
+                   to the link, click on EACOUNTS LOG IN at the bottom of My DukeCard.
+                   3) Log in with your Duke NetID. 4) Click on Account Transactions,
+                   which appears in the top gray bar.5) Select “Food” under the Account
+                   tab, and then choose which dates you would like Food Points data
+                   from under the Transaction Period tab. NOTE: Decide which 2021 -
+                   2022 semester you would like to see visualizations for. The dates
+                   selected must be within only that Fall or Spring semester. Press
+                   search on the bottom right. 6) Highlight over the rows you would
+                   like data from. Copy and paste into the Food Point Template Excel
+                   file you downloaded in the first step. Ensure that Duke’s initial
+                   deposit of your food points is included in what you copy and paste.
+                   Example rows with this information can be found below. Once you have
+                   navigated through the pages you wish to select data from on the bottom
+                   left, upload your Food Point Usage to the Dashboard.",
+                   title = "This image shows instructions on how to access and upload
+                   your food points. 1) Click on Download Food Point Template on the
+                   Dashboard, and navigate to bit.ly/food-points.2) Once navigating
+                   to the link, click on EACOUNTS LOG IN at the bottom of My DukeCard.
+                   3) Log in with your Duke NetID. 4) Click on Account Transactions,
+                   which appears in the top gray bar.5) Select “Food” under the Account
+                   tab, and then choose which dates you would like Food Points data
+                   from under the Transaction Period tab. NOTE: Decide which 2021 -
+                   2022 semester you would like to see visualizations for. The dates
+                   selected must be within only that Fall or Spring semester. Press
+                   search on the bottom right. 6) Highlight over the rows you would
+                   like data from. Copy and paste into the Food Point Template Excel
+                   file you downloaded in the first step. Ensure that Duke’s initial
+                   deposit of your food points is included in what you copy and paste.
+                   Example rows with this information can be found below. Once you have
+                   navigated through the pages you wish to select data from on the bottom
+                   left, upload your Food Point Usage to the Dashboard."
                  ),
             h4("Overview"),
                  p("Once uploaded, the Shiny app displays which food plan the user has,
@@ -284,7 +318,27 @@ ui <- dashboardPage(
             relevant uploaded information."),
                  img(
                    src = "overview.png", height = 300, width = 400,
-                   style = "display: block; margin-left: auto; margin-right: auto;"
+                   style = "display: block; margin-left: auto; margin-right: auto;",
+                   alt = "This image displays the landing page for the dashboard with a
+                   student's data loaded in. In the top right corner is a button to download
+                   a template for uploading a user's food points and an upload button to
+                   upload this template once filled in. In the top right corner is an indicator
+                   of what food point plan the user has uploaded, Plan J, and a summary of the
+                   plan's total food points, $1818, the number of points the user has spent,
+                   $921, and the number of points they have remaining, $897. The bottom half
+                   of the image is a table displaying each of the user's food point transactions
+                   and includes the transaction date, restaurant, cost, points remaining after
+                   the transaction, and dining location.",
+                   title = "This image displays the landing page for the dashboard with a
+                   student's data loaded in. In the top right corner is a button to download
+                   a template for uploading a user's food points and an upload button to
+                   upload this template once filled in. In the top right corner is an indicator
+                   of what food point plan the user has uploaded, Plan J, and a summary of the
+                   plan's total food points, $1818, the number of points the user has spent,
+                   $921, and the number of points they have remaining, $897. The bottom half
+                   of the image is a table displaying each of the user's food point transactions
+                   and includes the transaction date, restaurant, cost, points remaining after
+                   the transaction, and dining location."
                  ),
             h4("Spending Over Time"),
                  p("Subsequently, students may move to the Spending Over Time tab, which
