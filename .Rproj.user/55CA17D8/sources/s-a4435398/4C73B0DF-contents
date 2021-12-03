@@ -328,9 +328,56 @@ ui <- dashboardPage(
             h3("Discussion"),
             p("In conclusion, this R Shiny app helps visualize Duke students’
               food points spending, helping our peers accomplish their spending-related
-              goals for the semester, whatever these may be.")
-
-
+              goals for the semester, whatever these may be."),
+            p("It is important to note that there are limitations to the project. For
+              example, the R Shiny app takes a noticeable time to load the visualizations
+              after the user’s data is imputed. This is because there is a substantial
+              amount of data cleaning and wrangling that is conducted in the Shiny app.
+              Ideally, it would be useful to have a separate R script for data cleaning,
+              in order to improve the dashboard’s performance. Unfortunately, because
+              the user is uploading their own data onto the Shiny app, the data cleaning
+              process must be contained within the reactive functionality of the app,
+              so the speed issue cannot be fixed. Further, the colors used in the bar
+              plots and x-axis labels on the Top 5 Restaurants tab are not color
+              blind/accessibility friendly. This is for aesthetic purposes, as, when
+              possible, each bar’s color corresponds to the primary color on the
+              restaurant’s logo. Fortunately, the differentiating colors are not necessary
+              to interpret the bar plots. Moreover, if users are unable to read the
+              restaurant logos, such as Ginger and Soy’s, which is a hard to read bright
+              yellow color, the table is placed at the bottom of the tab to allow for
+              easy reading of restaurant names and values. In addition, some potentially
+              useful plots were not included in the final app. For instance, it may be
+              beneficial to users to have plots which utilize the time variable, and
+              break down food point spending by meal type. However, college students
+              eat meals at varied times, which makes it difficult to set cutoffs for
+              what qualifies as breakfast, lunch, and dinner."),
+            p("Finally, the app is currently only functional for the 2021-2022 school
+              year. This is because food point usage charts are no longer available on
+              the Duke website for past years, nor are they posted in advance for future
+              semesters. Consequently, as is, this limits users’ ability to look at their
+              food point data from past years, and track how their spending patterns have
+              changed, or stayed the same, throughout their time at Duke. Furthermore,
+              some students carry over outstanding food points from the Fall semester
+              into the Spring. Currently, some features of the app are not functional
+              if students do not begin with the expected number of food points under
+              a given plan, which poses a challenge for the upcoming Spring semester.
+              We as authors of the app are interested in continuing to develop it,
+              such that this functionality and adaptability will be added over time.
+              Additionally, the app is limited by the eAccounts data which is available
+              to users. As a result, specific information about what foods were bought
+              at specific dining locations are not accessible, making us unable to comment
+              on unnecessary food point usage, such as that on coffee or snacks. Lastly,
+              the most limiting factor of the app is the data upload process. As is, users
+              must spend a potentially excessive period of time copying and pasting data
+              into their downloaded Excel template. This R Shiny app could be extended by
+              connecting it to a Duke netID login portal, such that users would simply need
+              to provide their login information, and the app would auto-fill their food
+              points information. Depending on Duke students’ interest in the interactive
+              dashboard, next steps may include contacting Duke administration to see if
+              they would be interested in deploying a Beta version of the application with
+              the login portal functionality for our peers, so that everyone can more easily
+              access a report which helps them accomplish their personal food point spending
+              goals.")
           )
         )
       ),
