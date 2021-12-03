@@ -26,7 +26,6 @@ options(shiny.sanitize.errors = TRUE)
 semester <- read_csv(here::here("dashboard/data", "semester.csv"))
 usage_chart <- read_csv(here::here("dashboard/data", "usage_chart.csv"))
 template <- read_csv(here::here("dashboard/data", "input_food_points_data.csv"))
-campus_map <- readPNG(here::here("dashboard/www", "duke_campus_map.png"))
 
 # UI ---------------------------------------------------------------------------
 
