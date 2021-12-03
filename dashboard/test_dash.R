@@ -232,8 +232,8 @@ ui <- dashboardPage(
             undergraduate food plan. The accompanying variables are information
             about the total number of points offered on the plan, the expected
             number of points to be spent per week, and the expected number of
-            points to be spent per day. There are `r nrow(semester)`) observations
-            and `r ncol(semester)` variables in the data set. The data was
+            points to be spent per day. There are", nrow(semester), "observations
+            and", ncol(semester), "variables in the data set. The data was
             collected from",
                    a("Duke's Food Plan and Points Website",
                      href = "https://studentaffairs.duke.edu/dining/plans-points"),
@@ -244,8 +244,8 @@ ui <- dashboardPage(
             accompanying variables are information about the start date for the
             week in the Fall or Spring semester (see `fall` and `spring` variables),
             and the expected number of food points to start that week with,
-            depending on which plan a student has. There are `r nrow(usage_chart)`
-            observations and `r ncol(usage_chart)` variables in the data set.
+            depending on which plan a student has. There are", nrow(usage_chart),
+            "observations and", ncol(usage_chart), "variables in the data set.
             The data was collected from the Fall 2021 and Spring 2022 Food Points
             Calculators found on",
                    a("Duke's Food Plan and Points Website",
