@@ -127,8 +127,11 @@ ui <- dashboardPage(
       tabItem(
         tabName = "overview",
         h2("Food Points Overview"),
-        p("First upload your data by going to the upload instructions tab! Then,
-          naviagte through the tabs in whichever order you prefer."),
+        p(
+          "First learn how to upload your data by going to the upload
+          instructions tab! Then, naviagte through the tabs in whichever order
+          you prefer."
+          ),
         fluidRow(
           box(downloadButton("food_template", "Download Food Point Template"),
             h4(""),
@@ -246,7 +249,8 @@ ui <- dashboardPage(
                    that by creating a report which illustrates food point usage,
                    Duke undergraudate students can better understand their own
                    spending, and use the information to inform any personal
-                   spending goals they may develop."),
+                   spending goals they may develop."
+                   ),
                  p(
                    "Ergo, to alleviate the mental hurdles that come with
                    deciding how much money we can spend on food, we have created
@@ -257,10 +261,11 @@ ui <- dashboardPage(
                    usage data — accessed through their",
                    a(
                      'DukeCard eAccounts login',
-                     href = "https://dukecard.duke.edu/manage-your-dukecard"),
+                     href = "https://dukecard.duke.edu/manage-your-dukecard"
+                     ),
                    "— to provide a comprehensive report on their food spending.
                    We consulted Duke Dining on the best way to extract food
-                   point data and they conccured our method of copying and
+                   point data and they conccured that our method of copying and
                    pasting was most efficient, rather than using an inaccessible
                    API.  Following instructions on the dashboard, students copy
                    and paste their personal eAccounts information into a
@@ -270,7 +275,8 @@ ui <- dashboardPage(
                    em("Card Number, "), em("Location "),
                    "(restaurant purchase occurred at), ",
                    em("Transaction Type, "), "and ", em("Amount"),
-                   "(cost of purchase)."), p(
+                   "(cost of purchase)."),
+                 p(
                    "Other datasets used to accomplish this goal include ",
                    em("semester.csv,")," which offers a brief summary of each
                    plan, allowing us to quickly outline every plan’s offerings.
@@ -283,7 +289,8 @@ ui <- dashboardPage(
                    "variables in the data set. The data was collected from",
                    a(
                      "Duke's Food Plan and Points Website",
-                     href = "https://studentaffairs.duke.edu/dining/plans-points"),
+                     href = "https://studentaffairs.duke.edu/dining/plans-points"
+                     ),
                    ". The second dataset we use,", em("usage_chart.csv," ),
                    "offers in depth recommended spending information for each
                    plan, which provides the ability to track a user’s spending
@@ -299,18 +306,21 @@ ui <- dashboardPage(
                    Duke's",
                    a(
                      "Fall 2021",
-                     href = "https://studentaffairs.duke.edu/sites/default/files/2021-07/Food%20Point%20Usage%20Chart%20Fall-%2021.pdf"),
+                     href = "https://studentaffairs.duke.edu/sites/default/files/2021-07/Food%20Point%20Usage%20Chart%20Fall-%2021.pdf"
+                     ),
                    "and ",
                    a(
                      "Spring 2022",
                       href = "https://studentaffairs.duke.edu/sites/default/files/2021-07/Food%20Point%20Usage%20Chart%20Spring-22.pdf"),
-                    "Food Point Calculators."),
+                    "Food Point Calculators."
+                   ),
                  p(
                    "A comprehensive code book for each data set is located in
                    the",
                    a(
                      "GitHub repository",
-                     href = "https://github.com/vizdata-f21/project-2-out_of_the_boxplots/tree/main/dashboard/data"),
+                     href = "https://github.com/vizdata-f21/project-2-out_of_the_boxplots/tree/main/dashboard/data"
+                     ),
                     ". Using the DukeCard statement data in the user input
                     template, the R Shiny app generates a usage report with
                     visualizations. The report's purpose is to help its intended
@@ -321,7 +331,8 @@ ui <- dashboardPage(
                     with the necessary insight on how much they can spend on
                     food, where they should or shouldn’t consider spending their
                     food, and what plan may be best for their spending habits,
-                    while staying within the limits of their food plan."),
+                    while staying within the limits of their food plan."
+                   ),
                  p(
                    "The repository's",
                    a(
@@ -330,7 +341,8 @@ ui <- dashboardPage(
                     "contains two sample food point templates filled out with
                     team members' data. Users who wish to view the functionality
                     of the app, but who are not students or do not have access
-                    to eAccounts data, are welcome to upload these samples."),
+                    to eAccounts data, are welcome to upload these samples."
+                   ),
                  h3("Justification & Explanation of Approach:"),
                  h4("Upload Instructions Tab"),
                  p(
@@ -343,7 +355,8 @@ ui <- dashboardPage(
                    generated report. However, once completed, users may navigate
                    the tabs in whichever order they please, such that they are
                    most effectively able to inform their food point spending
-                   goals."),
+                   goals."
+                   ),
                  img(
                    src = "food-points-instructions.png", height = 500, width = 450,
                    style = "display: block; margin-left: auto; margin-right: auto;",
@@ -398,7 +411,8 @@ ui <- dashboardPage(
                    information. The Dining Location variable was created based
                    on the authors' knowledge of restaurant locations on campus,
                    with the goal of providing more nuance to location
-                   information."),
+                   information."
+                   ),
                  img(
                    src = "overview.png", height = 500, width = 800,
                    style = "display: block; margin-left: auto; margin-right: auto;",
@@ -461,7 +475,8 @@ ui <- dashboardPage(
                    out. This page’s functionality also allows users to see how
                    their data compares to the recommended spending for
                    alternative plans, which is useful when deciding on whether
-                   to switch food plans in future semesters."),
+                   to switch food plans in future semesters."
+                   ),
                  p(
                    "In the sample visualization below, created using Matt’s
                    data, we assume Matt’s goal is to know whether he should
@@ -478,7 +493,8 @@ ui <- dashboardPage(
                    spending, the user is projected to end the semester with a
                    little less than $1,500 on plan A. Consequently, the
                    visualizations inform Matt that he should not switch to a
-                   larger plan."),
+                   larger plan."
+                   ),
                  img(
                    src = "spending-over-time-a.png", height = 450, width = 750,
                    style = "display: block; margin-left: auto; margin-right: auto;",
@@ -535,7 +551,8 @@ ui <- dashboardPage(
                      selected plan's suggested usage rate and the user's current
                      usage rate. Based on their spending habits, the user is not
                      projected to run out of food points if they were to switch
-                     to Plan A."),
+                     to Plan A."
+                   ),
                  p(
                    "Alternatively, if Matt’s goal is to know whether he should
                    switch to a smaller plan for next semester, he can toggle
@@ -544,7 +561,8 @@ ui <- dashboardPage(
                    current spending is much closer aligned to plan I than any of
                    the larger plans. Therefore, in combination, these
                    visualizations inform the user on which meal plan is right
-                   for their spending patterns."),
+                   for their spending patterns."
+                   ),
                  img(
                    src = "spending-over-time-b.png", height = 450, width = 750,
                    style = "display: block; margin-left: auto; margin-right: auto;",
@@ -571,7 +589,9 @@ ui <- dashboardPage(
 
                      The second plot shows the user is projected to run out of
                      their food points before November 22nd if they were to
-                     switch to Plan I."),
+                     switch to Plan I."
+                   ),
+                 h4("Dining Locations Tab"),
                  p(
                    "The next tab, Dining Locations, allows viewers to see a
                    Leaflet map of Duke’s campus. We chose to include a map as
@@ -588,9 +608,11 @@ ui <- dashboardPage(
                    displays the number of transactions and amount of money spent
                    at each location, accompanied with percentages detailing how
                    that compares relative to other dining locations. The map
-                   also has zoom functionality. From the visualization below, we
-                   see Matt spends most of his time eating at West Union which
-                   contributes to 84% of his total spend."),
+                   also has zoom functionality. If we were to interact with the
+                   visualization below, we would see that Matt spends most of
+                   his time eating at West Union which contributes to 84% of his
+                   total spend."
+                   ),
                  img(
                    src = "dining-locations.png", height = 450, width = 800,
                    style = "display: block; margin-left: auto; margin-right: auto;",
@@ -617,7 +639,9 @@ ui <- dashboardPage(
                      users are able to set which dates they would like to see
                      data for by using the slider at the top. The names of each
                      location are also hyperlinked to the duke dining hour
-                     website. This map displays seven location pins."),
+                     website. This map displays seven location pins."
+                   ),
+                 h4("Top 5 Restaurants Tab"),
                  p(
                    "Our next set of visualizations provide a comprehensive,
                    detailed look into where a student is spending their food
@@ -640,10 +664,12 @@ ui <- dashboardPage(
                    restaurant's logo, and each bar is filled in with a prominent
                    color from the logo. We photoshopped custom labels for
                    restaurants who did not have logos, in order to standardize
-                   axis apperances. For those students who wish to see
-                   information for restaurants other than their top five, a
-                   table below the plots contains statistics for all
-                   restaurants."),
+                   axis apperances. All bars have exact values above them to
+                   help students be more informed about their precise spending.
+                   For those students who wish to see information for
+                   restaurants other than their top five, a table below the
+                   plots contains statistics for all restaurants."
+                   ),
                  img(
                    src = "top-5.png", height = 500, width = 800,
                    style = "display: block; margin-left: auto; margin-right: auto;",
@@ -708,17 +734,19 @@ ui <- dashboardPage(
                      Soy, Il Forno, and Cafe, in this specific image). Per
                      transaction, the user spent approximately $12 at JBs, $11
                      at Panera, $11 at Ginger and Soy, $10 at Il Forno, and $9
-                     at Cafe."),
+                     at Cafe."
+                   ),
                  h3("Discussion:"),
                  p(
                    "In conclusion, this R Shiny app helps visualize Duke
-                   students’ food point spending, helping our peers accomplish
-                   their spending-related goals for the semester, whatever these
-                   may be. Furthermore, we have included a set of food point
-                   tips in order to provide students with guidance on how they
-                   should amend their spending habits. We have provided a list
-                   of tips for both the over and under spender. Screenshots of
-                   these tips can be found below."),
+                   students’ food point spending, helping our peers set and
+                   accomplish their spending-related goals for the semester,
+                   whatever these may be. Furthermore, we have included a set of
+                   food point tips in order to provide students with guidance on
+                   how they could amend their spending habits. We have provided
+                   a list of tips for both the over and under spender.
+                   Screenshots of these tips can be found below."
+                   ),
                  img(
                    src = "underspend.png", height = 450, width = 650,
                    style = "display: block; margin-left: auto; margin-right: auto;"),
@@ -754,10 +782,11 @@ ui <- dashboardPage(
                    their spending patterns have changed, or stayed the same,
                    throughout their time at Duke. The app is also limited by the
                    eAccounts data which is available to users. As a result,
-                   specific information about what foods were bought at specific
+                   detailed information about what foods were bought at specific
                    dining locations are not accessible, making us unable to
                    comment on unnecessary food point usage, such as excessive
-                   spending on coffee or snacks."),
+                   spending on coffee or snacks."
+                   ),
                  h4("Future Directions"),
                  p(
                    "In addition, some potentially useful plots were not included
@@ -782,18 +811,21 @@ ui <- dashboardPage(
                    with the login portal functionality for our peers. This would
                    help everyone be able to more easily access a report, helping
                    them to accomplish their personal food point spending
-                   goals."),
+                   goals."
+                   ),
                  h3("Code"),
                  p(
                    "Code for the Shiny application can be accessed here: ",
                    a(
                      "UI",
-                     href = "https://github.com/vizdata-f21/project-2-out_of_the_boxplots/blob/main/dashboard/ui.R"),
+                     href = "https://github.com/vizdata-f21/project-2-out_of_the_boxplots/blob/main/dashboard/ui.R"
+                     ),
                    "and",
                    a(
                      "Server",
                      href = "https://github.com/vizdata-f21/project-2-out_of_the_boxplots/blob/main/dashboard/server.R"),
-                   ".")
+                   "."
+                   )
                  )
           )
         ),
@@ -1855,6 +1887,7 @@ server <- function(input, output) {
         br(),
         tags$li(
           "View the spending per week visualization and consider how your
+          spending each week compares to your plan's weekly average. Were
           there particular weeks where your spending was notably above the
           average amount? Consider what was going on during these weeks, and
           how you can use knowledge of this in the future."
@@ -1862,7 +1895,7 @@ server <- function(input, output) {
         br(),
         tags$li(
           "Look at how your plan progression compares to your own spending.
-          Would a different plan be more suitable for you in futurese mesters?"
+          Would a different plan be more suitable for you in future semesters?"
         )
       )),
       "I Have Too Many Remaining!" = h4(tags$ul(
@@ -1895,10 +1928,10 @@ server <- function(input, output) {
           You can also use Merchants on Points, which offers more expensive,
           high-quality food."
         )
-      ))
-    )
-  })
-}
+        )
+        )
+    )}
+    )}
 
 # Run App ----------------------------------------------------------------------
 
