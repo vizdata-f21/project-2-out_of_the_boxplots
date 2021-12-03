@@ -775,12 +775,12 @@ server <- function(input, output) {
              your top average spending locations less often. If you really enjoy
              these restaurants, consider ordering their $5 Daily Devil Deals,
              instead. If these top locations have a food in common, such as
-             coffee, consider getting the monthly Panera coffee card"
+             coffee, consider getting the monthly Panera coffee card."
         ),
         br(),
         tags$li(
           "View the data table on the Top 5 tab and frequent the location
-             with the smallest average spending more often."
+             with the lowest average spending more often."
         ),
         br(),
         tags$li(
@@ -804,8 +804,8 @@ server <- function(input, output) {
         ),
         br(),
         tags$li(
-          "Remember food_points roll upon completion of Fall Semester so you
-          can chose a smaller meal plan for Spring Semester"
+          "Remember that food points roll over upon the completion of Fall
+           Semester, so you can chose a smaller meal plan for Spring Semester."
         ),
         br(),
         tags$li(
@@ -1130,7 +1130,8 @@ server <- function(input, output) {
   ### Output Spending Per Week Plot
   output$overtime2 <- renderPlot({
     user_avg <- time_df() %>%
-      filter((date > (floor_date(min(food_points()$date), "week") + days(1))) & (date < (ceiling_date(max(food_points()$date), "week") + days(1)))) %>%
+      filter((date > (floor_date(min(food_points()$date), "week") + days(1))) &
+             (date < (ceiling_date(max(food_points()$date), "week") + days(1)))) %>%
       summarise(tmp = mean(user_points_week)) %>%
       pull(tmp)
 
