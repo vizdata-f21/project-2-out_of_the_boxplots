@@ -182,40 +182,15 @@ ui <- dashboardPage(
       tabItem(
         tabName = "spendingtips",
         h2("Food Point Spending Tips"),
-        fluidRow(
-          # Sidebar with a slider input for the number of bins
-          column(12,
-          h3("If you are running low on food points:"),
-          p("- Look at the Top 5 Restaurant bar plots and consider frequenting
-          your top average spending locations less often. If you really enjoy
-          these restaurants, consider ordering their $5 Daily Devil Deals,
-          instead. If these top locations have a food in common, such as
-            coffee, consider getting the monthly Panera coffee card"),
-          p("- View the data table on the Top 5 tab and frequent the location
-            with the smallest average spending more often."),
-          p("- View the spending per week visualization and consider how your
-            spending each week compares to your plan’s weekly average. Were
-            there particular weeks where your spending was notably above the
-            average amount? Consider what was going on during these weeks, and
-            how you can use knowledge of this in the future."),
-          p(tags$ul(tags$li("Look at how your plan progression compares to your own spending.
-            Would a different plan be more suitable for you in future
-            semesters?"))))),
-       fluidRow(
-            column(12,
-          h3("If you have too many food points remaining:"),
-          p("- Look at the Top 5 Restaurant bar plots and consider frequenting
-            your top average spending locations more often."),
-          p("- View the spending per week visualization and consider how your
-          spending each week compares to your plan’s weekly average. Were there
-          particular weeks where your spending was notably below the average
-          amount? Consider what was going on during these weeks, and how you can
-          use knowledge of this in the future."),
-          p("- Look at how your plan progression compares to your own spending.
-          Would a different plan be more suitable for you in future semesters?"),
-          p("- Consider going to The Lobby Shop more to stock up on snacks, or
-          getting Merchants on Points."))
-      )),
+        box(
+          align = "center", width = 6,
+          selectInput("tips_options",
+                      "How Are You Doing With Your Food Points?",
+                      choices = c("I'm Running Low!",
+                                  "I Have Too Many Remaining!"))
+          ),
+        textOutput("tips_needed")
+      ),
       tabItem(
         tabName = "restaurants",
         h2("Your Top 5 Restaurants"),
@@ -798,6 +773,41 @@ server <- function(input, output) {
     leaflet(data = mapdf) %>%
       addTiles() %>%
       addMarkers(~lng, ~lat, popup = ~pop)
+  })
+
+  ## TEXT CODE
+
+  output$tips_needed <- renderPrint({
+    switch(input$tips_options,
+           "I'm Running Low!" = p(tags$ul(
+             tags$li("Look at the Top 5 Restaurant bar plots and consider frequenting
+          your top average spending locations less often. If you really enjoy
+          these restaurants, consider ordering their $5 Daily Devil Deals,
+          instead. If these top locations have a food in common, such as
+            coffee, consider getting the monthly Panera coffee card"),
+             tags$li("View the data table on the Top 5 tab and frequent the location
+            with the smallest average spending more often."),
+             tags$li("View the spending per week visualization and consider how your
+            spending each week compares to your plan’s weekly average. Were
+            there particular weeks where your spending was notably above the
+            average amount? Consider what was going on during these weeks, and
+            how you can use knowledge of this in the future."),
+             tags$li("Look at how your plan progression compares to your own spending.
+            Would a different plan be more suitable for you in future
+            semesters?"))),
+
+           "I Have Too Many Remaining!" = p(tags$ul(
+             tags$li("Look at the Top 5 Restaurant bar plots and consider frequenting
+            your top average spending locations more often."),
+             tags$li("View the spending per week visualization and consider how your
+          spending each week compares to your plan’s weekly average. Were there
+          particular weeks where your spending was notably below the average
+          amount? Consider what was going on during these weeks, and how you can
+          use knowledge of this in the future."),
+             tags$li("Look at how your plan progression compares to your own spending.
+          Would a different plan be more suitable for you in future semesters?"),
+             tags$li("Consider going to The Lobby Shop more to stock up on snacks, or
+          getting Merchants on Points."))))
   })
 
   # BAR PLOT GGPLOT CODE
