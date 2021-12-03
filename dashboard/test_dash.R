@@ -81,7 +81,41 @@ ui <- dashboardPage(
         fluidRow(
           img(
             src = "food-points-instructions.png", height = 800, width = 700,
-            style = "display: block; margin-left: auto; margin-right: auto;"
+            style = "display: block; margin-left: auto; margin-right: auto;",
+            alt = "This image shows instructions on how to access and upload
+                   your food points. 1) Click on Download Food Point Template on the
+                   Dashboard, and navigate to bit.ly/food-points. 2) Once navigating
+                   to the link, click on EACOUNTS LOG IN at the bottom of My DukeCard.
+                   3) Log in with your Duke NetID. 4) Click on Account Transactions,
+                   which appears in the top gray bar. 5) Select “Food” under the Account
+                   tab, and then choose which dates you would like Food Points data
+                   from under the Transaction Period tab. NOTE: Decide which 2021 -
+                   2022 semester you would like to see visualizations for. The dates
+                   selected must be within only that Fall or Spring semester. Press
+                   search on the bottom right. 6) Highlight over the rows you would
+                   like data from. Copy and paste into the Food Point Template Excel
+                   file you downloaded in the first step. Ensure that Duke’s initial
+                   deposit of your food points is included in what you copy and paste.
+                   Example rows with this information can be found below. Once you have
+                   navigated through the pages you wish to select data from on the bottom
+                   left, upload your Food Point Usage to the Dashboard.",
+            title = "This image shows instructions on how to access and upload
+                   your food points. 1) Click on Download Food Point Template on the
+                   Dashboard, and navigate to bit.ly/food-points. 2) Once navigating
+                   to the link, click on EACOUNTS LOG IN at the bottom of My DukeCard.
+                   3) Log in with your Duke NetID. 4) Click on Account Transactions,
+                   which appears in the top gray bar. 5) Select “Food” under the Account
+                   tab, and then choose which dates you would like Food Points data
+                   from under the Transaction Period tab. NOTE: Decide which 2021 -
+                   2022 semester you would like to see visualizations for. The dates
+                   selected must be within only that Fall or Spring semester. Press
+                   search on the bottom right. 6) Highlight over the rows you would
+                   like data from. Copy and paste into the Food Point Template Excel
+                   file you downloaded in the first step. Ensure that Duke’s initial
+                   deposit of your food points is included in what you copy and paste.
+                   Example rows with this information can be found below. Once you have
+                   navigated through the pages you wish to select data from on the bottom
+                   left, upload your Food Point Usage to the Dashboard."
           ),
         )
       ),
@@ -276,7 +310,7 @@ ui <- dashboardPage(
           may navigate the tabs in whichever order they please, such that they
           are most effectively able to inform their food point spending goals."),
                  img(
-                   src = "food-points-instructions.png", height = 300, width = 250,
+                   src = "food-points-instructions.png", height = 500, width = 450,
                    style = "display: block; margin-left: auto; margin-right: auto;",
                    alt = "This image shows instructions on how to access and upload
                    your food points. 1) Click on Download Food Point Template on the
@@ -320,7 +354,7 @@ ui <- dashboardPage(
             users have access to a populated searchable data table with their
             relevant uploaded information."),
                  img(
-                   src = "overview.png", height = 300, width = 400,
+                   src = "overview.png", height = 500, width = 750,
                    style = "display: block; margin-left: auto; margin-right: auto;",
                    alt = "This image displays the landing page for the dashboard with a
                    student's data loaded in. In the top left corner is a button to download
@@ -381,7 +415,7 @@ ui <- dashboardPage(
                    end the semester with a little less than $1,500 on plan A. Consequently, the
                    visualizations inform Matt that he should not switch to a larger plan."),
                  img(
-                   src = "spending-over-time-a.png", height = 250, width = 400,
+                   src = "spending-over-time-a.png", height = 450, width = 750,
                    style = "display: block; margin-left: auto; margin-right: auto;",
                    alt = "In this image users are given the option to compare their own usage
                    across the plans offered by Duke dining by selecting a food plan
@@ -429,7 +463,7 @@ ui <- dashboardPage(
                  these visualizations inform the user on which meal plan is right for
                  their spending patterns."),
             img(
-              src = "spending-over-time-b.png", height = 250, width = 400,
+              src = "spending-over-time-b.png", height = 450, width = 750,
               style = "display: block; margin-left: auto; margin-right: auto;",
               alt = "This image shows the same plot as above, but with Plan I
               selected. Plan I is smaller than Plan A. It has a total of $885.8;
@@ -463,7 +497,7 @@ ui <- dashboardPage(
             we see Matt spends most of his time eating at West Union which contributes
             to 84% of his total spend."),
             img(
-              src = "dining-locations.png", height = 250, width = 400,
+              src = "dining-locations.png", height = 450, width = 800,
               style = "display: block; margin-left: auto; margin-right: auto;",
               alt = "This figure displays a map with all the dining locations at Duke.
               Users can click on each location's pin to return the number of transactions
@@ -500,7 +534,7 @@ ui <- dashboardPage(
             top five locations, a table below the plots contains information for all
               of the restaurants."),
             img(
-              src = "top-5.png", height = 250, width = 300,
+              src = "top-5.png", height = 500, width = 800,
               style = "display: block; margin-left: auto; margin-right: auto;",
               alt = "The figure shows three different bar charts. Users can
               select individual bar charts to view using a drop down menu. The dates can
@@ -556,10 +590,11 @@ ui <- dashboardPage(
               their spending habits. We have provided a list of tips for both the over and under
               spender. A screenshot of these tips can be found below."),
             img(
-              src = "underspend.png", height = 250, width = 300,
+              src = "underspend.png", height = 450, width = 650,
               style = "display: block; margin-left: auto; margin-right: auto;",),
+          br(),
             img(
-              src = "overspend.png", height = 250, width = 300,
+              src = "overspend.png", height = 450, width = 600,
               style = "display: block; margin-left: auto; margin-right: auto;"),
           h4("Limitations"),
             p("It is important to note that there are limitations to the project. For
