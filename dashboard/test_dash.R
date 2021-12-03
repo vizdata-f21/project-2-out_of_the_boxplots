@@ -232,7 +232,7 @@ ui <- dashboardPage(
             undergraduate food plan. The accompanying variables are information
             about the total number of points offered on the plan, the expected
             number of points to be spent per week, and the expected number of
-            points to be spent per day. There are `r nrow(semester)` observations
+            points to be spent per day. There are `r nrow(semester)`) observations
             and `r ncol(semester)` variables in the data set. The data was
             collected from",
                    a("Duke's Food Plan and Points Website",
@@ -297,7 +297,40 @@ ui <- dashboardPage(
             how much a student can stretch their food points without running out.
             This page’s functionality also allows users to see how their data compares
             to the recommended spending for alternative plans, which is useful when
-            deciding on whether to switch food plans in future semesters.")
+            deciding on whether to switch food plans in future semesters."),
+            p("Alternatively, if Matt’s goal is to know whether he should switch
+                 to a smaller plan for next semester he can toggle between food plans
+                 and compare his current food plan to a smaller one such as plan I.
+                 The bar plot below shows that Matt’s current spending, albeit now
+                 higher than the suggested weekly average, is much closer to aligned
+                 to plan I than any of the larger plans. Therefore, in combination,
+                 these visualizations inform the user on what meal plan is right for
+                 their spending patterns."),
+            p("The next tab, Dining Locations, allows viewers to see a map of Duke’s
+            campus. The slider on the top of the page provides the ability to choose
+            the desired date range to be visualized, helping students see data for a
+            specific period of time they may be interested in. If clicked, each
+            location on the map shows the number of transactions and amount of money
+            spent at each location accompanied with percentages detailing how that
+            compares relative to other dining locations. From the visualization below
+            we see Matt spends most of his time eating at West Union which contributes
+            to 84% of his total spend."),
+            p("Our next set of visualizations gives a comprehensive look into where
+            a student is spending their food points. We created vertical bar charts
+            to display a student’s top 5 restaurants based on their total number of
+            card swipes, food points, and average food points spent per transaction at
+            each dining location over a desired date range. We chose to include these
+            visualizations to accompany the line plots because they provide a detailed
+            look into where food points are being spent on. Students can use this
+            information to decide how to better tailor their spending at their favorite
+            restaurants such as cutting back on Farmstead due to its high average
+            transaction."),
+            h3("Discussion"),
+            p("In conclusion, this R Shiny app helps visualize Duke students’
+              food points spending, helping our peers accomplish their spending-related
+              goals for the semester, whatever these may be.")
+
+
           )
         )
       ),

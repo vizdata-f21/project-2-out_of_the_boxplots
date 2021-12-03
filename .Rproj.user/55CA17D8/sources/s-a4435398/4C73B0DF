@@ -3,7 +3,7 @@
     "path": "~/STA313/project-2-out_of_the_boxplots/dashboard/test_dash.R",
     "project_path": "dashboard/test_dash.R",
     "type": "r_source",
-    "hash": "408920301",
+    "hash": "3427782229",
     "contents": "",
     "dirty": false,
     "created": 1638205442379.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "264,19",
-        "scrollLine": "248"
+        "cursorPosition": "234,70",
+        "scrollLine": "220"
     },
     "folds": "",
-    "lastKnownWriteTime": 1638510850,
+    "lastKnownWriteTime": 1638511391,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1638510850256,
+    "last_content_update": 1638511391279,
     "read_only": false,
     "read_only_alternatives": []
 }
