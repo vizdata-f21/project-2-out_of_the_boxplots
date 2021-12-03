@@ -52,6 +52,6 @@ page.
 |Date/Time        |Day the transaction took place (m/d/yr), followed by the time time it took place (24 hr clock) |chr  |
 |Account Name     |Will always be Food, representing a transaction to purchase food |chr  |
 |Card Number      |User Duke Card number |dbl  |
-|Location         |Restaurant where transaction took place |dbl  |
-|Transaction Type |Debit for a user's transaction, and Credit when Duke has deposited food point funds |dbl  |
+|Location         |Restaurant where transaction took place |chr  |
+|Transaction Type |Debit for a user's transaction, and Credit when Duke has deposited food point funds |chr  |
 |Amount           |Food point cost of the purchase |chr  |
