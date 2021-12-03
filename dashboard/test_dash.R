@@ -421,7 +421,8 @@ server <- function(input, output) {
     "Beyu Blue" = "<img src='www/beyu_blue.jpeg' width='100' />",
     "Cafe" = "<img src='www/cafe.png' width='75' />",
     "Farmstead" = "<img src='www/farmstead.jpeg' width='110' />",
-    "Food Trucks at 300 Swift" = "<img src='www/food-trucks-300-swift.png' width='110' />",
+    "Food Trucks at 300 Swift" = "<img src='www/food-trucks-300-swift.png'
+    width='110' />",
     "Ginger and Soy" = "<img src='www/ginger-and-soy.jpeg' width='110' />",
     "Gyotaku" = "<img src='www/gyotaku.jpeg' width='100' />",
     "Il Forno" = "<img src='www/il_forno.png' width='100' />",
@@ -453,7 +454,8 @@ server <- function(input, output) {
     "Beyu Blue" = "<img src='www/beyu_blue.jpeg' width='80' />",
     "Cafe" = "<img src='www/cafe.png' width='60' />",
     "Farmstead" = "<img src='www/farmstead.jpeg' width='90' />",
-    "Food Trucks at 300 Swift" = "<img src='www/food-trucks-300-swift.png' width='90' />",
+    "Food Trucks at 300 Swift" = "<img src='www/food-trucks-300-swift.png'
+    width='90' />",
     "Ginger and Soy" = "<img src='www/ginger-and-soy.jpeg' width='90' />",
     "Gyotaku" = "<img src='www/gyotaku.jpeg' width='70' />",
     "Il Forno" = "<img src='www/il_forno.png' width='75' />",
@@ -485,7 +487,8 @@ server <- function(input, output) {
     "Beyu Blue" = "<img src='www/beyu_blue.jpeg' width='50' />",
     "Cafe" = "<img src='www/cafe.png' width='40' />",
     "Farmstead" = "<img src='www/farmstead.jpeg' width='50' />",
-    "Food Trucks at 300 Swift" = "<img src='www/food-trucks-300-swift.png' width='60' />",
+    "Food Trucks at 300 Swift" = "<img src='www/food-trucks-300-swift.png'
+    width='60' />",
     "Ginger and Soy" = "<img src='www/ginger-and-soy.jpeg' width='50' />",
     "Gyotaku" = "<img src='www/gyotaku.jpeg' width='50' />",
     "Il Forno" = "<img src='www/il_forno.png' width='55' />",
@@ -699,7 +702,7 @@ server <- function(input, output) {
     req(input$dates_slider)
     food_points() %>%
       filter(date >= input$dates_slider[1] & date <= input$dates_slider[2]) %>%
-      group_by(campus_location) %>% # , x_coord, y_coord) %>%
+      group_by(campus_location) %>%
       summarise("spending" = sum(cost))
   })
 
