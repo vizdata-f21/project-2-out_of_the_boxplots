@@ -194,8 +194,8 @@ ui <- dashboardPage(
           diverse needs of their undergraduate students. These customized plans
           are tailored specifically for upper-class, first-year and off-campus
           students, yet most students, regardless of their food plan, face the
-          same issue — they always either run out of food points by the end of
-          the semester, or have too many remaining. The dreaded feeling of
+          same issue — they always either run out of food points, or have too
+          many remaining, by the end of the semester. For instance, the dreaded feeling of
           bargaining for your friend’s spare food points is something many Duke
           students have felt at one point in time, and this is the motivation
           for a pertinent issue we would like to explore. With all the options
@@ -204,7 +204,7 @@ ui <- dashboardPage(
           project is not to create a food-management tool, our goal is that by
           illustrating food point usage, students can better understand their
           own spending, and use the information to inform any personal spending
-          goals they may develop. In order to alleviate the mental hurdles that
+          goals they may develop. Thus, in order to alleviate the mental hurdles that
           come with deciding how much money we can spend on food, we have
           created a R Shiny dashboard app that uses a Duke student’s food plan
           and data from their DukeCard Account Transaction Report to generate a
@@ -217,19 +217,19 @@ ui <- dashboardPage(
                    a('DukeCard eAccounts login',
                      href = "https://dukecard.duke.edu/manage-your-dukecard"),
                    "to provide a comprehensive report on their food spending. We consulted
-          Duke Dining on the best way to extract food point data and they believe
-          our method of copying and pasting is most efficient, rather than using
+          Duke Dining on the best way to extract food point data and they believed
+          our method of copying and pasting was most efficient, rather than using
           an inaccessible API.  Following instructions on the dashboard, students
           copy and paste their personal eAccounts information into a provided
-          Excel template, to be uploaded to the R Shiny app. The template includes
-          the `Date/Time` (date and time purchase occurred), `Account Name`,
-          `Card Number`, `Location` (restaurant purchase occurred at),
-          `Transaction Type`, and `Amount` (cost of purchase) variables. Using
+          Excel template, to be uploaded to the R Shiny app. The template includes ",
+          em("Date/Time"), "(date and time purchase occurred)", em(", Account Name, "),
+          em("Card Number, "), em("Location "), "(restaurant purchase occurred at), ",
+          em("Transaction Type, "), "and ", em("Amount"), "(cost of purchase) variables. Using
           the R Shiny dashboard, undergraduate students can generate a usage
           report from their online DukeCard statements."),
-                 p("The first dataset used to accomplish this goal, `semester.csv`,
+                 p("The first dataset used to accomplish this goal, ", em("semester.csv,"),"
             offers a brief summary of each plan, which allows us to quickly
-            outline each plan’s offerings. Each observation is an offered Duke
+            outline every plan’s offerings. Each observation is an offered Duke
             undergraduate food plan. The accompanying variables are information
             about the total number of points offered on the plan, the expected
             number of points to be spent per week, and the expected number of
@@ -238,12 +238,12 @@ ui <- dashboardPage(
             collected from",
                    a("Duke's Food Plan and Points Website",
                      href = "https://studentaffairs.duke.edu/dining/plans-points"),
-                   ". The second dataset we use, `usage_chart.csv`, offers in depth
+                   ". The second dataset we use,", em("usage_chart.csv," ), "offers in depth
             recommended spending information for each plan, which provides the
-            ability to track a user’s spending against the typical spending. Each
-            observation is a week during a Duke undergraduate semester. The
+            ability to track a user’s spending against the advised spending. Each
+            observation is a week during a Duke undergraduate semester in the 2021-2022 school year. The
             accompanying variables are information about the start date for the
-            week in the Fall or Spring semester (see `fall` and `spring` variables),
+            week in the Fall or Spring semester (see ", em("fall"), " and ", em("spring "), "variables),
             and the expected number of food points to start that week with,
             depending on which plan a student has. There are", nrow(usage_chart),
             "observations and", ncol(usage_chart), "variables in the data set.
@@ -251,37 +251,39 @@ ui <- dashboardPage(
             Calculators found on",
                    a("Duke's Food Plan and Points Website",
                      href = "https://studentaffairs.duke.edu/dining/plans-points"),
-                   ". A comprehensive code book for each data set can be found in the",
+                   "."),
+                   p("A comprehensive code book for each data set can be found in the",
                    a("GitHub repository",
                      href = "https://github.com/vizdata-f21/project-2-out_of_the_boxplots/tree/main/dashboard/data"),
                    ". Using the data from the user input
-            template, the R Shiny app creates a tool involving visualizations and
-            an overall report whose purpose is to provide students with the
-            necessary insight on how much they can spend on food and where they
-            should or shouldn’t spend their food, while staying within the
-            limits of their food plan. The intended audience of undergraduate
-            Duke students can use this app to inform their food point spending
-            decision making, helping to accomplish any goals they may have set
-            for themselves."),
+            template, the R Shiny app generates a report with visualizations.
+            The report's purpose is to help its intended audience of undergraduate
+            Duke students be better informs about their food point spending
+            decision making, thus helping to accomplish any goals they may have set
+            for themselves. The dashboard does with by providing students with the
+            necessary insight on how much they can spend on food, where they
+            should or shouldn’t consider spending their food, and what plan may be
+            best for their spending habits, while staying within the
+            limits of their food plan. The "),
                  h3("Justification & Explanation of Approach"),
-            h4("Upload Instructions"),
+            h4("Upload Instructions Tab"),
                  p("Students begin by uploading their filled-in template csv file
           containing a full account of their purchases made using food points
           over a selected semester. Users are instructed to visit the upload
           instructions tab for further guidance on how to do this. This step must
           be completed first in order to populate all subsequent visualizations
           and information on the generated report. However, once completed, users
-          may navigate the tabs in whichever order they please such that they
-          are most effectively able to accomplish their food point spending goals."),
+          may navigate the tabs in whichever order they please, such that they
+          are most effectively able to inform their food point spending goals."),
                  img(
                    src = "food-points-instructions.png", height = 300, width = 250,
                    style = "display: block; margin-left: auto; margin-right: auto;",
                    alt = "This image shows instructions on how to access and upload
                    your food points. 1) Click on Download Food Point Template on the
-                   Dashboard, and navigate to bit.ly/food-points.2) Once navigating
+                   Dashboard, and navigate to bit.ly/food-points. 2) Once navigating
                    to the link, click on EACOUNTS LOG IN at the bottom of My DukeCard.
                    3) Log in with your Duke NetID. 4) Click on Account Transactions,
-                   which appears in the top gray bar.5) Select “Food” under the Account
+                   which appears in the top gray bar. 5) Select “Food” under the Account
                    tab, and then choose which dates you would like Food Points data
                    from under the Transaction Period tab. NOTE: Decide which 2021 -
                    2022 semester you would like to see visualizations for. The dates
@@ -295,10 +297,10 @@ ui <- dashboardPage(
                    left, upload your Food Point Usage to the Dashboard.",
                    title = "This image shows instructions on how to access and upload
                    your food points. 1) Click on Download Food Point Template on the
-                   Dashboard, and navigate to bit.ly/food-points.2) Once navigating
+                   Dashboard, and navigate to bit.ly/food-points. 2) Once navigating
                    to the link, click on EACOUNTS LOG IN at the bottom of My DukeCard.
                    3) Log in with your Duke NetID. 4) Click on Account Transactions,
-                   which appears in the top gray bar.5) Select “Food” under the Account
+                   which appears in the top gray bar. 5) Select “Food” under the Account
                    tab, and then choose which dates you would like Food Points data
                    from under the Transaction Period tab. NOTE: Decide which 2021 -
                    2022 semester you would like to see visualizations for. The dates
@@ -311,55 +313,56 @@ ui <- dashboardPage(
                    navigated through the pages you wish to select data from on the bottom
                    left, upload your Food Point Usage to the Dashboard."
                  ),
-            h4("Overview"),
+            h4("Overview Tab"),
                  p("Once uploaded, the Shiny app displays which food plan the user has,
             the total points offered on their plan, their points spent thus far,
-            and their points remaining for the semester. Below this information,
+            and their points remaining for the semester. Beneath this information,
             users have access to a populated searchable data table with their
             relevant uploaded information."),
                  img(
                    src = "overview.png", height = 300, width = 400,
                    style = "display: block; margin-left: auto; margin-right: auto;",
-                   alt = "This image displays the landing page for the dashboard with a
-                   student's data loaded in. In the top right corner is a button to download
-                   a template for uploading a user's food points and an upload button to
+                   alt = "This image displays the landing page for the dashboard with a
+                   student's data loaded in. In the top left corner is a button to download
+                   a template for uploading a user's food points and an upload button to
                    upload this template once filled in. In the top right corner is an indicator
-                   of what food point plan the user has uploaded, Plan J, and a summary of the
-                   plan's total food points, $1818, the number of points the user has spent,
-                   $921, and the number of points they have remaining, $897. The bottom half
+                   of what food point plan the user has uploaded, Plan J, a summary of the
+                   plan's total food points, $1818, the number of points the user has spent,
+                   $921, and the number of points they have remaining, $897. The bottom half
                    of the image is a table displaying each of the user's food point transactions
-                   and includes the transaction date, restaurant, cost, points remaining after
-                   the transaction, and dining location.",
-                   title = "This image displays the landing page for the dashboard with a
-                   student's data loaded in. In the top right corner is a button to download
-                   a template for uploading a user's food points and an upload button to
+                   and includes the transaction date, restaurant, dining location, cost, and points remaining after
+                   the transaction.",
+                   title = "This image displays the landing page for the dashboard with a
+                   student's data loaded in. In the top left corner is a button to download
+                   a template for uploading a user's food points and an upload button to
                    upload this template once filled in. In the top right corner is an indicator
-                   of what food point plan the user has uploaded, Plan J, and a summary of the
-                   plan's total food points, $1818, the number of points the user has spent,
-                   $921, and the number of points they have remaining, $897. The bottom half
+                   of what food point plan the user has uploaded, Plan J, a summary of the
+                   plan's total food points, $1818, the number of points the user has spent,
+                   $921, and the number of points they have remaining, $897. The bottom half
                    of the image is a table displaying each of the user's food point transactions
-                   and includes the transaction date, restaurant, cost, points remaining after
-                   the transaction, and dining location."
+                   and includes the transaction date, restaurant, dining location, cost, and points remaining after
+                   the transaction."
                  ),
-            h4("Spending Over Time"),
+            h4("Spending Over Time Tab"),
                  p("Subsequently, students may move to the Spending Over Time tab, which
             allows the opportunity to select the semester and corresponding food plan
             users wish to have analyzed. Once selected, the application generates
-            two plots. The first bar plot shows the student’s average spending each
+            two plots. The bar plot shows the student’s average spending each
             week. We include labels which compare the user’s average spending across
             weeks, compared to the suggested average weekly spend for a chosen plan
             — as found in Duke’s Food Point Usage Chart — over the selected semester.
             The purpose of this plot is to indicate whether or not a student is
-            overspending, on average, and specifically identify the weeks where the
-            overspending occurred. The second line plot projects if, and when, a
-            student will run out of food points and is denoted by the line “Expected
-            Progression.” To obtain our Expected Progression we made a linear
-            regression model using the student's uploaded data which is denoted by
-            the line “Actual Progression” to predict the student’s remaining food
-            point balance week by week over the selected semester. The purpose of
+            overspending, on average, and specifically allow the user to identify the weeks where the
+            overspending or underspending occurred, if they wish to do so. The line plot projects if, and when, a
+            student will run out of food points, which is denoted by the line “Expected
+            Progression.” To obtain our Expected Progression we utilized the ggplot", em("geom_smooth "), "linear
+            regression functionality with the student's uploaded data. The expected progression
+            predicts the student’s remaining food point balance week by week over the selected semester.
+            The non-dashed red line indicates the user's inputted data, while the blue line indicates the
+            reccomended spending for each week, based on the selected plan. The purpose of
             this plot is to give a generalized idea of a student’s spending habits
             and how their current spending will impact their remaining balance later
-            in the semester. This is valuable insight because the plot shows exactly
+            in the semester. This is valuable insight because the plot shows precisely
             how much a student can stretch their food points without running out.
             This page’s functionality also allows users to see how their data compares
             to the recommended spending for alternative plans, which is useful when
@@ -375,85 +378,88 @@ ui <- dashboardPage(
                    little the week of August 23rd, likely because it was the start of
                    the semester, which may inform his future spending choices. Following
                    this trend, based on his current spending, the user is projected to
-                   end the semester with a little less than $1,500. Consequently, the
+                   end the semester with a little less than $1,500 on plan A. Consequently, the
                    visualizations inform Matt that he should not switch to a larger plan."),
                  img(
                    src = "spending-over-time-a.png", height = 250, width = 400,
                    style = "display: block; margin-left: auto; margin-right: auto;",
                    alt = "In this image users are given the option to compare their own usage
-                   across the full host of plans offered by Duke dining by selecting a food plan
+                   across the plans offered by Duke dining by selecting a food plan
                    and semester via the drop down menu in the top left corner. Once a food plan
                    is selected (Plan A in this case), the Plan Total, Points Spent, and Points
-                   Remaining is displayed in the top middle of the image while two plots are
-                   generated in the bottom half of the image. Plan A offers a total of $2570.33,
-                   the user has spent $839.71, and $1730.62 remains.
+                   Remaining are displayed in the top middle of the dashboard while two plots are
+                   generated in the lower half. Plan A offers a total of $2570.33,
+                   the user has spent $839.71, and $1730.62 remain.
 
-                   The first plot shows a user's spending per week over the course of a semester
-                   with bar plots denoting the amount spent week by week and horizontal lines
+                   The first plot is a bar plot. It shows a user's spending per week over the course of a semester
+                   with bars denoting the amount spent week by week and horizontal lines
                    denoting the user's weekly average compared to the food plan's suggested weekly
-                   average. Our user's spends $51.18 on average each week which is significantly
+                   average. Our user spends $51.18 on average each week which is
                    lower than plan A's suggested weekly average of $165.07.
 
                    The second plot uses a linear regression model to show a user's projected number
-                   of remaining food points remaining based on their current spending habits. This
-                   projected line plot is plotted against the selected plan's suggested usage rate
+                   of remaining food points based on their current spending habits. This
+                   projected line plot is plotted alongside the selected plan's suggested usage rate
                    and the user's current usage rate. Based on their spending habits, the user is
                    not projected to run out of food points if they were to switch to Plan A.",
                    title = "In this image users are given the option to compare their own usage
-                   across the full host of plans offered by Duke dining by selecting a food plan
+                   across the plans offered by Duke dining by selecting a food plan
                    and semester via the drop down menu in the top left corner. Once a food plan
                    is selected (Plan A in this case), the Plan Total, Points Spent, and Points
-                   Remaining is displayed in the top middle of the image while two plots are
-                   generated in the bottom half of the image. Plan A offers a total of $2570.33,
-                   the user has spent $839.71, and $1730.62 remains.
+                   Remaining are displayed in the top middle of the dashboard while two plots are
+                   generated in the lower half. Plan A offers a total of $2570.33,
+                   the user has spent $839.71, and $1730.62 remain.
 
-                   The first plot shows a user's spending per week over the course of a semester
-                   with bar plots denoting the amount spent week by week and horizontal lines
+                   The first plot is a bar plot. It shows a user's spending per week over the course of a semester
+                   with bars denoting the amount spent week by week and horizontal lines
                    denoting the user's weekly average compared to the food plan's suggested weekly
-                   average. Our user's spends $51.18 on average each week which is significantly
+                   average. Our user spends $51.18 on average each week which is
                    lower than plan A's suggested weekly average of $165.07.
 
                    The second plot uses a linear regression model to show a user's projected number
-                   of remaining food points remaining based on their current spending habits. This
-                   projected line plot is plotted against the selected plan's suggested usage rate
+                   of remaining food points based on their current spending habits. This
+                   projected line plot is plotted alongside the selected plan's suggested usage rate
                    and the user's current usage rate. Based on their spending habits, the user is
                    not projected to run out of food points if they were to switch to Plan A."),
             p("Alternatively, if Matt’s goal is to know whether he should switch
-                 to a smaller plan for next semester he can toggle between food plans
-                 and compare his current food plan to a smaller one such as plan I.
+                 to a smaller plan for next semester, he can toggle between plans
+                 and compare his current food plan to a smaller one, such as plan I.
                  The bar plot below shows that Matt’s current spending is much closer aligned
                  to plan I than any of the larger plans. Therefore, in combination,
-                 these visualizations inform the user on what meal plan is right for
+                 these visualizations inform the user on which meal plan is right for
                  their spending patterns."),
             img(
               src = "spending-over-time-b.png", height = 250, width = 400,
               style = "display: block; margin-left: auto; margin-right: auto;",
               alt = "This image shows the same plot as above, but with Plan I
-              selected. Plan I is smaller than Plan A. It has a total of $885.8,
+              selected. Plan I is smaller than Plan A. It has a total of $885.8;
               the user has spent $839.71, and $46.09 remains.
 
-              The first plot shows our user spends $51.18 on average each week
+              The first plot shows our user spends $51.18 on average each week,
               which is lower than plan I's suggested weekly average of $56.89.
 
               The second plot shows the user is projected to run out of their
               food points before November 22nd if they were to switch to Plan I.",
               title = "This image shows the same plot as above, but with Plan I
-              selected. Plan I is smaller than Plan A. It has a total of $885.8,
+              selected. Plan I is smaller than Plan A. It has a total of $885.8;
               the user has spent $839.71, and $46.09 remains.
 
-              The first plot shows our user spends $51.18 on average each week
+              The first plot shows our user spends $51.18 on average each week,
               which is lower than plan I's suggested weekly average of $56.89.
 
               The second plot shows the user is projected to run out of their
               food points before November 22nd if they were to switch to Plan I."),
-            h4("Dining Locations"),
-            p("The next tab, Dining Locations, allows viewers to see a map of Duke’s
-            campus. The slider on the top of the page provides the ability to choose
+            h4("Dining Locations Lab"),
+            p("The next tab, Dining Locations, allows viewers to see a Leaflet map of Duke’s
+            campus. We chose to include a map as one of our visualizations because it
+            allows students to visualize which areas of campus they frequent more
+            or less, which may help them remember specific dining builds that are key
+            in the development of their spending goals. The slider on the top of the page provides the ability to choose
             the desired date range to be visualized, helping students see data for a
             specific period of time they may be interested in. If clicked, each
             location on the map shows the number of transactions and amount of money
-            spent at each location accompanied with percentages detailing how that
-            compares relative to other dining locations. From the visualization below
+            spent at each location, accompanied with percentages detailing how that
+            compares relative to other dining locations. The map also has zoom functionality. From the visualization below,
             we see Matt spends most of his time eating at West Union which contributes
             to 84% of his total spend."),
             img(
@@ -463,39 +469,46 @@ ui <- dashboardPage(
               Users can click on each location's pin to return the number of transactions
               made and amount of money spent at each dining location. This semester the
               user has frequented West Union 71 times spending a total of $776.42, or
-              84% of their spent food points.The map includes zoom capabilities, and
+              84% of their spent food points there. The map includes zoom capabilities, and
               users are able to set which dates they would like to see data for by using
               the slider at the top. The names of each location are also hyperlinked to
-              the duke dining hour website.",
+              the duke dining hour website. This map displays seven location pins.",
               title ="This figure displays a map with all the dining locations at Duke.
               Users can click on each location's pin to return the number of transactions
               made and amount of money spent at each dining location. This semester the
               user has frequented West Union 71 times spending a total of $776.42, or
-              84% of their spent food points.The map includes zoom capabilities, and
+              84% of their spent food points there. The map includes zoom capabilities, and
               users are able to set which dates they would like to see data for by using
               the slider at the top. The names of each location are also hyperlinked to
-              the duke dining hour website."),
-            h4("Top 5 Restaurants"),
-            p("Our next set of visualizations gives a comprehensive look into where
-            a student is spending their food points. We created vertical bar charts
+              the duke dining hour website. This map displays seven location pins."),
+            h4("Top 5 Restaurants Tab"),
+            p("Our next set of visualizations provide a comprehensive, detailed look into where
+            a student is spending their food points. This differs from the information the map
+            provides, as this tab focuses on Duke restaurants, whereas the map
+            focused on overall dining locations,such as West Union. We created vertical bar charts
             to display a student’s top 5 restaurants based on their total number of
             card swipes, food points, and average food points spent per transaction at
-            each dining location over a desired date range. We chose to include these
+            each dining location over a desired date range. Each plot can be viewed individually, or all
+            together, allowing a user to compare across measures. We chose to include these
             visualizations to accompany the line plots because they provide a detailed
-            look into where food points are being spent on. Students can use this
+            look into where food points are being spent, rather than a broader trend of spending. Students can use this
             information to decide how to better tailor their spending at their favorite
-            restaurants such as cutting back on Farmstead due to its high average
-            transaction."),
+            restaurants, such as cutting back on JBs due to its high average
+            transaction cost. To increase aesthetic appeal, each axis label is a respective restaurant's logo, and
+            each bar is filled in with a prominent color on the logo. We photoshopped logos for restaurants
+            who did not have logos, in order to standardize apperances. For those students who wish to see information for more than their
+            top five locations, a table below the plots contains information for all
+              of the restaurants."),
             img(
               src = "top-5.png", height = 250, width = 300,
               style = "display: block; margin-left: auto; margin-right: auto;",
-              alt = "The figure shows three different reactive bar charts. Users can
-              select individual bar charts to view using a drop down menu.  The dates can
-              be changed using a drop down calendar at the top of the screen. All bar plots
-              show data over a 4 month period, from August to November.
+              alt = "The figure shows three different bar charts. Users can
+              select individual bar charts to view using a drop down menu. The dates can
+              be changed using a calendar at the top of the screen. All bar plots
+              show data for a 4 month period, from August to November.
 
               The first bar chart in the upper left hand corner is titled 'Total Number of
-              Card Swipes per Restaurant'  and it displays the number of total card swipes
+              Card Swipes per Restaurant' and it displays the number of total card swipes
               for the top five restaurants (Ginger and Soy, Sazon, Panera, JBs, and Cafe,
               in this specific image). The user had 24 swipes at Ginger and Soy, 15 at Sazon,
               10 at Panera, 9 at JBs, and 6 at Cafe.
@@ -512,13 +525,13 @@ ui <- dashboardPage(
               Il Forno, and Cafe, in this specific image). Per transaction, the user spent
               approximately $12 at JBs, $11 at Panera, $11 at Ginger and Soy, $10 at Il Forno,
               and $9 at Cafe.",
-              title = "The figure shows three different reactive bar charts. Users can
-              select individual bar charts to view using a drop down menu.  The dates can
-              be changed using a drop down calendar at the top of the screen. All bar plots
-              show data over a 4 month period, from August to November.
+              title = "The figure shows three different bar charts. Users can
+              select individual bar charts to view using a drop down menu. The dates can
+              be changed using a calendar at the top of the screen. All bar plots
+              show data for a 4 month period, from August to November.
 
               The first bar chart in the upper left hand corner is titled 'Total Number of
-              Card Swipes per Restaurant'  and it displays the number of total card swipes
+              Card Swipes per Restaurant' and it displays the number of total card swipes
               for the top five restaurants (Ginger and Soy, Sazon, Panera, JBs, and Cafe,
               in this specific image). The user had 24 swipes at Ginger and Soy, 15 at Sazon,
               10 at Panera, 9 at JBs, and 6 at Cafe.
@@ -538,55 +551,52 @@ ui <- dashboardPage(
             h3("Discussion: Limitations & Future Directions"),
             p("In conclusion, this R Shiny app helps visualize Duke students’
               food points spending, helping our peers accomplish their spending-related
-              goals for the semester, whatever these may be.Furthermore, we have included a set of
+              goals for the semester, whatever these may be. Furthermore, we have included a set of
               food point tips in order to provide students with guidance on how they should amend
               their spending habits. We have provided a list of tips for both the over and under
-              spender which you can find below."),
+              spender. A screenshot of these tips can be found below."),
             img(
               src = "underspend.png", height = 250, width = 300,
               style = "display: block; margin-left: auto; margin-right: auto;",),
             img(
               src = "overspend.png", height = 250, width = 300,
               style = "display: block; margin-left: auto; margin-right: auto;"),
+          h4("Limitations"),
             p("It is important to note that there are limitations to the project. For
               example, the R Shiny app takes a noticeable time to load the visualizations
               after the user’s data is imputed. This is because there is a substantial
               amount of data cleaning and wrangling that is conducted in the Shiny app.
-              Ideally, it would be useful to have a separate R script for data cleaning,
-              in order to improve the dashboard’s performance. Unfortunately, because
+              Ideally, to improve dashboard performance, we would have a separate R
+              script for data cleaning, but because
               the user is uploading their own data onto the Shiny app, the data cleaning
-              process must be contained within the reactive functionality of the app,
-              so the speed issue cannot be fixed. Further, the colors used in the bar
+              process must be contained within the reactive functionality of the app. Further, the colors used in the bar
               plots and x-axis labels on the Top 5 Restaurants tab are not color
-              blind/accessibility friendly. This is for aesthetic purposes, as, when
+              blind friendly. This is for aesthetic purposes, as, when
               possible, each bar’s color corresponds to the primary color on the
               restaurant’s logo. Fortunately, the differentiating colors are not necessary
               to interpret the bar plots. Moreover, if users are unable to read the
-              restaurant logos, such as Ginger and Soy’s, which is a hard to read bright
+              restaurant logos, such as Ginger and Soy’s, which is a bright
               yellow color, the table is placed at the bottom of the tab to allow for
-              easy reading of restaurant names and values. In addition, some potentially
-              useful plots were not included in the final app. For instance, it may be
-              beneficial to users to have plots which utilize the time variable, and
-              break down food point spending by meal type. However, college students
-              eat meals at varied times, which makes it difficult to set cutoffs for
-              what qualifies as breakfast, lunch, and dinner."),
-            p("Finally, the app is currently only functional for the 2021-2022 school
-              year. This is because food point usage charts are no longer available on
-              the Duke website for past years, nor are they posted in advance for future
-              semesters. Consequently, as is, this limits users’ ability to look at their
-              food point data from past years, and track how their spending patterns have
-              changed, or stayed the same, throughout their time at Duke. Furthermore,
-              some students carry over outstanding food points from the Fall semester
-              into the Spring. Currently, some features of the app are not functional
-              if students do not begin with the expected number of food points under
-              a given plan, which poses a challenge for the upcoming Spring semester.
-              We as authors of the app are interested in continuing to develop it,
-              such that this functionality and adaptability will be added over time.
-              Additionally, the app is limited by the eAccounts data which is available
+              easy reading of restaurant names and values. The app is also currently only
+              functional for the 2021-2022 school
+              year, because past and future food point usage charts are not available on Duke's
+              website. This limits users’ ability to look at their
+              food point data from past years and track how their spending patterns have
+              changed, or stayed the same, throughout their time at Duke. The app
+              is  alsolimited by the eAccounts data which is available
               to users. As a result, specific information about what foods were bought
               at specific dining locations are not accessible, making us unable to comment
-              on unnecessary food point usage, such as that on coffee or snacks. Lastly,
-              the most limiting factor of the app is the data upload process. As is, users
+              on unnecessary food point usage, such as that on coffee or snacks."),
+          h4("Future Directions"),
+            p("In addition, some potentially
+              useful plots were not included in the final app. We may consider
+              adding these in the future. For instance, eAccounts provides data
+              about the time of purchase, but we did not use this information in the Dashboard. It may be
+              beneficial to users to
+              break down food point spending by meal type. However, college students
+              eat meals at varied times, which makes it difficult to set cutoffs for
+              what qualifies as breakfast, lunch, and dinner.
+              Lastly, and most critically, the greatest limiting factor of the app is the data upload process. As is, users
               must spend a potentially excessive period of time copying and pasting data
               into their downloaded Excel template. This R Shiny app could be extended by
               connecting it to a Duke netID login portal, such that users would simply need
